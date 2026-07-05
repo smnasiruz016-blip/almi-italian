@@ -1,41 +1,65 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Article } from "@/components/Article";
+import { getCurrentUser } from "@/lib/auth";
+import { isInTrial, trialDaysLeft, hasPracticeAccess } from "@/lib/access";
+import { TRACKS, sectionCount } from "@/lib/practice";
 import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Practice — AlmiItalian",
-  description: "Choose your Italian exam and level to practise. CILS and CELI, each on its own real scale.",
+  description: "Practise CILS and CELI, each on its own real scale, with instant auto-marking and an honest, engine-scaled read-out. CILS B1 Cittadinanza, CILS standard, and CELI.",
   alternates: { canonical: canonical("/practice") },
 };
 
-// Phase-1 placeholder: the exam pickers + section runners land in Phase 2 (item bank Batch 1).
-const EXAMS = [
-  { name: "CILS B1 Cittadinanza", note: "Citizenship module — all-or-nothing (≥7 each section AND ≥28/48). Flagship.", flag: true },
-  { name: "CILS standard (A1–C2)", note: "Five sections /20, floor 11 each, capitalization banking.", flag: false },
-  { name: "CELI (Impatto–5)", note: "Written + Oral parts, both must clear; A–E grade-band estimate.", flag: false },
-];
+export default async function Page() {
+  const user = await getCurrentUser();
+  const banner = !user ? null : hasPracticeAccess(user)
+    ? (isInTrial(user)
+        ? `Free trial active — ${trialDaysLeft(user)} day${trialDaysLeft(user) === 1 ? "" : "s"} left. Full CILS and CELI practice.`
+        : "Subscription active — full CILS and CELI practice.")
+    : "Your free trial has ended — subscribe to keep practising ($12/month).";
 
-export default function Page() {
   return (
-    <Article
-      eyebrow="Practice"
-      title="Choose your Italian exam"
-      lede="CILS and CELI are scored differently, so we keep them apart. Pick the exam you're actually sitting — the practice sets arrive with the item bank."
-    >
-      <div className="not-prose grid gap-4 sm:grid-cols-3">
-        {EXAMS.map((e) => (
-          <div key={e.name} className={`rounded-2xl border p-5 ${e.flag ? "border-2 border-almi-coral" : "border-almi-line"} bg-almi-paper`}>
-            <h3 className="font-semibold text-almi-ink">{e.name}</h3>
-            <p className="mt-2 text-sm text-almi-text">{e.note}</p>
-            <p className="mt-3 text-xs font-medium text-almi-text-muted">Practice sets coming soon</p>
+    <main className="mx-auto max-w-3xl px-6 py-12">
+      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">Practice</p>
+      <h1 className="mt-3 text-3xl font-bold text-almi-ink">Choose your Italian exam</h1>
+      <p className="mt-4 text-almi-text">
+        CILS and CELI are scored differently, so we keep them apart — pick the exam you&apos;re actually sitting. Listening,
+        Reading and Grammar are auto-marked on each engine&apos;s own scale; Writing and Speaking are practised against the
+        official-style criteria and always labelled AI estimates.
+      </p>
+      {banner && <p className="mt-4 rounded-xl border border-almi-line bg-almi-bg-peach/40 px-4 py-2 text-sm text-almi-text">{banner}</p>}
+
+      <div className="mt-8 space-y-4">
+        {TRACKS.map((t) => (
+          <div key={t.slug} className={`rounded-2xl border bg-almi-paper p-5 ${t.flag ? "border-2 border-almi-coral" : "border-almi-line"}`}>
+            <div className="flex flex-wrap items-baseline gap-2">
+              <h2 className="font-semibold text-almi-ink">{t.label}</h2>
+              <span className="text-xs font-medium uppercase tracking-wide text-almi-text-muted">{t.family}</span>
+            </div>
+            <p className="mt-1 text-sm text-almi-text">{t.tagline}</p>
+            <div className="mt-3 flex flex-wrap gap-2 text-sm">
+              {t.sections.map((s) => {
+                const n = sectionCount(t, s);
+                return (
+                  <Link
+                    key={s.slug}
+                    href={`/practice/${t.slug}/${s.slug}`}
+                    className="rounded-full bg-almi-coral px-4 py-1.5 font-medium text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark"
+                  >
+                    {s.label.replace(/\s*\(.*$/, "").replace(/\s*—.*$/, "")} · {n}{s.kind === "estimate" ? " est." : ""}
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         ))}
       </div>
-      <p className="text-sm text-almi-text-muted">
-        Not sure which exam or level you need? Remember: the long-term permit is A2, citizenship is B1 —{" "}
-        <Link href="/about" className="text-almi-coral hover:underline">read the honest guide</Link>.
+
+      <p className="mt-8 text-sm text-almi-text-muted">
+        New here? Not sure which exam or level you need? Remember: the long-term permit is A2, citizenship is B1 —{" "}
+        <Link href="/guides/a2-or-b1" className="text-almi-coral hover:underline">read the honest guide</Link>.
       </p>
-    </Article>
+    </main>
   );
 }

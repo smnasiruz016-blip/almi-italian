@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { scoreCilsStandard, scoreCilsB1c, scoreCeli } from "@/lib/scoring";
+import { scoreCilsStandard, scoreCilsB1c, scoreCeli, CILS_B1C_FLOOR, CILS_B1C_SECTION_MAX, CILS_B1C_TOTAL_FLOOR } from "@/lib/scoring";
 import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -27,29 +27,89 @@ const B1C = scoreCilsB1c([
 const CELI_B1 = scoreCeli("DUE", { writtenScore: 88, oralScore: 18 }); // oral < 22 → written banks 1 yr
 
 const SEC_LABEL_STD: Record<string, string> = { ASCOLTO: "Ascolto", LETTURA: "Lettura", ANALISI: "Analisi", SCRITTA: "Scritta", ORALE: "Orale" };
+const cap = (s: string) => s.charAt(0) + s.slice(1).toLowerCase();
+// The section holding the sample under the floor — derived, not hardcoded, so the verdict copy tracks the data.
+const B1C_BELOW = B1C.sections.find((s) => s.score < s.floor);
 
 export default function HomePage() {
   return (
     <main>
-      {/* Hero */}
+      {/* Hero — two columns: message left, sample readiness report right (stacks on mobile) */}
       <section className="px-6 pt-16 pb-14">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">ALMIITALIAN · CILS + CELI PRACTICE</p>
-          <h1 className="mt-4 text-4xl font-bold text-almi-ink sm:text-5xl">Prepare for the Italian exam you actually need.</h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg text-almi-text">
-            CILS (Siena) and CELI (Perugia) are two different exams with two different scoring systems — and we keep them{" "}
-            <strong className="text-almi-ink">strictly apart</strong>, each on its own real scale. The confusion we exist to fix:
-            the long-term residence permit needs <strong className="text-almi-ink">A2</strong>, Italian citizenship needs{" "}
-            <strong className="text-almi-ink">B1</strong>. Prepare for the right one.
-          </p>
-          <div className="mt-7">
-            <Link href="/signup" className="rounded-full bg-almi-coral px-7 py-3 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">
-              Practise free
-            </Link>
+        <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2">
+          {/* LEFT */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">ALMIITALIAN · CILS + CELI PRACTICE</p>
+            <h1 className="mt-4 text-4xl font-bold text-almi-ink sm:text-5xl">
+              Prepare for the Italian exam you <span className="text-almi-coral">actually need</span>.
+            </h1>
+            <p className="mt-5 max-w-xl text-lg text-almi-text">
+              CILS (Siena) and CELI (Perugia) are two different exams with two different scoring systems — and we keep them{" "}
+              <strong className="text-almi-ink">strictly apart</strong>, each on its own real scale. The confusion we exist to fix:
+              the long-term residence permit needs <strong className="text-almi-ink">A2</strong>, Italian citizenship needs{" "}
+              <strong className="text-almi-ink">B1</strong>. Prepare for the right one.
+            </p>
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <Link href="/signup" className="rounded-full bg-almi-coral px-7 py-3 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">
+                Practise free
+              </Link>
+              <Link href="/practice" className="rounded-full border border-almi-line px-7 py-3 font-semibold text-almi-text hover:border-almi-coral">
+                Practice
+              </Link>
+              <Link href="/login" className="text-sm text-almi-text-muted hover:text-almi-coral">Already have an account? Log in →</Link>
+            </div>
+            <p className="mt-4 text-xs text-almi-text-muted">
+              Free to practise · <strong className="text-almi-ink">$12/month</strong> for full access · in-person exams only · certificates don&apos;t expire · writing &amp; speaking are clearly-labelled estimates
+            </p>
           </div>
-          <p className="mt-4 text-xs text-almi-text-muted">
-            In-person exams only · certificates don&apos;t expire · writing &amp; speaking shown as clearly-labelled estimates, never official scores
-          </p>
+
+          {/* RIGHT — sample readiness report (rendered from the B1c engine; numbers from its constants) */}
+          <div className="rounded-3xl border border-almi-line bg-almi-paper p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-semibold uppercase tracking-wide text-almi-text-muted">Sample readiness report · {B1C.examLabel}</p>
+              <span className="rounded-full bg-almi-bg-peach px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-almi-coral-deep">Sample</span>
+            </div>
+
+            {/* Four section bars, each out of the section max, with a floor tick at the pass floor */}
+            <div className="mt-5 space-y-3">
+              {B1C.sections.map((s) => {
+                const clears = s.score >= s.floor;
+                return (
+                  <div key={s.section}>
+                    <div className="flex items-baseline justify-between text-xs">
+                      <span className="text-almi-text">{cap(s.section)}{s.isEstimate ? " *" : ""}</span>
+                      <span className={clears ? "font-semibold text-almi-teal" : "font-semibold text-almi-coral-deep"}>{s.score}/{s.max}{clears ? " ✓" : ""}</span>
+                    </div>
+                    <div className="relative mt-1 h-2.5 rounded-full bg-almi-bg-peach/60">
+                      <div className={`absolute inset-y-0 left-0 rounded-full ${clears ? "bg-almi-teal" : "bg-almi-coral-deep"}`} style={{ width: `${(s.score / s.max) * 100}%` }} />
+                      {/* floor tick */}
+                      <div className="absolute inset-y-[-2px] w-0.5 bg-almi-ink/50" style={{ left: `${(s.floor / s.max) * 100}%` }} title={`Floor ${s.floor}/${s.max}`} />
+                    </div>
+                  </div>
+                );
+              })}
+              <p className="text-[10px] text-almi-text-muted">Tick = the {CILS_B1C_FLOOR}/{CILS_B1C_SECTION_MAX} floor every section must clear.</p>
+            </div>
+
+            {/* Totals strip — pass tint */}
+            <div className="mt-4 rounded-xl bg-almi-teal/10 px-4 py-2.5 text-sm font-medium text-almi-ink">
+              Total {B1C.total}/{B1C.totalMax} — ≥{CILS_B1C_TOTAL_FLOOR} {B1C.conditions.totalThresholdMet ? "✓" : "✗"}
+            </div>
+
+            {/* Verdict strip — the punchline */}
+            <div className="mt-2 rounded-xl border border-almi-coral-deep/30 bg-almi-coral-deep/10 px-4 py-3 text-sm text-almi-ink">
+              <strong className="text-almi-coral-deep">Certificate: {B1C.passed ? "on track" : "not yet"}</strong> — {B1C_BELOW ? cap(B1C_BELOW.section) : "a section"} is under the {CILS_B1C_FLOOR}-point floor.
+              CILS B1 Cittadinanza has <strong>NO banking</strong>: the whole exam is retaken.
+            </div>
+
+            {/* Honest feedback on the writing section (an estimate) */}
+            <div className="mt-3 rounded-xl border border-almi-line bg-almi-bg-peach/30 px-4 py-3">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-almi-text-muted">Honest feedback · Scritta *</p>
+              <p className="mt-1 text-sm text-almi-text">Task addressed, but register slips out of the administrative context — that&apos;s what&apos;s holding Scritta under the floor.</p>
+            </div>
+
+            <p className="mt-4 text-[10px] text-almi-text-muted">* AI criteria estimate. Illustrative example — not a real CILS result. Only Siena awards official results.</p>
+          </div>
         </div>
       </section>
 

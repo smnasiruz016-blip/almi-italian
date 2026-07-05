@@ -103,11 +103,48 @@ function eq<T>(a: T, b: T, msg: string) { assert(a === b, `${msg} (got ${JSON.st
   eq(CELI_CONFIG.TRE.totalMax, 200, "CELI B2 total max is 200 (official)");
   eq(CELI_CONFIG.DUE.totalMax, 160, "CELI B1 total max is 160 (official)");
 
-  // Unverified levels refuse to fabricate a pass/band.
+  // CELI 1 (A2) — official: written /90 min54, oral /40 min25, total /130, superato ≥79, pass/fail (no A–E).
+  const a2 = scoreCeli("UNO", { writtenScore: 54, oralScore: 25 });
+  assert(a2.verified === true && a2.pending === false, "CELI A2 (CELI 1) is verified/locked");
+  if (a2.verified) {
+    eq(a2.total, 79, "CELI A2 total 54+25");
+    eq(a2.passed, true, "CELI A2 passes at both minima (54/25)");
+    eq(a2.gradeBand, "PASS", "CELI A2 is pass/fail (no A–E band)");
+  }
+  const a2fail = scoreCeli("UNO", { writtenScore: 53, oralScore: 25 }); // written below 54
+  if (a2fail.verified) {
+    eq(a2fail.passed, false, "CELI A2 fails when written < 54");
+    assert(a2fail.banking?.bankablePart === "ORAL", "CELI A2 banks the passed ORAL part");
+  }
+  eq(CELI_CONFIG.UNO.totalMax, 130, "CELI A2 total max 130 (official)");
+
+  // CELI 4 (C1) — official: 140/60/200, min 84/33, C floor 117, bands A–E (D floor 69).
+  const c1 = scoreCeli("QUATTRO", { writtenScore: 130, oralScore: 45 });
+  if (c1.verified) {
+    eq(c1.total, 175, "CELI C1 total");
+    eq(c1.gradeBand, "A", "CELI C1 total 175 → A");
+    eq(c1.passed, true, "CELI C1 passes when both parts clear");
+  }
+  eq((scoreCeli("QUATTRO", { writtenScore: 69, oralScore: 0 }) as { gradeBand: string }).gradeBand, "D", "CELI C1 total 69 → D (E is 0–68)");
+  eq((scoreCeli("QUATTRO", { writtenScore: 68, oralScore: 0 }) as { gradeBand: string }).gradeBand, "E", "CELI C1 total 68 → E");
+
+  // CELI 5 (C2) — official: 150/50/200, min 89/28, C floor 117, bands A–E with D floor 72 (distinct from C1's 69).
+  const c2 = scoreCeli("CINQUE", { writtenScore: 100, oralScore: 30 });
+  if (c2.verified) {
+    eq(c2.total, 130, "CELI C2 total 100+30");
+    eq(c2.gradeBand, "C", "CELI C2 total 130 → C (117–143)");
+    eq(c2.passed, true, "CELI C2 passes at both minima (89/28)");
+  }
+  eq(CELI_CONFIG.CINQUE.writtenMax, 150, "CELI C2 written max 150 (official)");
+  // C2's D/E boundary is 72 — NOT C1's 69. Guards against cross-level transcription.
+  eq((scoreCeli("CINQUE", { writtenScore: 72, oralScore: 0 }) as { gradeBand: string }).gradeBand, "D", "CELI C2 total 72 → D");
+  eq((scoreCeli("CINQUE", { writtenScore: 71, oralScore: 0 }) as { gradeBand: string }).gradeBand, "E", "CELI C2 total 71 → E (C2 D-floor 72 ≠ C1 69)");
+
+  // IMPATTO (A1) stays PENDING BY DESIGN: numerics officially read, but its single-overall-threshold pass
+  // (total ≥16 → P/N, no per-part minima, no banking) is not representable in the both-parts model yet.
   const a1 = scoreCeli("IMPATTO", { writtenScore: 999, oralScore: 999 });
-  eq(a1.pending, true, "CELI Impatto (A1) is PENDING — no fabricated result");
+  eq(a1.pending, true, "CELI Impatto (A1) still PENDING — overall-threshold pass model not yet in engine");
   assert(!("passed" in a1), "CELI pending result carries no passed field");
-  eq(scoreCeli("QUATTRO", { writtenScore: 0, oralScore: 0 }).pending, true, "CELI C1 PENDING until official read");
 }
 
 // ---------- MANDATED GUARD: scales are never mixed across engines ----------

@@ -36,14 +36,20 @@ const A_E = (a: number, b: number, c: number, d: number, top: number): CeliBand[
   { grade: "E", min: 0, max: d - 1, label: "gravemente insufficiente" },
 ];
 
-// CELI 2 (B1) and CELI 3 (B2): locked from official CVCL PDFs. Others PENDING official read.
+// CELI 1–5 (A2–C2) locked from official CVCL criteri-di-valutazione PDFs (unistrapg.it, read 2026-07-05;
+// see almi-italian-data/celi-numerics-verified.md). CELI 3 (B2) and CELI 4 (C1) legitimately share the
+// identical 140/60/200 frame — confirmed against both official PDFs, not a copy error.
+// IMPATTO (A1) stays verified:false ON PURPOSE: its numerics ARE officially read (Written 0–16 + Oral 0–16,
+// TOTALE 0–32, superato ≥16 → P/N, no per-part minima, no capitalizzazione), but its pass is a single
+// OVERALL threshold — structurally unlike the both-parts-clear + banking model this engine implements.
+// Encoding it faithfully needs a small pass-model addition, not just a config flip → deferred to a decision.
 export const CELI_CONFIG: Record<CeliLevel, CeliLevelConfig> = {
   IMPATTO: { cefr: "A1", label: "CELI Impatto", gradedBands: false, verified: false, writtenMax: null, oralMax: null, totalMax: null, writtenMin: null, oralMin: null, passFloor: null, bands: null },
-  UNO: { cefr: "A2", label: "CELI 1", gradedBands: false, verified: false, writtenMax: null, oralMax: null, totalMax: null, writtenMin: null, oralMin: null, passFloor: null, bands: null },
+  UNO: { cefr: "A2", label: "CELI 1", gradedBands: false, verified: true, writtenMax: 90, oralMax: 40, totalMax: 130, writtenMin: 54, oralMin: 25, passFloor: 79, bands: null },
   DUE: { cefr: "B1", label: "CELI 2", gradedBands: true, verified: true, writtenMax: 120, oralMax: 40, totalMax: 160, writtenMin: 72, oralMin: 22, passFloor: 94, bands: A_E(138, 115, 94, 60, 160) },
   TRE: { cefr: "B2", label: "CELI 3", gradedBands: true, verified: true, writtenMax: 140, oralMax: 60, totalMax: 200, writtenMin: 84, oralMin: 33, passFloor: 117, bands: A_E(173, 144, 117, 69, 200) },
-  QUATTRO: { cefr: "C1", label: "CELI 4", gradedBands: true, verified: false, writtenMax: null, oralMax: null, totalMax: null, writtenMin: null, oralMin: null, passFloor: null, bands: null },
-  CINQUE: { cefr: "C2", label: "CELI 5", gradedBands: true, verified: false, writtenMax: null, oralMax: null, totalMax: null, writtenMin: null, oralMin: null, passFloor: null, bands: null },
+  QUATTRO: { cefr: "C1", label: "CELI 4", gradedBands: true, verified: true, writtenMax: 140, oralMax: 60, totalMax: 200, writtenMin: 84, oralMin: 33, passFloor: 117, bands: A_E(173, 144, 117, 69, 200) },
+  CINQUE: { cefr: "C2", label: "CELI 5", gradedBands: true, verified: true, writtenMax: 150, oralMax: 50, totalMax: 200, writtenMin: 89, oralMin: 28, passFloor: 117, bands: A_E(173, 144, 117, 72, 200) },
 };
 
 export interface CeliInput {

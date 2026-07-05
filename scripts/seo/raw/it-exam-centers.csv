@@ -1,0 +1,106 @@
+"# CELI abroad authoritative total = 123 centers (unique Cod Centro, official CVCL PDF 19-03-2026).",Clean row-parse below = 103 rows; ~20 rows dropped to PDF line-wrap (source PDF retained: centers/celi-centri-estero.pdf). CILS = source-blocked.
+exam,scope,cod_centro,institution,continent,country,city
+CELI,estero,660,Istituto Italiano di Cultura,Europa,Albania,Tirana
+CELI,estero,1529,Istituto Italiano di Cultura di Algeri,Africa,Algeria,Algeri
+CELI,estero,688,Associazione 'Il David',America,Argentina,Bahia Blanca - Buenos
+CELI,estero,729,ELLEDUE- Scuola d'Italiano,America,Argentina,Mar Del Plata
+CELI,estero,655,Centro Culturale Italiano,America,Argentina,Olivos
+CELI,estero,1633,Asociaciòn Familia Abruzzesa,America,Argentina,Rosario- Santa Fe
+CELI,estero,754,IUNIR - Instituto Universitario Italiano de Rosario,America,Argentina,Rosario_Santa Fe
+CELI,estero,888,Centro Cultural Italo -Argentino,America,Argentina,Viedma
+CELI,estero,1576,Nuova Scuola Virtuale,America,Argentina,Viedma
+CELI,estero,779,Università Statale V. Brusov,Asia,Armenia,Yerevan-01
+CELI,estero,886,Co.As.It. Casa d'Italia,Oceania,Australia,Leichhardt - Sydney
+CELI,estero,1263,Co.As.It,Oceania,Australia,Melbourne
+CELI,estero,648,WIFI Tirol,Europa,Austria,Innsbruck
+CELI,estero,617,Istituto Italiano di Cultura di San Paolo,America,Brasile,"Av. Higienópolis,"
+CELI,estero,1459,AVERGS Associação Vêneta do RS,America,Brasile,Caxias do Sul - Rio
+CELI,estero,573,Centro di Cultura Italiana PR/SC,America,Brasile,Curitiba
+CELI,estero,776,Istituto di Cultura Italiana di Fortaleza - ICIF,America,Brasile,Fortaleza
+CELI,estero,1637,Centro Cultural linguistico e Enogastronomico Smart Way LTDA,America,Brasile,Pelotas
+CELI,estero,1557,Sociedade Italiana do Rio Grande do Sul,America,Brasile,Porto Alegre Rio Grande
+CELI,estero,812,Istituto Italiano di Cultura di Rio de Janeiro,America,Brasile,Rio de Janeiro
+CELI,estero,598,Istituto Italiano di Cultura,Europa,Bulgaria,Sofia
+CELI,estero,1515,Parliamo Italiano Camerun,Africa,Camerun,Douala Littorale
+CELI,estero,1175,Centro Italiano,Africa,Camerun,Yaounde
+CELI,estero,1360,Beijing Ebsno Education Technology Co. Ltd,Asia,Cina,"1202,T1C WANGJINGSOHO,31"
+CELI,estero,1530,Guangdong Huayitong Education Consulting Co. Ltd,Asia,Cina,"8TH Floor, Linjiang Businnes Center,"
+CELI,estero,837,Senmiao School China,Asia,Cina,"China, Beijing, Chaoyang District, Huaweili"
+CELI,estero,1424,Beijing Huayitong Education Consulting,Asia,Cina,"Huayitong, Qingzhengdasha, 3 Ceng"
+CELI,estero,1579,Comitato Shanghai,Asia,Cina,"Huayitong, Room 106, Building A, n.838,"
+CELI,estero,1284,Beijing Zhongyikun Technology Training Co.Ldt,Asia,Cina,Pechino
+CELI,estero,1618,Beijing Foreign Studies University MOE Training Centre,Asia,Cina,Pechino
+CELI,estero,848,Hebei Normal University of Science Technology,Asia,Cina,Qinhuangdao
+CELI,estero,1299,Chongqing BTS Foreign Language School,Asia,Cina,"RM 1302, n.38 Qingnian Road - Yuzhong"
+CELI,estero,1305,Beijing QI PU China Italy Culture Exchange Co. Ltd. SIOL,Asia,Cina,"Room I, 10th Floor, Greenland Science"
+CELI,estero,1192,Beijing Chaoyang District Hongyu Training School,Asia,Cina,Shanghai
+CELI,estero,1586,Ponte di Lingua italiana,Asia,Cina,Via Huayuan n. 126
+CELI,estero,1531,Omon Education and Culture Development,Asia,Cina,"Wuxi Foreign Language School, Wencui"
+CELI,estero,1468,Yiyan Education Co.LTD,Asia,Cina,Yecheng Road n. 77
+CELI,estero,1380,Scuola Mamamia,Asia,Cina,Zhongguancun Roas n. 19
+CELI,estero,1439,Shanghai Culture and Creativity College,Asia,Cina,"n. 777 Hongquiao Road, Room 70, Xuhui"
+CELI,estero,814,St. Mary's School,Europa,Cipro,Limassol
+CELI,estero,1558,Oasi Italiana,Africa,Douala,B.P. 242 Bafoussam
+CELI,estero,1632,Istituto Da Vinci,Africa,Egitto,Alessandria d'Egitto
+CELI,estero,603,Istituto Italiano di Cultura,Africa,Egitto,Il Cairo
+CELI,estero,1528,Lycee Elie Vinet,Europa,Francia,Barbezieux Saint Hilaire 7 Avenue Pierre Mendès-France
+CELI,estero,675,"Camera di Commercio Italiana - Sophia Antipolis, Costa Azzurra",Europa,Francia,Nizza
+CELI,estero,637,Istituto Italiano di Cultura,Europa,Francia,Strasburgo
+CELI,estero,777,CCIT - Deutsch-Italienischer Kulturkreis e.V.,Europa,Germania,Aachen
+CELI,estero,1431,Puntolingua,Europa,Germania,Berlino
+CELI,estero,606,Istituto Italiano di Cultura,Europa,Germania,Colonia
+CELI,estero,717,hvv-Institut des Hessischen Volkshochschulverbands,Europa,Germania,Frankfurt Am Main
+CELI,estero,1523,Universität Heidelberg Zentrales Sprachlabor,Europa,Germania,Heidelberg
+CELI,estero,741,Institut für Romanistik - Friedrich-Schiller-Universität Jena,Europa,Germania,Jena
+CELI,estero,818,Münchner Volkshochschule GmbH,Europa,Germania,Monaco
+CELI,estero,1379,AS.SC.IT e V. c/o Lucia Ritter Tochini,Europa,Germania,Norimberga
+CELI,estero,734,Istituto Italiano di Cultura,Asia,Giappone,Kyoto
+CELI,estero,1382,Aichi University of the Arts,Asia,Giappone,"Nagakute (Aichi-Ken) 1-114 Yazako, Sagamine"
+CELI,estero,1154,Centro Galileo,Europa,Grecia,"Chania - Isola di Creta via Dimitrakaki, 14"
+CELI,estero,716,Instituto Italiano de Cultura - Sección Cultural de la Embajada de,America,Guatemala,Città Del Guatemala 16 Calle 2-55 - Zona 10
+CELI,estero,1617,Istituto Italiano di Cultura Nuova Delhi,Asia,India,Nuova Delhi
+CELI,estero,1331,Istituto Sokhan Sarayan,Asia,Iran,Isfahan
+CELI,estero,1383,Mojtama Fanni Tehran- Gheitarieh,Asia,Iran,Tehran
+CELI,estero,1525,ILI - Iran Language Institute,Asia,Iran,Tehran
+CELI,estero,1325,Istituto Italiano di Cultura,Europa,Irlanda,Nairobi
+CELI,estero,723,Institut national des langues Luxembourg,Europa,Lussemburgo,Lussemburgo
+CELI,estero,1657,Mohammed V University in Rabat,Africa,Marocco,Beni Mellal
+CELI,estero,1156,Università di Stato di Moldova,Africa,Marocco,Rabat
+CELI,estero,1460,Università del Montenegro - Facoltà di Filologia,America,Messico,Xalapa Veracruz
+CELI,estero,1317,Centro Culturale Paraguaiano Europeo,Europa,Moldavia,Chisinau
+CELI,estero,1349,Instituto Cultural Italo Peruano,Asia,Mongolia,Ulaanbaatar
+CELI,estero,1658,Akademia Ekonomiczno - Humanistycznaw warszawie,Europa,Polonia,Varsavia
+CELI,estero,611,Istituto Italiano di Cultura,Europa,Portogallo,Lisbona
+CELI,estero,645,Istituto Italiano di Cultura,Europa,Romania,Bucarest
+CELI,estero,1546,Colegiul Naional George Bariiu,Europa,Romania,Cluj-Napoca
+CELI,estero,855,Università OVIDIUS,Europa,Romania,Costanta
+CELI,estero,821,Liceul Teoretic Jean Louis Calderon,Europa,Romania,Timisoara
+CELI,estero,1077,Centro Italiano di Cultura,Europa,Russia,Mosca
+CELI,estero,1591,Derzhavin Institute,Europa,Russia,San Pietroburgo
+CELI,estero,1370,Rudjer Boskovic School,Europa,Serbia,Belgrado
+CELI,estero,674,Istituto Italiano di Cultura in Slovenia,Europa,Slovenia,Ljubljana
+CELI,estero,657,Istituto Italiano di Cultura,Europa,Spagna,Barcellona
+CELI,estero,1140,Universitat de Barcelona-Facultat de Filologia-Departament de,Europa,Spagna,Barcellona
+CELI,estero,1377,Universidad de Málaga - Centro de Idiomas,Europa,Spagna,"C/ Ejido, s/n. Pabellón de Gobierno de la"
+CELI,estero,1422,Idiomas Huelva- Kids Club Spain,Europa,Spagna,Calle Rafael Lopez n.1
+CELI,estero,1661,Universitat Jaume I,Europa,Spagna,Castelló de la Plana
+CELI,estero,1482,ELECE Idiomas.,Europa,Spagna,Granada
+CELI,estero,1080,Centro G. Leopardi,Europa,Spagna,Valencia
+CELI,estero,635,Istituto Italiano di Cultura,America,Stati Uniti d'America,710 Sansome St.
+CELI,estero,1662,Renaissance Evolution Inc.,America,Stati Uniti d'America,Coral Gables
+CELI,estero,1490,The Italian Cultural Society of Washington,America,Stati Uniti d'America,New York
+CELI,estero,1180,Collina Italiana - Italian language and Cultural Center,America,Stati Uniti d'America,Washington
+CELI,estero,1233,Istituto Italiano di Cultura di Tunisi,Europa,Svizzera,Aarau
+CELI,estero,1652,C.I.P.E Comitato Italiano per la Promozione Educativa,Europa,Svizzera,Ascona (Ticino)
+CELI,estero,700,Fondazione ECAP,Europa,Svizzera,Basilea
+CELI,estero,1513,Weiterbildung - HKV Aarau,Europa,Svizzera,Lamone
+CELI,estero,623,Comitato Pro Scuola Italiana,Europa,Svizzera,Losanna
+CELI,estero,1447,Glossa Scuola di Lingue e di Informatica,Europa,Svizzera,Lugano
+CELI,estero,891,"Scuola di Italiano ""Italia Oggi""",Europa,Svizzera,Lugano
+CELI,estero,685,Miduca SA - Scuola Club Migros Lugano,Europa,Svizzera,Zurigo
+CELI,estero,766,Scuola Didac,Europa,Svizzera,Zurigo
+CELI,estero,613,Istituto Italiano di Cultura di Montevideo,Europa,Turchia,Ankara
+CELI,estero,1421,Casa Italia,Europa,Turchia,Instanbul
+CELI,estero,1069,Università di Economia di zmir,Europa,Turchia,Izmir
+CELI,estero,633,Istituto Italiano di Cultura,Europa,Ungheria,Ungheria
+CILS,estero,PENDING,"SOURCE BLOCKED: cils.unistrasi.it ""Le sedi di esami"" JS ITALIA/ESTERO selector — abba g browser-save required (Korean TOPIK precedent)",,,

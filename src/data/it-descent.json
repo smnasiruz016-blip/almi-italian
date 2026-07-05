@@ -1,0 +1,65 @@
+{
+ "tier1": [
+  {
+   "slug": "argentina",
+   "country": "Argentina",
+   "aire": 989901,
+   "celiCenters": 7
+  },
+  {
+   "slug": "brazil",
+   "country": "Brazil",
+   "aire": null,
+   "celiCenters": 7
+  },
+  {
+   "slug": "united-states",
+   "country": "United States",
+   "aire": null,
+   "celiCenters": 4
+  },
+  {
+   "slug": "australia",
+   "country": "Australia",
+   "aire": null,
+   "celiCenters": 2
+  },
+  {
+   "slug": "canada",
+   "country": "Canada",
+   "aire": null,
+   "celiCenters": 0
+  },
+  {
+   "slug": "venezuela",
+   "country": "Venezuela",
+   "aire": null,
+   "celiCenters": 0
+  },
+  {
+   "slug": "uruguay",
+   "country": "Uruguay",
+   "aire": 115658,
+   "celiCenters": 0
+  }
+ ],
+ "proposed": [
+  {
+   "slug": "south-africa",
+   "country": "South Africa"
+  },
+  {
+   "slug": "mexico",
+   "country": "Mexico"
+  },
+  {
+   "slug": "peru",
+   "country": "Peru"
+  },
+  {
+   "slug": "chile",
+   "country": "Chile"
+  }
+ ],
+ "decree": "Decreto interministeriale 17 novembre 2025 — GU Serie Generale n. 273 del 24-11-2025 (25A06275)"
+}

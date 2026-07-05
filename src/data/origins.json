@@ -1,0 +1,1570 @@
+[
+{
+"slug": "afghanistan",
+"name": "Afghanistan",
+"iso2": "AF",
+"region": "Southern Asia",
+"lang": "fa",
+"langLabel": "Persian"
+},
+{
+"slug": "albania",
+"name": "Albania",
+"iso2": "AL",
+"region": "Southern Europe",
+"lang": "sq",
+"langLabel": "Albanian"
+},
+{
+"slug": "algeria",
+"name": "Algeria",
+"iso2": "DZ",
+"region": "Northern Africa",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "andorra",
+"name": "Andorra",
+"iso2": "AD",
+"region": "Southern Europe",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "angola",
+"name": "Angola",
+"iso2": "AO",
+"region": "Sub-Saharan Africa",
+"lang": "pt",
+"langLabel": "Portuguese"
+},
+{
+"slug": "antigua-and-barbuda",
+"name": "Antigua and Barbuda",
+"iso2": "AG",
+"region": "Latin America and the Caribbean",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "argentina",
+"name": "Argentina",
+"iso2": "AR",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "armenia",
+"name": "Armenia",
+"iso2": "AM",
+"region": "Western Asia",
+"lang": "hy",
+"langLabel": "Armenian"
+},
+{
+"slug": "australia",
+"name": "Australia",
+"iso2": "AU",
+"region": "Australia and New Zealand",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "austria",
+"name": "Austria",
+"iso2": "AT",
+"region": "Western Europe",
+"lang": "de",
+"langLabel": "German"
+},
+{
+"slug": "azerbaijan",
+"name": "Azerbaijan",
+"iso2": "AZ",
+"region": "Western Asia",
+"lang": "az",
+"langLabel": "Azerbaijani"
+},
+{
+"slug": "bahamas",
+"name": "Bahamas",
+"iso2": "BS",
+"region": "Latin America and the Caribbean",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "bahrain",
+"name": "Bahrain",
+"iso2": "BH",
+"region": "Western Asia",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "bangladesh",
+"name": "Bangladesh",
+"iso2": "BD",
+"region": "Southern Asia",
+"lang": "bn",
+"langLabel": "Bengali"
+},
+{
+"slug": "barbados",
+"name": "Barbados",
+"iso2": "BB",
+"region": "Latin America and the Caribbean",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "belarus",
+"name": "Belarus",
+"iso2": "BY",
+"region": "Eastern Europe",
+"lang": "ru",
+"langLabel": "Russian"
+},
+{
+"slug": "belgium",
+"name": "Belgium",
+"iso2": "BE",
+"region": "Western Europe",
+"lang": "nl",
+"langLabel": "Dutch"
+},
+{
+"slug": "belize",
+"name": "Belize",
+"iso2": "BZ",
+"region": "Latin America and the Caribbean",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "benin",
+"name": "Benin",
+"iso2": "BJ",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "bhutan",
+"name": "Bhutan",
+"iso2": "BT",
+"region": "Southern Asia",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "bolivia",
+"name": "Bolivia",
+"iso2": "BO",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "bonaire",
+"name": "Bonaire",
+"iso2": "BQ",
+"region": "Latin America and the Caribbean",
+"lang": "nl",
+"langLabel": "Dutch"
+},
+{
+"slug": "bosnia-and-herzegovina",
+"name": "Bosnia and Herzegovina",
+"iso2": "BA",
+"region": "Southern Europe",
+"lang": "bs",
+"langLabel": "Bosnian"
+},
+{
+"slug": "botswana",
+"name": "Botswana",
+"iso2": "BW",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "brazil",
+"name": "Brazil",
+"iso2": "BR",
+"region": "Latin America and the Caribbean",
+"lang": "pt",
+"langLabel": "Portuguese"
+},
+{
+"slug": "brunei",
+"name": "Brunei",
+"iso2": "BN",
+"region": "South-eastern Asia",
+"lang": "ms",
+"langLabel": "Malay"
+},
+{
+"slug": "bulgaria",
+"name": "Bulgaria",
+"iso2": "BG",
+"region": "Eastern Europe",
+"lang": "bg",
+"langLabel": "Bulgarian"
+},
+{
+"slug": "burkina-faso",
+"name": "Burkina Faso",
+"iso2": "BF",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "burundi",
+"name": "Burundi",
+"iso2": "BI",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "cambodia",
+"name": "Cambodia",
+"iso2": "KH",
+"region": "South-eastern Asia",
+"lang": "km",
+"langLabel": "Khmer"
+},
+{
+"slug": "cameroon",
+"name": "Cameroon",
+"iso2": "CM",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "canada",
+"name": "Canada",
+"iso2": "CA",
+"region": "Northern America",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "cape-verde",
+"name": "Cape Verde",
+"iso2": "CV",
+"region": "Sub-Saharan Africa",
+"lang": "pt",
+"langLabel": "Portuguese"
+},
+{
+"slug": "central-african-republic",
+"name": "Central African Republic",
+"iso2": "CF",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "chad",
+"name": "Chad",
+"iso2": "TD",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "chile",
+"name": "Chile",
+"iso2": "CL",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "china",
+"name": "China",
+"iso2": "CN",
+"region": "Eastern Asia",
+"lang": "zh",
+"langLabel": "Chinese"
+},
+{
+"slug": "colombia",
+"name": "Colombia",
+"iso2": "CO",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "comoros",
+"name": "Comoros",
+"iso2": "KM",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "congo",
+"name": "Congo",
+"iso2": "CG",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "costa-rica",
+"name": "Costa Rica",
+"iso2": "CR",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "cote-divoire",
+"name": "Côte d'Ivoire",
+"iso2": "CI",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "croatia",
+"name": "Croatia",
+"iso2": "HR",
+"region": "Southern Europe",
+"lang": "hr",
+"langLabel": "Croatian"
+},
+{
+"slug": "cuba",
+"name": "Cuba",
+"iso2": "CU",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "cyprus",
+"name": "Cyprus",
+"iso2": "CY",
+"region": "Western Asia",
+"lang": "el",
+"langLabel": "Greek"
+},
+{
+"slug": "czechia",
+"name": "Czechia",
+"iso2": "CZ",
+"region": "Eastern Europe",
+"lang": "cs",
+"langLabel": "Czech"
+},
+{
+"slug": "denmark",
+"name": "Denmark",
+"iso2": "DK",
+"region": "Northern Europe",
+"lang": "da",
+"langLabel": "Danish"
+},
+{
+"slug": "djibouti",
+"name": "Djibouti",
+"iso2": "DJ",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "dominica",
+"name": "Dominica",
+"iso2": "DM",
+"region": "Latin America and the Caribbean",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "dominican-republic",
+"name": "Dominican Republic",
+"iso2": "DO",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "dr-congo",
+"name": "DR Congo",
+"iso2": "CD",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "ecuador",
+"name": "Ecuador",
+"iso2": "EC",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "egypt",
+"name": "Egypt",
+"iso2": "EG",
+"region": "Northern Africa",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "el-salvador",
+"name": "El Salvador",
+"iso2": "SV",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "equatorial-guinea",
+"name": "Equatorial Guinea",
+"iso2": "GQ",
+"region": "Sub-Saharan Africa",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "eritrea",
+"name": "Eritrea",
+"iso2": "ER",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "estonia",
+"name": "Estonia",
+"iso2": "EE",
+"region": "Northern Europe",
+"lang": "et",
+"langLabel": "Estonian"
+},
+{
+"slug": "eswatini",
+"name": "Eswatini",
+"iso2": "SZ",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "ethiopia",
+"name": "Ethiopia",
+"iso2": "ET",
+"region": "Sub-Saharan Africa",
+"lang": "am",
+"langLabel": "Amharic"
+},
+{
+"slug": "fiji",
+"name": "Fiji",
+"iso2": "FJ",
+"region": "Melanesia",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "finland",
+"name": "Finland",
+"iso2": "FI",
+"region": "Northern Europe",
+"lang": "fi",
+"langLabel": "Finnish"
+},
+{
+"slug": "france",
+"name": "France",
+"iso2": "FR",
+"region": "Western Europe",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "gabon",
+"name": "Gabon",
+"iso2": "GA",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "gambia",
+"name": "Gambia",
+"iso2": "GM",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "georgia",
+"name": "Georgia",
+"iso2": "GE",
+"region": "Western Asia",
+"lang": "ka",
+"langLabel": "Georgian"
+},
+{
+"slug": "germany",
+"name": "Germany",
+"iso2": "DE",
+"region": "Western Europe",
+"lang": "de",
+"langLabel": "German"
+},
+{
+"slug": "ghana",
+"name": "Ghana",
+"iso2": "GH",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "greece",
+"name": "Greece",
+"iso2": "GR",
+"region": "Southern Europe",
+"lang": "el",
+"langLabel": "Greek"
+},
+{
+"slug": "grenada",
+"name": "Grenada",
+"iso2": "GD",
+"region": "Latin America and the Caribbean",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "guatemala",
+"name": "Guatemala",
+"iso2": "GT",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "guinea",
+"name": "Guinea",
+"iso2": "GN",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "guinea-bissau",
+"name": "Guinea-Bissau",
+"iso2": "GW",
+"region": "Sub-Saharan Africa",
+"lang": "pt",
+"langLabel": "Portuguese"
+},
+{
+"slug": "guyana",
+"name": "Guyana",
+"iso2": "GY",
+"region": "Latin America and the Caribbean",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "haiti",
+"name": "Haiti",
+"iso2": "HT",
+"region": "Latin America and the Caribbean",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "honduras",
+"name": "Honduras",
+"iso2": "HN",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "hong-kong",
+"name": "Hong Kong",
+"iso2": "HK",
+"region": "Eastern Asia",
+"lang": "zh",
+"langLabel": "Chinese"
+},
+{
+"slug": "hungary",
+"name": "Hungary",
+"iso2": "HU",
+"region": "Eastern Europe",
+"lang": "hu",
+"langLabel": "Hungarian"
+},
+{
+"slug": "iceland",
+"name": "Iceland",
+"iso2": "IS",
+"region": "Northern Europe",
+"lang": "is",
+"langLabel": "Icelandic"
+},
+{
+"slug": "india",
+"name": "India",
+"iso2": "IN",
+"region": "Southern Asia",
+"lang": "hi",
+"langLabel": "Hindi"
+},
+{
+"slug": "indonesia",
+"name": "Indonesia",
+"iso2": "ID",
+"region": "South-eastern Asia",
+"lang": "id",
+"langLabel": "Indonesian"
+},
+{
+"slug": "iran",
+"name": "Iran",
+"iso2": "IR",
+"region": "Southern Asia",
+"lang": "fa",
+"langLabel": "Persian"
+},
+{
+"slug": "iraq",
+"name": "Iraq",
+"iso2": "IQ",
+"region": "Western Asia",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "ireland",
+"name": "Ireland",
+"iso2": "IE",
+"region": "Northern Europe",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "israel",
+"name": "Israel",
+"iso2": "IL",
+"region": "Western Asia",
+"lang": "he",
+"langLabel": "Hebrew"
+},
+{
+"slug": "italy",
+"name": "Italy",
+"iso2": "IT",
+"region": "Southern Europe",
+"lang": "it",
+"langLabel": "Italian"
+},
+{
+"slug": "jamaica",
+"name": "Jamaica",
+"iso2": "JM",
+"region": "Latin America and the Caribbean",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "jordan",
+"name": "Jordan",
+"iso2": "JO",
+"region": "Western Asia",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "kazakhstan",
+"name": "Kazakhstan",
+"iso2": "KZ",
+"region": "Central Asia",
+"lang": "kk",
+"langLabel": "Kazakh"
+},
+{
+"slug": "kenya",
+"name": "Kenya",
+"iso2": "KE",
+"region": "Sub-Saharan Africa",
+"lang": "sw",
+"langLabel": "Swahili"
+},
+{
+"slug": "kiribati",
+"name": "Kiribati",
+"iso2": "KI",
+"region": "Micronesia",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "kuwait",
+"name": "Kuwait",
+"iso2": "KW",
+"region": "Western Asia",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "kyrgyzstan",
+"name": "Kyrgyzstan",
+"iso2": "KG",
+"region": "Central Asia",
+"lang": "ky",
+"langLabel": "Kyrgyz"
+},
+{
+"slug": "laos",
+"name": "Laos",
+"iso2": "LA",
+"region": "South-eastern Asia",
+"lang": "lo",
+"langLabel": "Lao"
+},
+{
+"slug": "latvia",
+"name": "Latvia",
+"iso2": "LV",
+"region": "Northern Europe",
+"lang": "lv",
+"langLabel": "Latvian"
+},
+{
+"slug": "lebanon",
+"name": "Lebanon",
+"iso2": "LB",
+"region": "Western Asia",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "lesotho",
+"name": "Lesotho",
+"iso2": "LS",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "liberia",
+"name": "Liberia",
+"iso2": "LR",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "libya",
+"name": "Libya",
+"iso2": "LY",
+"region": "Northern Africa",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "liechtenstein",
+"name": "Liechtenstein",
+"iso2": "LI",
+"region": "Western Europe",
+"lang": "de",
+"langLabel": "German"
+},
+{
+"slug": "lithuania",
+"name": "Lithuania",
+"iso2": "LT",
+"region": "Northern Europe",
+"lang": "lt",
+"langLabel": "Lithuanian"
+},
+{
+"slug": "luxembourg",
+"name": "Luxembourg",
+"iso2": "LU",
+"region": "Western Europe",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "madagascar",
+"name": "Madagascar",
+"iso2": "MG",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "malawi",
+"name": "Malawi",
+"iso2": "MW",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "malaysia",
+"name": "Malaysia",
+"iso2": "MY",
+"region": "South-eastern Asia",
+"lang": "ms",
+"langLabel": "Malay"
+},
+{
+"slug": "maldives",
+"name": "Maldives",
+"iso2": "MV",
+"region": "Southern Asia",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "mali",
+"name": "Mali",
+"iso2": "ML",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "malta",
+"name": "Malta",
+"iso2": "MT",
+"region": "Southern Europe",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "marshall-islands",
+"name": "Marshall Islands",
+"iso2": "MH",
+"region": "Micronesia",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "mauritania",
+"name": "Mauritania",
+"iso2": "MR",
+"region": "Sub-Saharan Africa",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "mauritius",
+"name": "Mauritius",
+"iso2": "MU",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "mexico",
+"name": "Mexico",
+"iso2": "MX",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "micronesia",
+"name": "Micronesia",
+"iso2": "FM",
+"region": "Micronesia",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "moldova",
+"name": "Moldova",
+"iso2": "MD",
+"region": "Eastern Europe",
+"lang": "ro",
+"langLabel": "Romanian"
+},
+{
+"slug": "monaco",
+"name": "Monaco",
+"iso2": "MC",
+"region": "Western Europe",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "mongolia",
+"name": "Mongolia",
+"iso2": "MN",
+"region": "Eastern Asia",
+"lang": "mn",
+"langLabel": "Mongolian"
+},
+{
+"slug": "montenegro",
+"name": "Montenegro",
+"iso2": "ME",
+"region": "Southern Europe",
+"lang": "sr",
+"langLabel": "Serbian"
+},
+{
+"slug": "morocco",
+"name": "Morocco",
+"iso2": "MA",
+"region": "Northern Africa",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "mozambique",
+"name": "Mozambique",
+"iso2": "MZ",
+"region": "Sub-Saharan Africa",
+"lang": "pt",
+"langLabel": "Portuguese"
+},
+{
+"slug": "myanmar",
+"name": "Myanmar",
+"iso2": "MM",
+"region": "South-eastern Asia",
+"lang": "my",
+"langLabel": "Burmese"
+},
+{
+"slug": "namibia",
+"name": "Namibia",
+"iso2": "NA",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "nauru",
+"name": "Nauru",
+"iso2": "NR",
+"region": "Micronesia",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "nepal",
+"name": "Nepal",
+"iso2": "NP",
+"region": "Southern Asia",
+"lang": "ne",
+"langLabel": "Nepali"
+},
+{
+"slug": "netherlands",
+"name": "Netherlands",
+"iso2": "NL",
+"region": "Western Europe",
+"lang": "nl",
+"langLabel": "Dutch"
+},
+{
+"slug": "new-zealand",
+"name": "New Zealand",
+"iso2": "NZ",
+"region": "Australia and New Zealand",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "nicaragua",
+"name": "Nicaragua",
+"iso2": "NI",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "niger",
+"name": "Niger",
+"iso2": "NE",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "nigeria",
+"name": "Nigeria",
+"iso2": "NG",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "north-korea",
+"name": "North Korea",
+"iso2": "KP",
+"region": "Eastern Asia",
+"lang": "ko",
+"langLabel": "Korean"
+},
+{
+"slug": "north-macedonia",
+"name": "North Macedonia",
+"iso2": "MK",
+"region": "Southern Europe",
+"lang": "mk",
+"langLabel": "Macedonian"
+},
+{
+"slug": "norway",
+"name": "Norway",
+"iso2": "NO",
+"region": "Northern Europe",
+"lang": "no",
+"langLabel": "Norwegian"
+},
+{
+"slug": "oman",
+"name": "Oman",
+"iso2": "OM",
+"region": "Western Asia",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "pakistan",
+"name": "Pakistan",
+"iso2": "PK",
+"region": "Southern Asia",
+"lang": "ur",
+"langLabel": "Urdu"
+},
+{
+"slug": "palau",
+"name": "Palau",
+"iso2": "PW",
+"region": "Micronesia",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "palestine",
+"name": "Palestine",
+"iso2": "PS",
+"region": "Western Asia",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "panama",
+"name": "Panama",
+"iso2": "PA",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "papua-new-guinea",
+"name": "Papua New Guinea",
+"iso2": "PG",
+"region": "Melanesia",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "paraguay",
+"name": "Paraguay",
+"iso2": "PY",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "peru",
+"name": "Peru",
+"iso2": "PE",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "philippines",
+"name": "Philippines",
+"iso2": "PH",
+"region": "South-eastern Asia",
+"lang": "tl",
+"langLabel": "Filipino"
+},
+{
+"slug": "poland",
+"name": "Poland",
+"iso2": "PL",
+"region": "Eastern Europe",
+"lang": "pl",
+"langLabel": "Polish"
+},
+{
+"slug": "portugal",
+"name": "Portugal",
+"iso2": "PT",
+"region": "Southern Europe",
+"lang": "pt",
+"langLabel": "Portuguese"
+},
+{
+"slug": "qatar",
+"name": "Qatar",
+"iso2": "QA",
+"region": "Western Asia",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "romania",
+"name": "Romania",
+"iso2": "RO",
+"region": "Eastern Europe",
+"lang": "ro",
+"langLabel": "Romanian"
+},
+{
+"slug": "russia",
+"name": "Russia",
+"iso2": "RU",
+"region": "Eastern Europe",
+"lang": "ru",
+"langLabel": "Russian"
+},
+{
+"slug": "rwanda",
+"name": "Rwanda",
+"iso2": "RW",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "saint-kitts-and-nevis",
+"name": "Saint Kitts and Nevis",
+"iso2": "KN",
+"region": "Latin America and the Caribbean",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "saint-lucia",
+"name": "Saint Lucia",
+"iso2": "LC",
+"region": "Latin America and the Caribbean",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "saint-vincent-and-the-grenadines",
+"name": "Saint Vincent and the Grenadines",
+"iso2": "VC",
+"region": "Latin America and the Caribbean",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "samoa",
+"name": "Samoa",
+"iso2": "WS",
+"region": "Polynesia",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "san-marino",
+"name": "San Marino",
+"iso2": "SM",
+"region": "Southern Europe",
+"lang": "it",
+"langLabel": "Italian"
+},
+{
+"slug": "sao-tome-and-principe",
+"name": "Sao Tome and Principe",
+"iso2": "ST",
+"region": "Sub-Saharan Africa",
+"lang": "pt",
+"langLabel": "Portuguese"
+},
+{
+"slug": "saudi-arabia",
+"name": "Saudi Arabia",
+"iso2": "SA",
+"region": "Western Asia",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "senegal",
+"name": "Senegal",
+"iso2": "SN",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "serbia",
+"name": "Serbia",
+"iso2": "RS",
+"region": "Southern Europe",
+"lang": "sr",
+"langLabel": "Serbian"
+},
+{
+"slug": "seychelles",
+"name": "Seychelles",
+"iso2": "SC",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "sierra-leone",
+"name": "Sierra Leone",
+"iso2": "SL",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "singapore",
+"name": "Singapore",
+"iso2": "SG",
+"region": "South-eastern Asia",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "slovakia",
+"name": "Slovakia",
+"iso2": "SK",
+"region": "Eastern Europe",
+"lang": "sk",
+"langLabel": "Slovak"
+},
+{
+"slug": "slovenia",
+"name": "Slovenia",
+"iso2": "SI",
+"region": "Southern Europe",
+"lang": "sl",
+"langLabel": "Slovenian"
+},
+{
+"slug": "solomon-islands",
+"name": "Solomon Islands",
+"iso2": "SB",
+"region": "Melanesia",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "somalia",
+"name": "Somalia",
+"iso2": "SO",
+"region": "Sub-Saharan Africa",
+"lang": "so",
+"langLabel": "Somali"
+},
+{
+"slug": "south-africa",
+"name": "South Africa",
+"iso2": "ZA",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "south-korea",
+"name": "South Korea",
+"iso2": "KR",
+"region": "Eastern Asia",
+"lang": "ko",
+"langLabel": "Korean"
+},
+{
+"slug": "south-sudan",
+"name": "South Sudan",
+"iso2": "SS",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "spain",
+"name": "Spain",
+"iso2": "ES",
+"region": "Southern Europe",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "sri-lanka",
+"name": "Sri Lanka",
+"iso2": "LK",
+"region": "Southern Asia",
+"lang": "si",
+"langLabel": "Sinhala"
+},
+{
+"slug": "sudan",
+"name": "Sudan",
+"iso2": "SD",
+"region": "Northern Africa",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "suriname",
+"name": "Suriname",
+"iso2": "SR",
+"region": "Latin America and the Caribbean",
+"lang": "nl",
+"langLabel": "Dutch"
+},
+{
+"slug": "sweden",
+"name": "Sweden",
+"iso2": "SE",
+"region": "Northern Europe",
+"lang": "sv",
+"langLabel": "Swedish"
+},
+{
+"slug": "switzerland",
+"name": "Switzerland",
+"iso2": "CH",
+"region": "Western Europe",
+"lang": "de",
+"langLabel": "German"
+},
+{
+"slug": "syria",
+"name": "Syria",
+"iso2": "SY",
+"region": "Western Asia",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "taiwan",
+"name": "Taiwan",
+"iso2": "TW",
+"region": "Other",
+"lang": "zh",
+"langLabel": "Chinese"
+},
+{
+"slug": "tajikistan",
+"name": "Tajikistan",
+"iso2": "TJ",
+"region": "Central Asia",
+"lang": "tg",
+"langLabel": "Tajik"
+},
+{
+"slug": "tanzania",
+"name": "Tanzania",
+"iso2": "TZ",
+"region": "Sub-Saharan Africa",
+"lang": "sw",
+"langLabel": "Swahili"
+},
+{
+"slug": "thailand",
+"name": "Thailand",
+"iso2": "TH",
+"region": "South-eastern Asia",
+"lang": "th",
+"langLabel": "Thai"
+},
+{
+"slug": "timor-leste",
+"name": "Timor-Leste",
+"iso2": "TL",
+"region": "South-eastern Asia",
+"lang": "pt",
+"langLabel": "Portuguese"
+},
+{
+"slug": "togo",
+"name": "Togo",
+"iso2": "TG",
+"region": "Sub-Saharan Africa",
+"lang": "fr",
+"langLabel": "French"
+},
+{
+"slug": "tonga",
+"name": "Tonga",
+"iso2": "TO",
+"region": "Polynesia",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "trinidad-and-tobago",
+"name": "Trinidad and Tobago",
+"iso2": "TT",
+"region": "Latin America and the Caribbean",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "tunisia",
+"name": "Tunisia",
+"iso2": "TN",
+"region": "Northern Africa",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "turkey",
+"name": "Türkiye",
+"iso2": "TR",
+"region": "Western Asia",
+"lang": "tr",
+"langLabel": "Turkish"
+},
+{
+"slug": "turkmenistan",
+"name": "Turkmenistan",
+"iso2": "TM",
+"region": "Central Asia",
+"lang": "tk",
+"langLabel": "Turkmen"
+},
+{
+"slug": "tuvalu",
+"name": "Tuvalu",
+"iso2": "TV",
+"region": "Polynesia",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "uganda",
+"name": "Uganda",
+"iso2": "UG",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "ukraine",
+"name": "Ukraine",
+"iso2": "UA",
+"region": "Eastern Europe",
+"lang": "uk",
+"langLabel": "Ukrainian"
+},
+{
+"slug": "united-arab-emirates",
+"name": "United Arab Emirates",
+"iso2": "AE",
+"region": "Western Asia",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "united-kingdom",
+"name": "United Kingdom",
+"iso2": "GB",
+"region": "Northern Europe",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "united-states",
+"name": "United States",
+"iso2": "US",
+"region": "Northern America",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "uruguay",
+"name": "Uruguay",
+"iso2": "UY",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "uzbekistan",
+"name": "Uzbekistan",
+"iso2": "UZ",
+"region": "Central Asia",
+"lang": "uz",
+"langLabel": "Uzbek"
+},
+{
+"slug": "vanuatu",
+"name": "Vanuatu",
+"iso2": "VU",
+"region": "Melanesia",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "venezuela",
+"name": "Venezuela",
+"iso2": "VE",
+"region": "Latin America and the Caribbean",
+"lang": "es",
+"langLabel": "Spanish"
+},
+{
+"slug": "vietnam",
+"name": "Vietnam",
+"iso2": "VN",
+"region": "South-eastern Asia",
+"lang": "vi",
+"langLabel": "Vietnamese"
+},
+{
+"slug": "yemen",
+"name": "Yemen",
+"iso2": "YE",
+"region": "Western Asia",
+"lang": "ar",
+"langLabel": "Arabic"
+},
+{
+"slug": "zambia",
+"name": "Zambia",
+"iso2": "ZM",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+},
+{
+"slug": "zimbabwe",
+"name": "Zimbabwe",
+"iso2": "ZW",
+"region": "Sub-Saharan Africa",
+"lang": "en",
+"langLabel": "English"
+}
+]

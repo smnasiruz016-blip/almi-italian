@@ -1,7 +1,7 @@
 {
   "name": "almi-italian",
   "version": "0.1.0",
-  "description": "AlmiKorean — honest TOPIK (I + II, levels 1–6) exam practice. Direct point-scores, no sectional floors, Writing = AI estimate.",
+  "description": "AlmiItalian — honest CILS + CELI exam practice. Three isolated scoring engines (CILS standard, CILS B1 Cittadinanza, CELI); Writing/Speaking = AI estimate.",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,6 +10,8 @@
     "postinstall": "prisma generate",
     "lint": "next lint",
     "selftest:engine": "tsx src/lib/scoring/scoring.selftest.ts",
+    "validate:batch1": "tsx scripts/seed/batch1/batch1.selftest.ts",
+    "seed:batch1": "tsx scripts/seed/seed-batch1.ts",
     "db:deploy": "prisma migrate deploy"
   },
   "dependencies": {

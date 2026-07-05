@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { ORIGINS, ATENEI, COURSES, EXAM_LEVELS, DESCENT } from "@/lib/seo/data";
 import { CHUNK, ateneoChunks, TOTAL_CHUNKS, productSlice } from "@/lib/seo/plan";
 import { SITE } from "@/lib/seo/content";
+import { GUIDES } from "@/lib/seo/guides";
 
 export const revalidate = 86_400;
 
@@ -28,7 +29,10 @@ export default async function sitemap({ id }: { id: Promise<string> }): Promise<
       entry("/login", 0.3),
       entry("/about", 0.5),
       entry("/italian-descent", 0.7),
+      // Core guides (Phase 4)
+      entry("/guides", 0.7),
     ];
+    for (const g of GUIDES) out.push(entry(`/guides/${g.slug}`, 0.6));
     // Family 3: exam-level × origin
     for (const l of EXAM_LEVELS) for (const o of ORIGINS) out.push(entry(`/exam/${l.slug}/from/${o.slug}`, 0.6));
     // Families 4–7: per-origin routes

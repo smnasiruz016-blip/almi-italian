@@ -1,0 +1,148 @@
+// AlmiItalian — Prisma schema (CILS + CELI). Forked from the AlmiWorld network pattern.
+// TWO exam families, THREE engine paths, each on its own scale — never mixed (see src/lib/scoring/*):
+//   CILS_STANDARD (5 sections /20, floor 11, capitalization) · CILS_B1C (4 sections /12, floor 7 +
+//   total 28/48, no banking) · CELI (Written + Oral parts, both must clear, A–E band estimate).
+// Item bank dedup key = {exam, level, section, title} (specs §5). Section/level are strings because
+// their vocabulary differs per engine; the engine code — not the DB — owns the scoring rules.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL") //          pooled (pgbouncer=true) for runtime
+  directUrl = env("DATABASE_URL_UNPOOLED") // direct for migrations
+}
+
+// The three engine paths (never blended).
+enum ItalianExam {
+  CILS_STANDARD
+  CILS_B1C
+  CELI
+}
+
+enum ItalianTaskType {
+  MCQ
+  MATCHING
+  ORDERING
+  CLOZE
+  ANALISI //   CILS grammar/structures — a first-class item type
+  WRITING
+  SPEAKING
+}
+
+enum Difficulty {
+  FOUNDATION
+  CORE
+  STRETCH
+}
+
+enum AttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+  SCORED
+}
+
+enum SessionMode {
+  PRACTICE_SET
+  MOCK
+}
+
+model User {
+  id                           String       @id @default(cuid())
+  email                        String       @unique
+  passwordHash                 String
+  name                         String?
+  locale                       String       @default("en")
+  targetExam                   ItalianExam?
+  emailVerifiedAt              DateTime?
+  stripeCustomerId             String?
+  stripeSubscriptionId         String?
+  subscriptionStatus           String? //  Stripe status: trialing | active | canceled | ...
+  subscriptionCurrentPeriodEnd DateTime?
+  compProUntil                 DateTime? // admin-granted comp Pro window (bypasses billing)
+  createdAt                    DateTime     @default(now())
+  updatedAt                    DateTime     @updatedAt
+
+  attempts     ItalianAttempt[]
+  sessions     ItalianSession[]
+  authSessions AuthSession[]
+}
+
+// Server-side auth sessions (canonical AlmiWorld pattern: hashed token in a cookie).
+model AuthSession {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// The item bank. level + section are strings (their vocabulary differs by engine).
+//  CILS_STANDARD sections: ASCOLTO/LETTURA/ANALISI/SCRITTA/ORALE (level A1..QUATTRO)
+//  CILS_B1C      sections: ASCOLTO/LETTURA/SCRITTA/ORALE (level B1c)
+//  CELI          sections: WRITTEN/ORAL (level IMPATTO..CINQUE)
+model ItalianItem {
+  id           String          @id @default(cuid())
+  exam         ItalianExam
+  level        String
+  section      String
+  taskType     ItalianTaskType
+  difficulty   Difficulty      @default(CORE)
+  title        String
+  prompt       String?
+  topicTag     String?
+  guidanceNote String?
+  payload      Json
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  attempts ItalianAttempt[]
+
+  @@unique([exam, level, section, title])
+  @@index([exam, level, section])
+}
+
+model ItalianAttempt {
+  id        String        @id @default(cuid())
+  userId    String
+  itemId    String
+  exam      ItalianExam
+  level     String
+  section   String
+  status    AttemptStatus @default(IN_PROGRESS)
+  sessionId String?
+  response  Json?
+  result    Json? // scored read-out per the relevant engine (never an official result)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item    ItalianItem     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  session ItalianSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  @@index([userId, exam])
+}
+
+model ItalianSession {
+  id                String          @id @default(cuid())
+  userId            String
+  mode              SessionMode
+  exam              ItalianExam
+  level             String
+  section           String? //  set for PRACTICE_SET, null for MOCK (all sections)
+  currentDifficulty Difficulty      @default(CORE)
+  result            Json? // aggregate practice result for a MOCK, per the relevant engine
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  attempts ItalianAttempt[]
+
+  @@index([userId, mode])
+}

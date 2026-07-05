@@ -21,7 +21,7 @@ export async function getOrCreateCustomer(user: { id: string; email: string; nam
   const customer = await getStripe().customers.create({
     email: user.email,
     name: user.name ?? undefined,
-    metadata: { userId: user.id, product: "almi-korean" },
+    metadata: { userId: user.id, product: "almi-italian" },
   });
   await prisma.user.update({ where: { id: user.id }, data: { stripeCustomerId: customer.id } });
   return customer.id;

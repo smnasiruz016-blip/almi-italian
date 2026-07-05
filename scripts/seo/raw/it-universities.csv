@@ -1,0 +1,113 @@
+cod_ateneo,nome_esteso,nome_operativo,type,kind_descrizione,statale_libera,status,citta,provincia,regione,macro_regione,wikidata_qid,wikidata_enLabel,wikidata_coord,wikidata_website
+00101,Università degli studi di Torino,Torino,statale,Università,S,A,TORINO,TORINO,PIEMONTE,NORD-OVEST,Q499911,University of Turin,Point(7.688888888 45.069444444),https://www.unito.it
+00102,Politecnico di Torino,Torino Politecnico,statale,Politecnico,S,A,TORINO,TORINO,PIEMONTE,NORD-OVEST,Q392897,Polytechnic University of Turin,Point(7.661075 45.063094444),https://www.polito.it
+00103,Istituto Superiore di Educazione Fisica di Torino,Torino ISEF,non-statale,ISEF,L,M,,TORINO,PIEMONTE,NORD-OVEST,,,,
+00201,"Università degli studi del Piemonte orientale ""Amedeo Avogadro""",Piemonte Orientale,statale,Università,S,A,VERCELLI,VERCELLI,PIEMONTE,NORD-OVEST,Q1235561,University of Eastern Piedmont,,https://www.uniupo.it
+00401,Università di Scienze Gastronomiche,Bra Scienze Gastronomiche,non-statale,Università,L,A,BRA - FRAZ. POLLENZO,CUNEO,PIEMONTE,NORD-OVEST,Q2523033,University of Gastronomic Sciences,Point(7.89497 44.6833),https://www.unisg.it
+00701,Università della Valle d'Aosta,Aosta,non-statale,Università,L,A,AOSTA,AOSTA,VALLE D'AOSTA,NORD-OVEST,Q2319621,Aosta Valley University,Point(7.3188535 45.7436531),https://www.univda.it
+01001,Università degli studi di Genova,Genova,statale,Università,S,A,GENOVA,GENOVA,LIGURIA,NORD-OVEST,Q593321,University of Genoa,Point(8.9266209 44.4148535),https://unige.it
+01201,"Università ""Carlo Cattaneo"" (LIUC)",Castellanza LIUC,non-statale,Università,L,A,CASTELLANZA,VARESE,LOMBARDIA,NORD-OVEST,,,,
+01202,Università degli studi dell' Insubria,Insubria,statale,Università,S,A,VARESE,VARESE,LOMBARDIA,NORD-OVEST,Q1309998,University of Insubria,Point(8.8255 45.8146),https://www.uninsubria.it
+01301,"Università telematica ""e-Campus"" di Novedrate (CO)",Novedrate e-Campus - telematica,telematica,Universita Telematica,L,A,NOVEDRATE,COMO,LOMBARDIA,NORD-OVEST,,,,
+01501,Università degli studi di Milano,Milano,statale,Università,S,A,MILANO,MILANO,LOMBARDIA,NORD-OVEST,Q46210,University of Milan,Point(9.194659978 45.4600626),https://www.unimi.it
+01502,Politecnico di Milano,Milano Politecnico,statale,Politecnico,S,A,MILANO,MILANO,LOMBARDIA,NORD-OVEST,Q392904,Polytechnic University of Milan,Point(9.227319444 45.478030555),https://www.polimi.it
+01503,Università commerciale Luigi Bocconi di Milano,Milano Bocconi,non-statale,Università,L,A,MILANO,MILANO,LOMBARDIA,NORD-OVEST,,,,
+01504,"Università Cattolica del ""Sacro Cuore""",Milano Cattolica,non-statale,Università,L,A,MILANO,MILANO,LOMBARDIA,NORD-OVEST,Q229022,Catholic University of the Sacred Heart,Point(9.176911111 45.4631),https://www.unicatt.it/en
+01505,Libera Università di Lingue e Comunicazione (IULM),Milano IULM,non-statale,Università,L,A,MILANO,MILANO,LOMBARDIA,NORD-OVEST,Q1077639,IULM University of Milan,Point(9.164203 45.4428),https://www.iulm.it
+01506,Istituto Superiore di Educazione Fisica di Milano,Milano ISEF,non-statale,ISEF,L,M,,MILANO,LOMBARDIA,NORD-OVEST,,,,
+01507,Istituto Superiore di Educazione Fisica della Lombardia,Milano ISEF Lombardia,non-statale,ISEF,L,M,,MILANO,LOMBARDIA,NORD-OVEST,,,,
+01508,"Libera Università, Vita-Salute San Raffaele di Milano",Milano San Raffaele,non-statale,Università,L,A,MILANO,MILANO,LOMBARDIA,NORD-OVEST,,,,
+01509,Università degli studi di Milano-Bicocca,Milano Bicocca,statale,Università,S,A,MILANO,MILANO,LOMBARDIA,NORD-OVEST,Q1073674,University of Milan-Bicocca,Point(9.213344 45.518406),https://www.unimib.it
+01510,Humanitas University,Rozzano (MI) Humanitas University,non-statale,Università,L,A,PIEVE EMANUELE,MILANO,LOMBARDIA,NORD-OVEST,Q59386762,Humanitas University,Point(9.1694 45.3721),https://www.hunimed.eu
+01511,Istituto di Ricerche Farmacologiche Mario Negri - IRCCS,Milano - Mario Negri,non-statale,Ente di Ricerca,L,A,MILANO,MILANO,LOMBARDIA,NORD-OVEST,,,,
+01601,Università degli studi di Bergamo,Bergamo,statale,Università,S,A,BERGAMO,BERGAMO,LOMBARDIA,NORD-OVEST,Q45855,University of Bergamo,Point(9.6606925 45.704534888),https://www.unibg.it
+01701,Università degli studi di Brescia,Brescia,statale,Università,S,A,BRESCIA,BRESCIA,LOMBARDIA,NORD-OVEST,Q1781263,University of Brescia,Point(10.2178 45.538),https://www.unibs.it
+01801,Università degli studi di Pavia,Pavia,statale,Università,S,A,PAVIA,PAVIA,LOMBARDIA,NORD-OVEST,Q219317,University of Pavia,Point(9.15586 45.18675),https://portale.unipv.it/it
+01802,Istituto universitario di studi superiori di Pavia,Pavia IUSS,statale,Scuola Superiore ad Ordinamento Speciale,S,A,PAVIA,PAVIA,LOMBARDIA,NORD-OVEST,,,,
+02101,Libera Università di Bolzano,Bolzano,non-statale,Università,L,A,BOLZANO,BOLZANO,Provincia autonoma di BOLZANO,NORD-EST,Q1231433,Free University of Bozen-Bolzano,Point(11.349438888 46.497925),https://www.unibz.it
+02201,Università degli studi di Trento,Trento,statale,Università,S,A,TRENTO,TRENTO,Provincia autonoma di TRENTO,NORD-EST,Q930528,University of Trento,Point(11.121117 46.069426),https://www.unitn.it
+02301,Università degli studi di Verona,Verona,statale,Università,S,A,VERONA,VERONA,VENETO,NORD-EST,Q2531629,University of Verona,Point(11.003611 45.436667),https://www.univr.it
+02701,Università Ca' Foscari Venezia,Ca' Foscari Venezia,statale,Università,S,A,VENEZIA,VENEZIA,VENETO,NORD-EST,Q1546906,Ca' Foscari University of Venice,Point(12.3266 45.434464),https://www.unive.it
+02702,Università Iuav di Venezia,Venezia Iuav,statale,Università,S,A,VENEZIA,VENEZIA,VENETO,NORD-EST,Q727492,IUAV University of Venice,Point(12.314942 45.433125),http://www.iuav.it/homepage
+02801,Università degli studi di Padova,Padova,statale,Università,S,A,PADOVA,PADOVA,VENETO,NORD-EST,Q193510,University of Padua,Point(11.87 45.42),https://www.unipd.it/en/
+03001,Università degli studi di Udine,Udine,statale,Università,S,A,UDINE,UDINE,FRIULI VENEZIA GIULIA,NORD-EST,Q2307935,University of Udine,Point(13.211666666 46.080833333),https://www.uniud.it
+03201,Università degli studi di Trieste,Trieste,statale,Università,S,A,TRIESTE,TRIESTE,FRIULI VENEZIA GIULIA,NORD-EST,Q1751060,University of Trieste,Point(13.79318 45.6585),https://units.it
+03202,Scuola internazionale superiore di studi avanzati di Trieste,Trieste SISSA,statale,Scuola Superiore ad Ordinamento Speciale,S,A,TRIESTE,TRIESTE,FRIULI VENEZIA GIULIA,NORD-EST,,,,
+03401,Università degli studi di Parma,Parma,statale,Università,S,A,PARMA,PARMA,EMILIA ROMAGNA,NORD-EST,Q1758474,University of Parma,Point(10.3251 44.801),https://www.unipr.it
+03601,Università degli studi di Modena e Reggio Emilia,Modena e Reggio Emilia,statale,Università,S,A,MODENA,MODENA,EMILIA ROMAGNA,NORD-EST,Q1243705,University of Modena and Reggio Emilia,Point(10.927861111 44.644944444),https://www.unimore.it
+03701,Università degli studi di Bologna,Bologna,statale,Università,S,A,BOLOGNA,BOLOGNA,EMILIA ROMAGNA,NORD-EST,Q131262,University of Bologna,Point(11.342777777 44.493888888),https://www.unibo.it
+03702,Istituto Superiore di Educazione Fisica di Bologna,Bologna ISEF,non-statale,ISEF,L,M,,BOLOGNA,EMILIA ROMAGNA,NORD-EST,,,,
+03801,Università degli studi di Ferrara,Ferrara,statale,Università,S,A,FERRARA,FERRARA,EMILIA ROMAGNA,NORD-EST,Q955609,University of Ferrara,Point(11.616305555 44.842166666),http://www.unife.it
+04101,"Università degli studi ""Carlo Bo"" di Urbino",Urbino,statale,Università,S,A,URBINO,PESARO E URBINO,MARCHE,CENTRO,Q2119752,University of Urbino,Point(12.637 43.722),https://www.uniurb.it
+04102,Istituto Superiore di Educazione Fisica di Urbino,Urbino ISEF,non-statale,ISEF,L,M,,PESARO E URBINO,MARCHE,CENTRO,,,,
+04201,Università Politecnica delle Marche - Ancona,Marche,statale,Università,S,A,ANCONA,ANCONA,MARCHE,CENTRO,Q1084409,Polytechnic University of the Marches,Point(13.5127 43.6173),https://www.univpm.it/Entra/
+04301,Università degli studi di Macerata,Macerata,statale,Università,S,A,MACERATA,MACERATA,MARCHE,CENTRO,Q1742507,University of Macerata,Point(13.44988516 43.299293707),https://www.unimc.it
+04302,Università degli studi di Camerino,Camerino,statale,Università,S,A,CAMERINO,MACERATA,MARCHE,CENTRO,Q676817,University of Camerino,Point(13.06855556 43.13588889),https://www.unicam.it
+04601,Scuola IMT Alti Studi di Lucca,Lucca IMT,statale,Scuola Superiore ad Ordinamento Speciale,S,A,LUCCA,LUCCA,TOSCANA,CENTRO,,,,
+04801,Università degli studi di Firenze,Firenze,statale,Università,S,A,FIRENZE,FIRENZE,TOSCANA,CENTRO,Q820887,University of Florence,Point(11.25951 43.77777),https://www.unifi.it/
+04802,Istituto Superiore di Educazione Fisica di Firenze,Firenze ISEF,non-statale,ISEF,L,M,,FIRENZE,TOSCANA,CENTRO,,,,
+04803,Istituto Italiano di Scienze Umane di Firenze,Firenze - Istituto Italiano di Scienze Umane,statale,Scuola Superiore ad Ordinamento Speciale,S,M,,FIRENZE,TOSCANA,CENTRO,,,,
+04804,"Università telematica ""Italian University line"" di Firenze",Firenze IUL - telematica,telematica,Universita Telematica,L,A,FIRENZE,FIRENZE,TOSCANA,CENTRO,,,,
+05001,Università di Pisa,Pisa,statale,Università,S,A,PISA,PISA,TOSCANA,CENTRO,Q645663,University of Pisa,Point(10.398458333 43.716508333),https://www.unipi.it/index.php/portugues
+05002,Scuola normale superiore di Pisa,Pisa Normale,statale,Scuola Superiore ad Ordinamento Speciale,S,A,PISA,PISA,TOSCANA,CENTRO,,,,
+05003,"Scuola superiore di studi universitari e perfezionamento ""S. Anna"" di Pisa",Pisa S.Anna,statale,Scuola Superiore ad Ordinamento Speciale,S,A,PISA,PISA,TOSCANA,CENTRO,,,,
+05201,Università degli studi di Siena,Siena,statale,Università,S,A,SIENA,SIENA,TOSCANA,CENTRO,Q1245999,University of Siena,Point(11.3325 43.319166666),https://www.unisi.it
+05202,Università per stranieri di Siena,Siena Stranieri,statale,Università,S,A,SIENA,SIENA,TOSCANA,CENTRO,Q1245999,University of Siena,Point(11.3325 43.319166666),https://www.unisi.it
+05401,Università degli studi di Perugia,Perugia,statale,Università,S,A,PERUGIA,PERUGIA,UMBRIA,CENTRO,Q748085,University of Perugia,Point(12.3858 43.1158),https://www.unipg.it
+05402,Istituto Superiore di Educazione Fisica di Perugia,Perugia ISEF,non-statale,ISEF,L,M,,PERUGIA,UMBRIA,CENTRO,,,,
+05403,Università per stranieri di Perugia,Perugia Stranieri,statale,Università,S,A,PERUGIA,PERUGIA,UMBRIA,CENTRO,Q748085,University of Perugia,Point(12.3858 43.1158),https://www.unipg.it
+05601,Università degli Studi della Tuscia,Tuscia,statale,Università,S,A,VITERBO,VITERBO,LAZIO,CENTRO,Q1780458,University of Tuscia,Point(12.112611111 42.413361111),http://www.unitus.it/
+05801,Università degli studi di Roma La Sapienza,Roma La Sapienza,statale,Università,S,A,ROMA,ROMA,LAZIO,CENTRO,Q209344,Sapienza University of Rome,Point(12.515833333 41.903333333),https://www.uniroma1.it/it/
+05802,Università degli studi di Roma Tor Vergata,Roma Tor Vergata,statale,Università,S,A,ROMA,ROMA,LAZIO,CENTRO,Q1031803,Tor Vergata University of Rome,Point(12.627222222 41.849444444),https://web.uniroma2.it/it
+05803,Libera Università Maria SS.Assunta - (LUMSA) di Roma,Roma LUMSA,non-statale,Università,L,A,ROMA,ROMA,LAZIO,CENTRO,,,,
+05805,Luiss - Libera Università internazionale degli studi sociali Guido Carli di Roma,Roma Luiss,non-statale,Università,L,A,ROMA,ROMA,LAZIO,CENTRO,,,,
+05806,"Università degli studi di Roma ""Foro Italico""",Roma Foro Italico,statale,Università,S,A,ROMA,ROMA,LAZIO,CENTRO,Q3152661,Foro Italico University of Rome,Point(12.4576 41.9315),https://www.uniroma4.it/
+05807,Università degli studi Roma Tre,Roma Tre,statale,Università,S,A,ROMA,ROMA,LAZIO,CENTRO,Q2297486,Università degli Studi Roma Tre,Point(12.478888888 41.8625),https://www.uniroma3.it/en/
+05808,Università Campus Bio-Medico di Roma,Roma Biomedico,non-statale,Università,L,A,ROMA,ROMA,LAZIO,CENTRO,,,,
+05809,Università degli Studi Internazionali di Roma – UNINT,Roma UNINT,non-statale,Università,L,A,ROMA,ROMA,LAZIO,CENTRO,Q939801,Università degli Studi Internazionali di Roma – UNINT,Point(12.4963 41.8602),https://www.unint.eu
+05810,Università telematica Guglielmo Marconi di Roma,Roma Marconi - telematica,telematica,Universita Telematica,L,A,ROMA,ROMA,LAZIO,CENTRO,,,,
+05811,Università telematica Unitelma Sapienza di Roma,Roma UNITELMA - telematica,telematica,Universita Telematica,L,A,ROMA,ROMA,LAZIO,CENTRO,,,,
+05812,Università Europea di Roma,Roma Europea,non-statale,Università,L,A,ROMA,ROMA,LAZIO,CENTRO,Q1274578,Università Europea di Roma,Point(12.395647 41.8777),https://www.uer.it
+05813,Università telematica internazionale UNINETTUNO di Roma,Roma UNINETTUNO - telematica,telematica,Universita Telematica,L,A,ROMA,ROMA,LAZIO,CENTRO,,,,
+05814,Universitas telematica Mercatorum di Roma,Roma  Mercatorum - telematica,telematica,Universita Telematica,L,A,ROMA,ROMA,LAZIO,CENTRO,,,,
+05815,Università telematica Niccolò Cusano di Roma,Roma UNICUSANO - telematica,telematica,Universita Telematica,L,A,ROMA,ROMA,LAZIO,CENTRO,,,,
+05816,"Università telematica ""San Raffaele"" di Roma - già ""UNITEL""",Roma San Raffaele - telematica,telematica,Universita Telematica,L,A,ROMA,ROMA,LAZIO,CENTRO,,,,
+05817,Link Campus University di Roma,Roma Link Campus,non-statale,Università,L,A,ROMA,ROMA,LAZIO,CENTRO,,,,
+05818,Saint Camillus International University of Health,Roma Saint Camillus,non-statale,Università,L,A,ROMA,ROMA,LAZIO,CENTRO,Q60741027,Saint Camillus International University of Health and Medical Sciences,Point(12.602432 41.93422),https://www.unicamillus.org
+05819,Centro Alti Studi per la Difesa (CASD) di Roma,Roma - CASD,statale,Scuola Superiore ad Ordinamento Speciale,S,A,ROMA,ROMA,LAZIO,CENTRO,,,,
+06001,Università degli Studi di Cassino e del Lazio Meridionale,Cassino,statale,Università,S,A,CASSINO,FROSINONE,LAZIO,CENTRO,Q504263,University of Cassino,Point(13.8281725 41.471786111),http://www.unicas.it
+06201,Università degli Studi del Sannio,Sannio,statale,Università,S,A,BENEVENTO,BENEVENTO,CAMPANIA,SUD,Q3551769,University of Sannio,Point(14.7814067 41.127368),https://www.unisannio.it
+06202,"Università telematica ""Giustino Fortunato"" di Benevento",Benevento Giustino Fortunato - telematica,telematica,Universita Telematica,L,A,BENEVENTO,BENEVENTO,CAMPANIA,SUD,,,,
+06301,Università degli studi di Napoli Federico II,Napoli Federico II,statale,Università,S,A,NAPOLI,NAPOLI,CAMPANIA,SUD,Q691851,University of Naples Federico II,Point(14.2569 40.8472),https://www.unina.it
+06302,Università degli studi di Napoli - Parthenope,Napoli Parthenope,statale,Università,S,A,NAPOLI,NAPOLI,CAMPANIA,SUD,Q3551650,Parthenope University of Naples,Point(14.253833333 40.837611111),https://www.uniparthenope.it
+06303,Università degli studi L'Orientale di Napoli,Napoli L'Orientale,statale,Università,S,A,NAPOLI,NAPOLI,CAMPANIA,SUD,Q1632525,Naples Eastern University,Point(14.255 40.845),https://www.unior.it/
+06304,Università degli studi Suor Orsola Benincasa di Napoli,Napoli Benincasa,non-statale,Università,L,A,NAPOLI,NAPOLI,CAMPANIA,SUD,,,,
+06305,Istituto Superiore di Educazione Fisica di Napoli,Napoli ISEF,non-statale,ISEF,L,M,,NAPOLI,CAMPANIA,SUD,,,,
+06306,"Università degli studi della Campania ""Luigi Vanvitelli""",Napoli Vanvitelli,statale,Università,S,A,CASERTA,CASERTA,CAMPANIA,SUD,Q3551649,"University of Campania ""Luigi Vanvitelli""",Point(14.3307853 41.0677696),https://www.unicampania.it
+06307,"Università telematica ""Pegaso"" di Napoli",Napoli Pegaso - telematica,telematica,Universita Telematica,L,A,NAPOLI,NAPOLI,CAMPANIA,SUD,,,,
+06308,Scuola Superiore Meridionale di Napoli,Napoli Meridionale,statale,Scuola Superiore ad Ordinamento Speciale,S,A,NAPOLI,NAPOLI,CAMPANIA,SUD,,,,
+06501,Università degli studi di Salerno,Salerno,statale,Università,S,A,FISCIANO - SALERNO,SALERNO,CAMPANIA,SUD,Q1633215,University of Salerno,Point(14.790555555 40.771111111),https://www.unisa.it
+06601,Università degli studi di L'Aquila,L'Aquila,statale,Università,S,A,L'AQUILA,L'AQUILA,ABRUZZO,SUD,Q1494671,University of L'Aquila,Point(13.39725 42.351394444),https://www.univaq.it
+06602,Istituto Superiore di Educazione Fisica di L'Aquila,L'Aquila ISEF,non-statale,ISEF,L,M,,L'AQUILA,ABRUZZO,SUD,,,,
+06603,Gran Sasso Science Institute - Scuola di dottorato internazionale dell'Aquila,L'Aquila GSSI,statale,Scuola Superiore ad Ordinamento Speciale,S,A,L'AQUILA,L'AQUILA,ABRUZZO,SUD,,,,
+06701,Università degli studi di Teramo,Teramo,statale,Università,S,A,TERAMO,TERAMO,ABRUZZO,SUD,Q2303527,University of Teramo,Point(13.700680555 42.669630555),https://www.unite.it
+06901,Università degli studi Gabriele D'Annunzio di Chieti e Pescara,Chieti e Pescara,statale,Università,S,A,CHIETI SCALO,CHIETI,ABRUZZO,SUD,,,,
+06902,"Università telematica non statale ""Leonardo da Vinci"" di Torrevecchia Teatina (CH)",Torrevecchia Teatina Leonardo da Vinci - telematica,telematica,Universita Telematica,L,A,TORREVECCHIA TEATINA,CHIETI,ABRUZZO,SUD,,,,
+07001,Università degli studi del Molise,Molise,statale,Università,S,A,CAMPOBASSO,CAMPOBASSO,MOLISE,SUD,Q1093340,University of Molise,Point(14.6663 41.5562),https://www3.unimol.it/
+07101,Università degli studi di Foggia,Foggia,statale,Università,S,A,FOGGIA,FOGGIA,PUGLIA,SUD,Q617446,University of Foggia,Point(15.5690084 41.4483168),https://www.unifg.it
+07201,Università degli studi di Bari,Bari,statale,Università,S,A,BARI,BARI,PUGLIA,SUD,Q1236136,University of Bari,Point(16.8684 41.12073),https://www.uniba.it
+07202,Politecnico di Bari,Bari Politecnico,statale,Politecnico,S,A,BARI,BARI,PUGLIA,SUD,Q1054324,Polytechnic University of Bari,Point(16.883233333 41.111383611),https://www.poliba.it
+07203,"Libera Università Mediterranea ""Giuseppe Degennaro""",Casamassima – LUM G. Degennaro,non-statale,Università,L,A,CASAMASSIMA,BARI,PUGLIA,SUD,,,,
+07501,Università del Salento,Salento,statale,Università,S,A,LECCE,LECCE,PUGLIA,SUD,Q1230902,University of Salento,Point(18.166388888 40.352777777),https://www.unisalento.it/web/guest/home_page
+07601,Università degli studi della Basilicata,Basilicata,statale,Università,S,A,POTENZA,POTENZA,BASILICATA,SUD,Q1084383,University of Basilicata,Point(15.8085 40.6471),http://portale.unibas.it/site/home.html
+07801,Università della Calabria,Calabria,statale,Università,S,A,ARCAVACATA DI RENDE,COSENZA,CALABRIA,SUD,Q1752540,University of Calabria,Point(16.2265 39.3637),https://www.unical.it
+07901,Università degli studi di Catanzaro - Magna Grecia,Catanzaro,statale,Università,S,A,CATANZARO,CATANZARO,CALABRIA,SUD,Q266537,Magna Græcia University,Point(16.57305556 38.8675),https://web.unicz.it
+08001,Università degli studi Mediterranea di Reggio Calabria,Reggio Calabria,statale,Università,S,A,REGGIO CALABRIA,REGGIO CALABRIA,CALABRIA,SUD,Q1780716,Mediterranea University of Reggio Calabria,Point(15.6592122 38.1208332),http://www.unirc.it
+08003,"Università per stranieri ""Dante Alighieri"" di Reggio Calabria",Reggio Calabria - Dante Alighieri,non-statale,Università,L,A,REGGIO CALABRIA,REGGIO CALABRIA,CALABRIA,SUD,Q4005936,"University for Foreigners ""Dante Alighieri"" of Reggio Calabria",Point(15.6459 38.1083),https://www.unidarc.it/
+08201,Università degli studi di Palermo,Palermo,statale,Università,S,A,PALERMO,PALERMO,SICILIA,ISOLE,Q1641504,University of Palermo,Point(13.370131 38.11768),https://www.unipa.it/
+08202,Istituto Superiore di Educazione Fisica di Palermo,Palermo ISEF,non-statale,ISEF,L,M,,PALERMO,SICILIA,ISOLE,,,,
+08301,Università degli studi di Messina,Messina,statale,Università,S,A,MESSINA,MESSINA,SICILIA,ISOLE,Q1245318,University of Messina,Point(15.54611 38.19241),https://www.unime.it
+08601,"Libera Università della Sicilia Centrale ""KORE"" di Enna",Enna KORE,non-statale,Università,L,A,ENNA BASSA,ENNA,SICILIA,ISOLE,,,,
+08701,Università degli studi di Catania,Catania,statale,Università,S,A,CATANIA,CATANIA,SICILIA,ISOLE,Q1248821,University of Catania,Point(15.0867 37.5036),https://www.unict.it
+09001,Università degli studi di Sassari,Sassari,statale,Università,S,A,SASSARI,SASSARI,SARDEGNA,ISOLE,Q532822,University of Sassari,Point(8.55975 40.7248),https://www.uniss.it
+09201,Università degli studi di Cagliari,Cagliari,statale,Università,S,A,CAGLIARI,CAGLIARI,SARDEGNA,ISOLE,Q2067315,University of Cagliari,Point(9.115 39.216944444),https://www.unica.it/

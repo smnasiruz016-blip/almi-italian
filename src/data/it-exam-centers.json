@@ -1,0 +1,662 @@
+{
+"celi": [
+{
+"exam": "CELI",
+"country": "Albania",
+"city": "Tirana",
+"institution": "Istituto Italiano di Cultura"
+},
+{
+"exam": "CELI",
+"country": "Algeria",
+"city": "Algeri",
+"institution": "Istituto Italiano di Cultura di Algeri"
+},
+{
+"exam": "CELI",
+"country": "Argentina",
+"city": "Bahia Blanca - Buenos",
+"institution": "Associazione 'Il David'"
+},
+{
+"exam": "CELI",
+"country": "Argentina",
+"city": "Mar Del Plata",
+"institution": "ELLEDUE- Scuola d'Italiano"
+},
+{
+"exam": "CELI",
+"country": "Argentina",
+"city": "Olivos",
+"institution": "Centro Culturale Italiano"
+},
+{
+"exam": "CELI",
+"country": "Argentina",
+"city": "Rosario- Santa Fe",
+"institution": "Asociaciòn Familia Abruzzesa"
+},
+{
+"exam": "CELI",
+"country": "Argentina",
+"city": "Rosario_Santa Fe",
+"institution": "IUNIR - Instituto Universitario Italiano de Rosario"
+},
+{
+"exam": "CELI",
+"country": "Argentina",
+"city": "Viedma",
+"institution": "Centro Cultural Italo -Argentino"
+},
+{
+"exam": "CELI",
+"country": "Argentina",
+"city": "Viedma",
+"institution": "Nuova Scuola Virtuale"
+},
+{
+"exam": "CELI",
+"country": "Armenia",
+"city": "Yerevan-01",
+"institution": "Università Statale V. Brusov"
+},
+{
+"exam": "CELI",
+"country": "Australia",
+"city": "Leichhardt - Sydney",
+"institution": "Co.As.It. Casa d'Italia"
+},
+{
+"exam": "CELI",
+"country": "Australia",
+"city": "Melbourne",
+"institution": "Co.As.It"
+},
+{
+"exam": "CELI",
+"country": "Austria",
+"city": "Innsbruck",
+"institution": "WIFI Tirol"
+},
+{
+"exam": "CELI",
+"country": "Brasile",
+"city": "Av. Higienópolis,",
+"institution": "Istituto Italiano di Cultura di San Paolo"
+},
+{
+"exam": "CELI",
+"country": "Brasile",
+"city": "Caxias do Sul - Rio",
+"institution": "AVERGS Associação Vêneta do RS"
+},
+{
+"exam": "CELI",
+"country": "Brasile",
+"city": "Curitiba",
+"institution": "Centro di Cultura Italiana PR/SC"
+},
+{
+"exam": "CELI",
+"country": "Brasile",
+"city": "Fortaleza",
+"institution": "Istituto di Cultura Italiana di Fortaleza - ICIF"
+},
+{
+"exam": "CELI",
+"country": "Brasile",
+"city": "Pelotas",
+"institution": "Centro Cultural linguistico e Enogastronomico Smart Way LTDA"
+},
+{
+"exam": "CELI",
+"country": "Brasile",
+"city": "Porto Alegre Rio Grande",
+"institution": "Sociedade Italiana do Rio Grande do Sul"
+},
+{
+"exam": "CELI",
+"country": "Brasile",
+"city": "Rio de Janeiro",
+"institution": "Istituto Italiano di Cultura di Rio de Janeiro"
+},
+{
+"exam": "CELI",
+"country": "Bulgaria",
+"city": "Sofia",
+"institution": "Istituto Italiano di Cultura"
+},
+{
+"exam": "CELI",
+"country": "Camerun",
+"city": "Douala Littorale",
+"institution": "Parliamo Italiano Camerun"
+},
+{
+"exam": "CELI",
+"country": "Camerun",
+"city": "Yaounde",
+"institution": "Centro Italiano"
+},
+{
+"exam": "CELI",
+"country": "Cina",
+"city": "1202,T1C WANGJINGSOHO,31",
+"institution": "Beijing Ebsno Education Technology Co. Ltd"
+},
+{
+"exam": "CELI",
+"country": "Cina",
+"city": "8TH Floor, Linjiang Businnes Center,",
+"institution": "Guangdong Huayitong Education Consulting Co. Ltd"
+},
+{
+"exam": "CELI",
+"country": "Cina",
+"city": "China, Beijing, Chaoyang District, Huaweili",
+"institution": "Senmiao School China"
+},
+{
+"exam": "CELI",
+"country": "Cina",
+"city": "Huayitong, Qingzhengdasha, 3 Ceng",
+"institution": "Beijing Huayitong Education Consulting"
+},
+{
+"exam": "CELI",
+"country": "Cina",
+"city": "Huayitong, Room 106, Building A, n.838,",
+"institution": "Comitato Shanghai"
+},
+{
+"exam": "CELI",
+"country": "Cina",
+"city": "Pechino",
+"institution": "Beijing Zhongyikun Technology Training Co.Ldt"
+},
+{
+"exam": "CELI",
+"country": "Cina",
+"city": "Pechino",
+"institution": "Beijing Foreign Studies University MOE Training Centre"
+},
+{
+"exam": "CELI",
+"country": "Cina",
+"city": "Qinhuangdao",
+"institution": "Hebei Normal University of Science Technology"
+},
+{
+"exam": "CELI",
+"country": "Cina",
+"city": "RM 1302, n.38 Qingnian Road - Yuzhong",
+"institution": "Chongqing BTS Foreign Language School"
+},
+{
+"exam": "CELI",
+"country": "Cina",
+"city": "Room I, 10th Floor, Greenland Science",
+"institution": "Beijing QI PU China Italy Culture Exchange Co. Ltd. SIOL"
+},
+{
+"exam": "CELI",
+"country": "Cina",
+"city": "Shanghai",
+"institution": "Beijing Chaoyang District Hongyu Training School"
+},
+{
+"exam": "CELI",
+"country": "Cina",
+"city": "Via Huayuan n. 126",
+"institution": "Ponte di Lingua italiana"
+},
+{
+"exam": "CELI",
+"country": "Cina",
+"city": "Wuxi Foreign Language School, Wencui",
+"institution": "Omon Education and Culture Development"
+},
+{
+"exam": "CELI",
+"country": "Cina",
+"city": "Yecheng Road n. 77",
+"institution": "Yiyan Education Co.LTD"
+},
+{
+"exam": "CELI",
+"country": "Cina",
+"city": "Zhongguancun Roas n. 19",
+"institution": "Scuola Mamamia"
+},
+{
+"exam": "CELI",
+"country": "Cina",
+"city": "n. 777 Hongquiao Road, Room 70, Xuhui",
+"institution": "Shanghai Culture and Creativity College"
+},
+{
+"exam": "CELI",
+"country": "Cipro",
+"city": "Limassol",
+"institution": "St. Mary's School"
+},
+{
+"exam": "CELI",
+"country": "Douala",
+"city": "B.P. 242 Bafoussam",
+"institution": "Oasi Italiana"
+},
+{
+"exam": "CELI",
+"country": "Egitto",
+"city": "Alessandria d'Egitto",
+"institution": "Istituto Da Vinci"
+},
+{
+"exam": "CELI",
+"country": "Egitto",
+"city": "Il Cairo",
+"institution": "Istituto Italiano di Cultura"
+},
+{
+"exam": "CELI",
+"country": "Francia",
+"city": "Barbezieux Saint Hilaire 7 Avenue Pierre Mendès-France",
+"institution": "Lycee Elie Vinet"
+},
+{
+"exam": "CELI",
+"country": "Francia",
+"city": "Nizza",
+"institution": "Camera di Commercio Italiana - Sophia Antipolis, Costa Azzurra"
+},
+{
+"exam": "CELI",
+"country": "Francia",
+"city": "Strasburgo",
+"institution": "Istituto Italiano di Cultura"
+},
+{
+"exam": "CELI",
+"country": "Germania",
+"city": "Aachen",
+"institution": "CCIT - Deutsch-Italienischer Kulturkreis e.V."
+},
+{
+"exam": "CELI",
+"country": "Germania",
+"city": "Berlino",
+"institution": "Puntolingua"
+},
+{
+"exam": "CELI",
+"country": "Germania",
+"city": "Colonia",
+"institution": "Istituto Italiano di Cultura"
+},
+{
+"exam": "CELI",
+"country": "Germania",
+"city": "Frankfurt Am Main",
+"institution": "hvv-Institut des Hessischen Volkshochschulverbands"
+},
+{
+"exam": "CELI",
+"country": "Germania",
+"city": "Heidelberg",
+"institution": "Universität Heidelberg Zentrales Sprachlabor"
+},
+{
+"exam": "CELI",
+"country": "Germania",
+"city": "Jena",
+"institution": "Institut für Romanistik - Friedrich-Schiller-Universität Jena"
+},
+{
+"exam": "CELI",
+"country": "Germania",
+"city": "Monaco",
+"institution": "Münchner Volkshochschule GmbH"
+},
+{
+"exam": "CELI",
+"country": "Germania",
+"city": "Norimberga",
+"institution": "AS.SC.IT e V. c/o Lucia Ritter Tochini"
+},
+{
+"exam": "CELI",
+"country": "Giappone",
+"city": "Kyoto",
+"institution": "Istituto Italiano di Cultura"
+},
+{
+"exam": "CELI",
+"country": "Giappone",
+"city": "Nagakute (Aichi-Ken) 1-114 Yazako, Sagamine",
+"institution": "Aichi University of the Arts"
+},
+{
+"exam": "CELI",
+"country": "Grecia",
+"city": "Chania - Isola di Creta via Dimitrakaki, 14",
+"institution": "Centro Galileo"
+},
+{
+"exam": "CELI",
+"country": "Guatemala",
+"city": "Città Del Guatemala 16 Calle 2-55 - Zona 10",
+"institution": "Instituto Italiano de Cultura - Sección Cultural de la Embajada de"
+},
+{
+"exam": "CELI",
+"country": "India",
+"city": "Nuova Delhi",
+"institution": "Istituto Italiano di Cultura Nuova Delhi"
+},
+{
+"exam": "CELI",
+"country": "Iran",
+"city": "Isfahan",
+"institution": "Istituto Sokhan Sarayan"
+},
+{
+"exam": "CELI",
+"country": "Iran",
+"city": "Tehran",
+"institution": "Mojtama Fanni Tehran- Gheitarieh"
+},
+{
+"exam": "CELI",
+"country": "Iran",
+"city": "Tehran",
+"institution": "ILI - Iran Language Institute"
+},
+{
+"exam": "CELI",
+"country": "Irlanda",
+"city": "Nairobi",
+"institution": "Istituto Italiano di Cultura"
+},
+{
+"exam": "CELI",
+"country": "Lussemburgo",
+"city": "Lussemburgo",
+"institution": "Institut national des langues Luxembourg"
+},
+{
+"exam": "CELI",
+"country": "Marocco",
+"city": "Beni Mellal",
+"institution": "Mohammed V University in Rabat"
+},
+{
+"exam": "CELI",
+"country": "Marocco",
+"city": "Rabat",
+"institution": "Università di Stato di Moldova"
+},
+{
+"exam": "CELI",
+"country": "Messico",
+"city": "Xalapa Veracruz",
+"institution": "Università del Montenegro - Facoltà di Filologia"
+},
+{
+"exam": "CELI",
+"country": "Moldavia",
+"city": "Chisinau",
+"institution": "Centro Culturale Paraguaiano Europeo"
+},
+{
+"exam": "CELI",
+"country": "Mongolia",
+"city": "Ulaanbaatar",
+"institution": "Instituto Cultural Italo Peruano"
+},
+{
+"exam": "CELI",
+"country": "Polonia",
+"city": "Varsavia",
+"institution": "Akademia Ekonomiczno - Humanistycznaw warszawie"
+},
+{
+"exam": "CELI",
+"country": "Portogallo",
+"city": "Lisbona",
+"institution": "Istituto Italiano di Cultura"
+},
+{
+"exam": "CELI",
+"country": "Romania",
+"city": "Bucarest",
+"institution": "Istituto Italiano di Cultura"
+},
+{
+"exam": "CELI",
+"country": "Romania",
+"city": "Cluj-Napoca",
+"institution": "Colegiul Naional George Bariiu"
+},
+{
+"exam": "CELI",
+"country": "Romania",
+"city": "Costanta",
+"institution": "Università OVIDIUS"
+},
+{
+"exam": "CELI",
+"country": "Romania",
+"city": "Timisoara",
+"institution": "Liceul Teoretic Jean Louis Calderon"
+},
+{
+"exam": "CELI",
+"country": "Russia",
+"city": "Mosca",
+"institution": "Centro Italiano di Cultura"
+},
+{
+"exam": "CELI",
+"country": "Russia",
+"city": "San Pietroburgo",
+"institution": "Derzhavin Institute"
+},
+{
+"exam": "CELI",
+"country": "Serbia",
+"city": "Belgrado",
+"institution": "Rudjer Boskovic School"
+},
+{
+"exam": "CELI",
+"country": "Slovenia",
+"city": "Ljubljana",
+"institution": "Istituto Italiano di Cultura in Slovenia"
+},
+{
+"exam": "CELI",
+"country": "Spagna",
+"city": "Barcellona",
+"institution": "Istituto Italiano di Cultura"
+},
+{
+"exam": "CELI",
+"country": "Spagna",
+"city": "Barcellona",
+"institution": "Universitat de Barcelona-Facultat de Filologia-Departament de"
+},
+{
+"exam": "CELI",
+"country": "Spagna",
+"city": "C/ Ejido, s/n. Pabellón de Gobierno de la",
+"institution": "Universidad de Málaga - Centro de Idiomas"
+},
+{
+"exam": "CELI",
+"country": "Spagna",
+"city": "Calle Rafael Lopez n.1",
+"institution": "Idiomas Huelva- Kids Club Spain"
+},
+{
+"exam": "CELI",
+"country": "Spagna",
+"city": "Castelló de la Plana",
+"institution": "Universitat Jaume I"
+},
+{
+"exam": "CELI",
+"country": "Spagna",
+"city": "Granada",
+"institution": "ELECE Idiomas."
+},
+{
+"exam": "CELI",
+"country": "Spagna",
+"city": "Valencia",
+"institution": "Centro G. Leopardi"
+},
+{
+"exam": "CELI",
+"country": "Stati Uniti d'America",
+"city": "710 Sansome St.",
+"institution": "Istituto Italiano di Cultura"
+},
+{
+"exam": "CELI",
+"country": "Stati Uniti d'America",
+"city": "Coral Gables",
+"institution": "Renaissance Evolution Inc."
+},
+{
+"exam": "CELI",
+"country": "Stati Uniti d'America",
+"city": "New York",
+"institution": "The Italian Cultural Society of Washington"
+},
+{
+"exam": "CELI",
+"country": "Stati Uniti d'America",
+"city": "Washington",
+"institution": "Collina Italiana - Italian language and Cultural Center"
+},
+{
+"exam": "CELI",
+"country": "Svizzera",
+"city": "Aarau",
+"institution": "Istituto Italiano di Cultura di Tunisi"
+},
+{
+"exam": "CELI",
+"country": "Svizzera",
+"city": "Ascona (Ticino)",
+"institution": "C.I.P.E Comitato Italiano per la Promozione Educativa"
+},
+{
+"exam": "CELI",
+"country": "Svizzera",
+"city": "Basilea",
+"institution": "Fondazione ECAP"
+},
+{
+"exam": "CELI",
+"country": "Svizzera",
+"city": "Lamone",
+"institution": "Weiterbildung - HKV Aarau"
+},
+{
+"exam": "CELI",
+"country": "Svizzera",
+"city": "Losanna",
+"institution": "Comitato Pro Scuola Italiana"
+},
+{
+"exam": "CELI",
+"country": "Svizzera",
+"city": "Lugano",
+"institution": "Glossa Scuola di Lingue e di Informatica"
+},
+{
+"exam": "CELI",
+"country": "Svizzera",
+"city": "Lugano",
+"institution": "Scuola di Italiano \"Italia Oggi\""
+},
+{
+"exam": "CELI",
+"country": "Svizzera",
+"city": "Zurigo",
+"institution": "Miduca SA - Scuola Club Migros Lugano"
+},
+{
+"exam": "CELI",
+"country": "Svizzera",
+"city": "Zurigo",
+"institution": "Scuola Didac"
+},
+{
+"exam": "CELI",
+"country": "Turchia",
+"city": "Ankara",
+"institution": "Istituto Italiano di Cultura di Montevideo"
+},
+{
+"exam": "CELI",
+"country": "Turchia",
+"city": "Instanbul",
+"institution": "Casa Italia"
+},
+{
+"exam": "CELI",
+"country": "Turchia",
+"city": "Izmir",
+"institution": "Università di Economia di zmir"
+},
+{
+"exam": "CELI",
+"country": "Ungheria",
+"city": "Ungheria",
+"institution": "Istituto Italiano di Cultura"
+}
+],
+"celiByCountry": {
+"Albania": 1,
+"Algeria": 1,
+"Argentina": 7,
+"Armenia": 1,
+"Australia": 2,
+"Austria": 1,
+"Brasile": 7,
+"Bulgaria": 1,
+"Camerun": 2,
+"Cina": 16,
+"Cipro": 1,
+"Douala": 1,
+"Egitto": 2,
+"Francia": 3,
+"Germania": 8,
+"Giappone": 2,
+"Grecia": 1,
+"Guatemala": 1,
+"India": 1,
+"Iran": 3,
+"Irlanda": 1,
+"Lussemburgo": 1,
+"Marocco": 2,
+"Messico": 1,
+"Moldavia": 1,
+"Mongolia": 1,
+"Polonia": 1,
+"Portogallo": 1,
+"Romania": 4,
+"Russia": 2,
+"Serbia": 1,
+"Slovenia": 1,
+"Spagna": 7,
+"Stati Uniti d'America": 4,
+"Svizzera": 9,
+"Turchia": 3,
+"Ungheria": 1
+},
+"cilsStatus": "pending-founder-save"
+}

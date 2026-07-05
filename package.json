@@ -5,10 +5,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "npm run seo:test && prisma generate && next build",
     "start": "next start",
     "postinstall": "prisma generate",
     "lint": "next lint",
+    "seo:data": "python scripts/seo/build-data.py",
+    "seo:test": "node scripts/seo/exclusions.selftest.mjs && tsx scripts/seo/content.selftest.ts",
     "selftest:engine": "tsx src/lib/scoring/scoring.selftest.ts",
     "validate:batch1": "tsx scripts/seed/batch1/batch1.selftest.ts",
     "seed:batch1": "tsx scripts/seed/seed-batch1.ts",

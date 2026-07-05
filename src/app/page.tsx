@@ -200,6 +200,11 @@ export default function HomePage() {
               <p className="mt-2 text-sm text-almi-text">Both universities publish past papers — copying them is easy, which is exactly why we never do. B1 Cittadinanza practice lives in the exam&apos;s own world: poste, comune, prefettura.</p>
             </div>
           </div>
+          <div className="mt-8 text-center">
+            <Link href="/guides" className="rounded-full border border-almi-line px-6 py-2.5 text-sm font-semibold text-almi-text hover:border-almi-coral">
+              Read the guides →
+            </Link>
+          </div>
         </div>
       </section>
     </main>

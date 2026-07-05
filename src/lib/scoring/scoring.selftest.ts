@@ -140,11 +140,33 @@ function eq<T>(a: T, b: T, msg: string) { assert(a === b, `${msg} (got ${JSON.st
   eq((scoreCeli("CINQUE", { writtenScore: 72, oralScore: 0 }) as { gradeBand: string }).gradeBand, "D", "CELI C2 total 72 → D");
   eq((scoreCeli("CINQUE", { writtenScore: 71, oralScore: 0 }) as { gradeBand: string }).gradeBand, "E", "CELI C2 total 71 → E (C2 D-floor 72 ≠ C1 69)");
 
-  // IMPATTO (A1) stays PENDING BY DESIGN: numerics officially read, but its single-overall-threshold pass
-  // (total ≥16 → P/N, no per-part minima, no banking) is not representable in the both-parts model yet.
-  const a1 = scoreCeli("IMPATTO", { writtenScore: 999, oralScore: 999 });
-  eq(a1.pending, true, "CELI Impatto (A1) still PENDING — overall-threshold pass model not yet in engine");
-  assert(!("passed" in a1), "CELI pending result carries no passed field");
+  // IMPATTO (A1) — official: Written 0–16 + Oral 0–16, TOTALE 0–32, certificate = OVERALL total ≥16 → P/N.
+  // "overall" pass mode: per-part sub-marks are indicative and do NOT gate the certificate; NO banking.
+  const a1 = scoreCeli("IMPATTO", { writtenScore: 8, oralScore: 8 });
+  assert(a1.verified === true && a1.pending === false, "CELI A1 (Impatto) is verified/locked");
+  if (a1.verified) {
+    eq(a1.total, 16, "CELI A1 total 8+8");
+    eq(a1.passed, true, "CELI A1 passes at total ≥16");
+    eq(a1.gradeBand, "PASS", "CELI A1 is P/N (no A–E band)");
+    eq(a1.banking, null, "CELI A1 has NO capitalizzazione (banking)");
+  }
+  const a1fail = scoreCeli("IMPATTO", { writtenScore: 8, oralScore: 7 }); // total 15
+  if (a1fail.verified) eq(a1fail.passed, false, "CELI A1 fails at total 15 (<16)");
+  // OVERALL mode: a low part sub-mark does NOT block the certificate if the total clears 16.
+  const a1lopsided = scoreCeli("IMPATTO", { writtenScore: 16, oralScore: 0 }); // total 16, oral sub-mark 0 < 8.01
+  if (a1lopsided.verified) {
+    eq(a1lopsided.passed, true, "CELI A1 passes on total ≥16 even when oral sub-mark is below 8.01 (overall mode)");
+    eq(a1lopsided.oral.pass, false, "CELI A1 still reports the oral sub-mark as not met (indicative only)");
+    eq(a1lopsided.banking, null, "CELI A1 never banks a part (overall mode)");
+  }
+  eq(CELI_CONFIG.IMPATTO.totalMax, 32, "CELI A1 total max 32 (official)");
+  eq(CELI_CONFIG.IMPATTO.passFloor, 16, "CELI A1 overall pass mark is 16 (official)");
+
+  // Milestone: every CELI level A1–C2 is now verified — none left PENDING-FOUNDER-CHECK.
+  for (const lv of ["IMPATTO","UNO","DUE","TRE","QUATTRO","CINQUE"] as const)
+    eq(scoreCeli(lv, { writtenScore: 0, oralScore: 0 }).pending, false, `CELI ${lv} is verified (not pending)`);
+  // Guard still refuses fabrication: overall mode must NOT bank, both-parts mode must gate on part minima.
+  assert(CELI_CONFIG.IMPATTO.passMode === "overall" && CELI_CONFIG.UNO.passMode === "both-parts", "pass modes assigned correctly");
 }
 
 // ---------- MANDATED GUARD: scales are never mixed across engines ----------

@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
-import { hasPracticeAccess, isBillingEnabled, isInTrial, trialDaysLeft } from "@/lib/access";
+import { hasPaidAccess, isBillingEnabled } from "@/lib/access";
 import { TRACKS, trackBySlug, sectionBySlug } from "@/lib/practice";
 import { itemsFor } from "@/lib/items";
 import { CELI_CONFIG, type CeliLevel } from "@/lib/scoring";
@@ -37,7 +37,8 @@ export default async function Page({ params }: { params: Promise<{ track: string
 
   const items = itemsFor(t.exam, t.level, s.code);
   const user = await getCurrentUser();
-  const allowed = hasPracticeAccess(user);
+  const needsPaid = s.kind === "estimate"; // AI Writing/Speaking → paid; objective skills are free
+  const paid = hasPaidAccess(user);
 
   const header = (
     <>
@@ -45,25 +46,25 @@ export default async function Page({ params }: { params: Promise<{ track: string
       <h1 className="mt-3 text-3xl font-bold text-almi-ink">Practice set</h1>
       <p className="mt-3 text-almi-text">
         This is a practice read-out, not an official result — only Siena (CILS) / Perugia (CELI) award a certificate.
-        {user && isInTrial(user) && allowed && <span className="ml-1 text-almi-text-muted">Free trial: {trialDaysLeft(user)} day{trialDaysLeft(user) === 1 ? "" : "s"} left.</span>}
       </p>
     </>
   );
 
-  // Gate: signed out → sign-up prompt; trial ended + no sub → subscribe gate; else run.
+  // Gate (network standard): signed out → sign-in prompt; an AI Writing/Speaking skill without a
+  // paid subscription → subscribe gate; objective skills are free to any signed-in user.
   let body: ReactNode;
   if (!user) {
     body = (
       <div className="mt-8 rounded-2xl border border-almi-line bg-almi-paper p-6">
         <h2 className="text-lg font-semibold text-almi-ink">Sign in to practise</h2>
-        <p className="mt-2 text-sm text-almi-text">Create a free account and your 7-day trial starts immediately — full CILS and CELI practice, no card required.</p>
+        <p className="mt-2 text-sm text-almi-text">Create a free account to practise Reading, Listening and Analysis free. Writing and Speaking feedback is part of AlmiItalian Pro — a 7-day free trial (card saved, not charged), then $12/month.</p>
         <div className="mt-4 flex flex-wrap gap-3">
-          <Link href="/signup" className="inline-flex rounded-full bg-almi-coral px-6 py-2.5 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">Start free trial</Link>
+          <Link href="/signup" className="inline-flex rounded-full bg-almi-coral px-6 py-2.5 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">Create free account</Link>
           <Link href="/login" className="inline-flex rounded-full border border-almi-line px-6 py-2.5 font-medium text-almi-ink hover:border-almi-coral">Log in</Link>
         </div>
       </div>
     );
-  } else if (!allowed) {
+  } else if (needsPaid && !paid) {
     body = <PracticeGate billingLive={isBillingEnabled()} />;
   } else if (items.length === 0) {
     body = (

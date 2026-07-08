@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 
-// Shown when a signed-in user's 7-day trial has ended and they have no active subscription.
+// Shown when a signed-in user opens an AI-feedback skill (Writing/Speaking) without an active
+// subscription. Reading/Listening/Analysis stay free; this gate only fronts the paid skills.
 // If Stripe isn't wired yet (billingLive=false) the subscribe button shows its honest unavailable
 // state — the fail-closed path — rather than starting a checkout that can't complete.
 export function PracticeGate({ billingLive }: { billingLive: boolean }) {
@@ -26,11 +27,11 @@ export function PracticeGate({ billingLive }: { billingLive: boolean }) {
 
   return (
     <div className="mt-8 rounded-2xl border border-almi-line bg-almi-paper p-6">
-      <h2 className="text-lg font-semibold text-almi-ink">Your free practice has ended</h2>
+      <h2 className="text-lg font-semibold text-almi-ink">Writing &amp; Speaking is part of AlmiItalian Pro</h2>
       <p className="mt-2 text-sm text-almi-text">
-        Keep practising CILS and CELI — each on its own real scale, with 100% original material — for a flat{" "}
-        <strong className="text-almi-ink">$12/month</strong>. Start with a 7-day free trial — your card is saved but
-        not charged, and you can cancel anytime before the trial ends and pay nothing.
+        Reading, Listening and Analysis are free. AI feedback on Writing and Speaking — on each exam&apos;s official-style
+        criteria, 100% original material — is <strong className="text-almi-ink">$12/month</strong>. Start with a 7-day
+        free trial: your card is saved but not charged, and you can cancel anytime before the trial ends and pay nothing.
       </p>
       <button
         onClick={subscribe}

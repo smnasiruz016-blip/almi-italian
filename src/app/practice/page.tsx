@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
-import { isInTrial, trialDaysLeft, hasPracticeAccess } from "@/lib/access";
+import { hasPaidAccess } from "@/lib/access";
 import { TRACKS, sectionCount } from "@/lib/practice";
 import { canonical } from "@/lib/site";
 
@@ -13,11 +13,11 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   const user = await getCurrentUser();
-  const banner = !user ? null : hasPracticeAccess(user)
-    ? (isInTrial(user)
-        ? `Free trial active — ${trialDaysLeft(user)} day${trialDaysLeft(user) === 1 ? "" : "s"} left. Full CILS and CELI practice.`
-        : "Subscription active — full CILS and CELI practice.")
-    : "Your free trial has ended — subscribe to keep practising ($12/month).";
+  const banner = !user
+    ? null
+    : hasPaidAccess(user)
+      ? "AlmiItalian Pro active — Writing and Speaking feedback included."
+      : "Reading, Listening and Analysis are free. Writing and Speaking feedback is part of Pro — 7-day free trial (card saved, not charged), then $12/month.";
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">

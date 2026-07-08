@@ -58,8 +58,8 @@ export default function HomePage() {
               </Link>
               <Link href="/login" className="text-sm text-almi-text-muted hover:text-almi-coral">Already have an account? Log in →</Link>
             </div>
-            <p className="mt-4 text-xs text-almi-text-muted">
-              Free to practise · <strong className="text-almi-ink">$12/month</strong> for full access · in-person exams only · certificates don&apos;t expire · writing &amp; speaking are clearly-labelled estimates
+            <p className="mt-4 text-sm text-almi-text-muted">
+              $12/month, 7-day free trial, cancel anytime · CILS &amp; CELI, each on its own real scale · 100% original material, never copied
             </p>
           </div>
 

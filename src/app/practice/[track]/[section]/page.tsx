@@ -3,13 +3,14 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
-import { hasPaidAccess, isBillingEnabled } from "@/lib/access";
+import { hasPaidAccess, needsEmailVerification, isBillingEnabled } from "@/lib/access";
 import { TRACKS, trackBySlug, sectionBySlug } from "@/lib/practice";
 import { itemsFor } from "@/lib/items";
 import { CELI_CONFIG, type CeliLevel } from "@/lib/scoring";
 import { PracticeRunner } from "@/components/PracticeRunner";
 import { PracticeComposer } from "@/components/PracticeComposer";
 import { PracticeGate } from "@/components/PracticeGate";
+import { EmailVerifyBanner } from "@/components/EmailVerifyBanner";
 import { canonical } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -65,7 +66,12 @@ export default async function Page({ params }: { params: Promise<{ track: string
       </div>
     );
   } else if (needsPaid && !paid) {
-    body = <PracticeGate billingLive={isBillingEnabled()} />;
+    // Subscribed but unverified → prompt verification, not another subscribe.
+    body = needsEmailVerification(user) ? (
+      <div className="mt-8"><EmailVerifyBanner email={user.email} /></div>
+    ) : (
+      <PracticeGate billingLive={isBillingEnabled()} />
+    );
   } else if (items.length === 0) {
     body = (
       <div className="mt-8 rounded-2xl border border-dashed border-almi-line bg-almi-paper p-6 text-almi-text">

@@ -38,13 +38,27 @@ function hasActiveSubscription(
 // Free vs paid is a SKILL split, mirroring Goethe's scoringMode gate:
 //   • Objective, auto-marked skills (Reading/Listening/Analysis) → free to any signed-in user.
 //   • AI-feedback skills (Writing/Speaking — section kind "estimate") → require hasPaidAccess().
-export function hasPaidAccess(
-  user:
-    | Pick<User, "email" | "subscriptionStatus" | "subscriptionCurrentPeriodEnd" | "compProUntil">
-    | null,
-): boolean {
+//
+// Paid access requires an active subscription AND a verified email (Goethe parity) — owner
+// and comp bypass both. `needsEmailVerification` distinguishes "paid but unverified" so the UI
+// can say "verify your email" instead of "subscribe".
+type PaidUser = Pick<
+  User,
+  "email" | "emailVerifiedAt" | "subscriptionStatus" | "subscriptionCurrentPeriodEnd" | "compProUntil"
+>;
+
+export function hasPaidAccess(user: PaidUser | null): boolean {
   if (!user) return false;
   if (isOwner(user.email)) return true; //                    owner bypass
   if (user.compProUntil && user.compProUntil > new Date()) return true; // admin-granted comp
-  return hasActiveSubscription(user);
+  return hasActiveSubscription(user) && user.emailVerifiedAt !== null;
+}
+
+// True when the only thing standing between the user and paid access is email
+// verification (they have an active/trialing sub but haven't verified yet).
+export function needsEmailVerification(user: PaidUser | null): boolean {
+  if (!user) return false;
+  if (isOwner(user.email)) return false;
+  if (user.compProUntil && user.compProUntil > new Date()) return false;
+  return hasActiveSubscription(user) && user.emailVerifiedAt === null;
 }

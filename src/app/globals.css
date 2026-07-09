@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* AlmiKorean — sunrise palette (inherited from the AlmiJapanese fork): coral #FF7A6B / cream / ink #14110D. */
+/* AlmiItalian — sunrise palette (inherited from the AlmiJapanese fork): coral #FF7A6B / cream / ink #14110D. */
 @theme {
   --color-almi-coral: #ff7a6b; /*        primary CTA + hero */
   --color-almi-coral-deep: #f2624f; /*   hover/active */

@@ -207,6 +207,47 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Q&A */}
+      <section className="bg-almi-bg-peach/40 px-6 py-14">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="text-2xl font-bold text-almi-ink">Questions, answered.</h2>
+          <dl className="mt-8 space-y-6">
+            {[
+              {
+                q: "How much does it cost?",
+                a: "$12/month with a 7-day free trial. Cancel anytime during the trial and you are not charged.",
+              },
+              {
+                q: "Which Italian exams do you cover?",
+                a: "CILS (including B1 Cittadinanza) and CELI, each on its own scoring engine so the two are never blended.",
+              },
+              {
+                q: "Are the Writing and Speaking scores official?",
+                a: "No. They are AI criteria-based estimates to guide your preparation — only Siena (CILS) and Perugia (CELI) award real results.",
+              },
+              {
+                q: "Do I need an account to start?",
+                a: "Yes — create an account, start your 7-day free trial, and your practice unlocks straight away.",
+              },
+              {
+                q: "Can I cancel?",
+                a: "Yes, anytime, from your account. Cancel before the trial ends and you pay nothing.",
+              },
+            ].map((item) => (
+              <div key={item.q} className="rounded-2xl border border-almi-line bg-almi-paper p-6">
+                <dt className="font-semibold text-almi-ink">{item.q}</dt>
+                <dd className="mt-2 text-sm text-almi-text">{item.a}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="mt-8 text-center">
+            <Link href="/signup" className="rounded-full bg-almi-coral px-7 py-3 text-sm font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">
+              Create your account →
+            </Link>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }

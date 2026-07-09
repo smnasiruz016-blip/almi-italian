@@ -51,7 +51,7 @@ export default function HomePage() {
             </p>
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <Link href="/signup" className="rounded-full bg-almi-coral px-7 py-3 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">
-                Practise free
+                Start your 7-day free trial
               </Link>
               <Link href="/practice" className="rounded-full border border-almi-line px-7 py-3 font-semibold text-almi-text hover:border-almi-coral">
                 Practice

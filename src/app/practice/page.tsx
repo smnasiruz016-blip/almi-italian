@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { hasPaidAccess } from "@/lib/access";
 import { TRACKS, sectionCount } from "@/lib/practice";
@@ -13,6 +14,10 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   const user = await getCurrentUser();
+  // FOUNDER GATE (trio): a logged-in non-subscribed user gets no practice — funnel to the
+  // single forward path (trial checkout on /account). Logged-out visitors keep the public
+  // SEO surface untouched.
+  if (user && !hasPaidAccess(user)) redirect("/account");
   const banner = !user
     ? null
     : hasPaidAccess(user)

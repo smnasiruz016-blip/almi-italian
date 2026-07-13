@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BY_ORIGIN, BY_ATENEO, BY_COURSE } from "@/lib/seo/data";
 import { canonical, nativeLead, USTAT_ATTRIBUTION, SHAMOOL_LINE, REQ_NOT_GUARANTEE, NO_LANGUAGE_CLAIM, TWO_EXAMS_LINE } from "@/lib/seo/content";
+import { OriginRecognitionSection } from "@/components/seo/OriginRecognitionSection";
 
 export const dynamicParams = true;
 export function generateStaticParams() { return []; }
@@ -52,6 +53,8 @@ export default async function Page({ params }: { params: Promise<{ ateneo: strin
 
       <h2 className="mt-8 text-xl font-semibold text-almi-ink">CILS or CELI — pick the right one</h2>
       <p className="mt-2 text-almi-text">{TWO_EXAMS_LINE} Practise the exact sections against each exam&apos;s real cutoff — we show your raw performance, never a fabricated score.</p>
+
+      <OriginRecognitionSection origin={o} />
 
       <div className="mt-6 flex flex-wrap gap-3 text-sm">
         <Link href="/practice" className="rounded-full bg-almi-coral px-5 py-2 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">Practise CILS &amp; CELI</Link>

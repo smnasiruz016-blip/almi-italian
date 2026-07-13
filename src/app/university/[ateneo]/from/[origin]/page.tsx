@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BY_ORIGIN, BY_ATENEO, COURSES_BY_ATENEO } from "@/lib/seo/data";
 import { canonical, nativeLead, USTAT_ATTRIBUTION, SHAMOOL_LINE, REQ_NOT_GUARANTEE, TWO_EXAMS_LINE } from "@/lib/seo/content";
+import { OriginRecognitionSection } from "@/components/seo/OriginRecognitionSection";
 
 export const dynamicParams = true;
 export function generateStaticParams() { return []; }
@@ -47,6 +48,8 @@ export default async function Page({ params }: { params: Promise<{ ateneo: strin
         ))}
       </ul>
       {courses.length > 300 && <p className="mt-2 text-xs text-almi-text-muted">Showing the first 300 of {courses.length}.</p>}
+
+      <OriginRecognitionSection origin={o} />
 
       <div className="mt-6 flex flex-wrap gap-3 text-sm">
         <Link href="/practice" className="rounded-full bg-almi-coral px-5 py-2 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">Practise CILS &amp; CELI</Link>

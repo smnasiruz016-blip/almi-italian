@@ -4,9 +4,9 @@ import { scoreCilsStandard, scoreCilsB1c, scoreCeli, CILS_B1C_FLOOR, CILS_B1C_SE
 import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: { absolute: "AlmiItalian | Honest CILS & CELI Practice — for the RIGHT exam" },
+  title: { absolute: "CILS & CELI Practice Test — for the Right Exam | AlmiItalian" },
   description:
-    "Practise real CILS and CELI task formats on their own real scales — never mixed. Citizenship needs B1, the long-term permit needs A2: prepare for the exam you actually need. Writing & speaking are labelled estimates.",
+    "CILS & CELI practice on their real scales, never mixed. Citizenship needs B1, the long-term permit A2 — prepare the exam you actually need. Honest estimates.",
   alternates: { canonical: canonical("/") },
 };
 

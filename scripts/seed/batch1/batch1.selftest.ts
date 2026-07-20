@@ -17,8 +17,8 @@ function eq<T>(a: T, b: T, msg: string) { assert(a === b, `${msg} (got ${JSON.st
 eq(CILS_B1C_ITEMS.length, 60, "B1c flagship = 60 items");
 eq(CILS_UNO_ITEMS.length, 26, "CILS UNO = 26 items");
 eq(CILS_DUE_ITEMS.length, 26, "CILS DUE = 26 items");
-eq(CELI_DUE_ITEMS.length, 18, "CELI 2 = 18 items");
-eq(BATCH1_ITEMS.length, 130, "Batch 1 total = 130 items");
+eq(CELI_DUE_ITEMS.length, 38, "CELI 2 = 38 items");
+eq(BATCH1_ITEMS.length, 150, "Batch 1 total = 150 items");
 
 // ---------- 2. Dedup key {exam, level, section, title} is unique (mirrors DB @@unique) ----------
 const keys = new Map<string, number>();
@@ -28,7 +28,7 @@ for (const it of BATCH1_ITEMS) {
 }
 const dups = [...keys.entries()].filter(([, n]) => n > 1);
 assert(dups.length === 0, `no duplicate dedup keys (found: ${dups.map(([k]) => k).join(" | ")})`);
-eq(keys.size, 130, "130 distinct dedup keys");
+eq(keys.size, 150, "150 distinct dedup keys");
 
 // ---------- 3. Per (exam, level, section) distribution matches the proposal ----------
 function countBy(pred: (i: RawItem) => boolean) { return BATCH1_ITEMS.filter(pred).length; }
@@ -52,8 +52,8 @@ eq(at("CILS_STANDARD", "DUE", "ANALISI"), 6, "DUE Analisi = 6");
 eq(at("CILS_STANDARD", "DUE", "SCRITTA"), 4, "DUE Scritta = 4");
 eq(at("CILS_STANDARD", "DUE", "ORALE"), 4, "DUE Orale = 4");
 // CELI 2
-eq(at("CELI", "DUE", "ASCOLTO"), 5, "CELI Ascolto = 5");
-eq(at("CELI", "DUE", "LETTURA"), 5, "CELI Lettura = 5");
+assert(at("CELI", "DUE", "ASCOLTO") >= 15, "CELI Ascolto >= 15");
+assert(at("CELI", "DUE", "LETTURA") >= 15, "CELI Lettura >= 15");
 eq(at("CELI", "DUE", "SCRITTA"), 4, "CELI Scritta = 4");
 eq(at("CELI", "DUE", "ORALE"), 4, "CELI Orale = 4");
 

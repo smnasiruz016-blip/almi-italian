@@ -15,10 +15,10 @@ function eq<T>(a: T, b: T, msg: string) { assert(a === b, `${msg} (got ${JSON.st
 
 // ---------- 1. Bucket sizes match the approved table ----------
 eq(CILS_B1C_ITEMS.length, 60, "B1c flagship = 60 items");
-eq(CILS_UNO_ITEMS.length, 53, "CILS UNO = 53 items");
+eq(CILS_UNO_ITEMS.length, 75, "CILS UNO = 75 items");
 eq(CILS_DUE_ITEMS.length, 26, "CILS DUE = 26 items");
 eq(CELI_DUE_ITEMS.length, 60, "CELI 2 = 60 items");
-eq(BATCH1_ITEMS.length, 199, "Batch 1 total = 199 items");
+eq(BATCH1_ITEMS.length, 221, "Batch 1 total = 221 items");
 
 // ---------- 2. Dedup key {exam, level, section, title} is unique (mirrors DB @@unique) ----------
 const keys = new Map<string, number>();
@@ -28,7 +28,7 @@ for (const it of BATCH1_ITEMS) {
 }
 const dups = [...keys.entries()].filter(([, n]) => n > 1);
 assert(dups.length === 0, `no duplicate dedup keys (found: ${dups.map(([k]) => k).join(" | ")})`);
-eq(keys.size, 199, "199 distinct dedup keys");
+eq(keys.size, 221, "221 distinct dedup keys");
 
 // ---------- 3. Per (exam, level, section) distribution matches the proposal ----------
 function countBy(pred: (i: RawItem) => boolean) { return BATCH1_ITEMS.filter(pred).length; }
@@ -43,8 +43,8 @@ assert(at("CILS_B1C", "B1C", "ORALE") >= 15, "B1c Orale >= 15");
 assert(at("CILS_STANDARD", "UNO", "ASCOLTO") >= 15, "UNO Ascolto >= 15");
 assert(at("CILS_STANDARD", "UNO", "LETTURA") >= 15, "UNO Lettura >= 15");
 assert(at("CILS_STANDARD", "UNO", "ANALISI") >= 15, "UNO Analisi >= 15");
-eq(at("CILS_STANDARD", "UNO", "SCRITTA"), 4, "UNO Scritta = 4");
-eq(at("CILS_STANDARD", "UNO", "ORALE"), 4, "UNO Orale = 4");
+assert(at("CILS_STANDARD", "UNO", "SCRITTA") >= 15, "UNO Scritta >= 15");
+assert(at("CILS_STANDARD", "UNO", "ORALE") >= 15, "UNO Orale >= 15");
 // CILS DUE
 eq(at("CILS_STANDARD", "DUE", "ASCOLTO"), 6, "DUE Ascolto = 6");
 eq(at("CILS_STANDARD", "DUE", "LETTURA"), 6, "DUE Lettura = 6");

@@ -5,7 +5,7 @@ import { canonical, SHAMOOL_LINE, DECREE_CITATION, TEST_NOT_CITIZENSHIP } from "
 
 export const metadata: Metadata = {
   title: "Italian descent & the 2025 work-entry decree — the 7 countries",
-  description: "The November 2025 decree names 7 countries of historic Italian emigration whose Italian-descendant citizens get out-of-quota work entry. The honest list, the B1 language step, and the 4 proposed-but-not-included countries.",
+  description: "The November 2025 decree names 7 countries of historic Italian emigration whose Italian-descendant citizens get out-of-quota work entry. The honest list, who the B1 language requirement applies to, and the 4 proposed-but-not-included countries.",
   alternates: { canonical: canonical("/italian-descent") },
 };
 

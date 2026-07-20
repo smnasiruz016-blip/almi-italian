@@ -28,19 +28,32 @@ export const DECREE_CITATION =
 //   • The 2025 reform concerned DESCENT, not the B1 requirement. Do not describe it
 //     as having introduced or changed the language level.
 //
-// ⚠️ UNRESOLVED CONTRADICTION, LEFT IN PLACE ON PURPOSE:
-//   src/app/italian-descent/[country]/page.tsx currently tells the reader that
-//   "descent-based routes still run through Italian at B1", which is the opposite of
-//   the exemption above. That page is live and makes a legal claim about who must
-//   sit an exam, so it is not being rewritten as a side effect of a hedge fix — it
-//   needs its own decision and its own change. Whoever picks this up: one of the two
-//   is wrong, and it is not a wording problem.
+// RESOLVED: the descent pages used to say "descent-based routes still run through
+//   Italian at B1", which was the opposite of the exemption above. Corrected. The
+//   wording now lives in DESCENT_LANGUAGE_LINE below rather than inline in a page,
+//   so the three surfaces that make this claim cannot drift apart again.
 
 // The accepted-certificate hedge. Load-bearing: without it, naming CILS and CELI on
 // a citizenship page tells an applicant who already holds PLIDA or IT that they need
 // to sit another exam.
 export const CITIZENSHIP_ACCEPTED_HEDGE =
   "CILS and CELI are two of the certificates accepted for the B1 citizenship requirement, not the whole list — PLIDA, DILS-PG and IT (cert.it) are accepted too. We ship practice for CILS and CELI, which is a choice about this product, not a statement about what counts.";
+
+// Who the B1 requirement actually applies to. Kept here, not inline in a page,
+// because three surfaces make this claim and they drifted apart once already.
+//
+// The distinction is the whole point: recognition by descent establishes that you
+// were ALREADY a citizen, so there is nothing for a language test to qualify you
+// for. Naturalisation and marriage are applications to BECOME one, and those carry
+// the B1 requirement. Telling a jure sanguinis applicant to sit B1 sends them to an
+// exam, a fee and a waiting list they may not need.
+export const DESCENT_LANGUAGE_LINE =
+  "Recognition of citizenship by descent (jure sanguinis) does not ask for a language certificate. B1 is the requirement on the routes that make you a citizen rather than recognise that you already were one — naturalisation by residence, and citizenship by marriage — and that is what CILS B1 Cittadinanza and CELI 2 (B1) are for.";
+
+// Confirm-with-the-office hedge. Requirements change and are applied by the desk in
+// front of you, not by us.
+export const CONFIRM_WITH_OFFICE =
+  "Requirements change, and they are applied by the consulate or comune handling your file — confirm your own case with them before you plan around it.";
 
 // Requirement-not-guarantee doctrine — a certificate is never a visa, a place, or citizenship.
 export const REQ_NOT_GUARANTEE =

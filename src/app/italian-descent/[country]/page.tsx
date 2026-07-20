@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BY_TIER1, BY_ORIGIN } from "@/lib/seo/data";
-import { canonical, SHAMOOL_LINE, DECREE_CITATION, TEST_NOT_CITIZENSHIP } from "@/lib/seo/content";
+import { canonical, SHAMOOL_LINE, DECREE_CITATION, TEST_NOT_CITIZENSHIP, DESCENT_LANGUAGE_LINE, CONFIRM_WITH_OFFICE } from "@/lib/seo/content";
 
 export const dynamicParams = true;
 export function generateStaticParams() { return []; }
@@ -12,8 +12,8 @@ export async function generateMetadata({ params }: { params: Promise<{ country: 
   const t = BY_TIER1.get(country);
   if (!t) return {};
   return {
-    title: `${t.country} & the Italian descent decree — work entry & B1`,
-    description: `${t.country} is one of the 7 countries in Italy's November 2025 descent decree: out-of-quota work entry for Italian-descendant citizens, the B1 language step, and where to sit the exam. Honest and sourced.`,
+    title: `${t.country} & the Italian descent decree — out-of-quota work entry`,
+    description: `${t.country} is one of the 7 countries in Italy's November 2025 descent decree: out-of-quota work entry for Italian-descendant citizens, who the B1 language requirement actually applies to, and where to sit the exam. Honest and sourced.`,
     alternates: { canonical: canonical(`/italian-descent/${t.slug}`) },
   };
 }
@@ -39,12 +39,15 @@ export default async function Page({ params }: { params: Promise<{ country: stri
           : <>{t.country} qualifies on the size of its registered Italian community (AIRE over 100,000). The exact figure is being confirmed against the Gazzetta Ufficiale text — we do not print a number we have not verified.</>}
       </p>
 
-      <h2 className="mt-8 text-xl font-semibold text-almi-ink">The B1 language step</h2>
-      <p className="mt-2 text-almi-text">
-        Descent-based routes still run through Italian at <strong className="text-almi-ink">B1</strong> — via{" "}
-        <Link href={`/exam/cils-b1-cittadinanza/from/${t.slug}`} className="text-almi-coral hover:underline">CILS B1 Cittadinanza</Link> or{" "}
+      <h2 className="mt-8 text-xl font-semibold text-almi-ink">The language requirement — and who it applies to</h2>
+      <p className="mt-2 text-almi-text">{DESCENT_LANGUAGE_LINE}</p>
+      <p className="mt-3 text-almi-text">
+        If your route is one of those, the two exams are{" "}
+        <Link href={`/exam/cils-b1-cittadinanza/from/${t.slug}`} className="text-almi-coral hover:underline">CILS B1 Cittadinanza</Link> and{" "}
         <Link href={`/exam/celi-2-b1/from/${t.slug}`} className="text-almi-coral hover:underline">CELI 2 (B1)</Link>, each on its own scale.
+        This page is about the decree's out-of-quota <strong className="text-almi-ink">work entry</strong>, which is a separate matter from both.
       </p>
+      <p className="mt-3 text-sm text-almi-text-muted">{CONFIRM_WITH_OFFICE}</p>
 
       <h2 className="mt-8 text-xl font-semibold text-almi-ink">Where to sit the exam</h2>
       <p className="mt-2 text-almi-text">

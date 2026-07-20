@@ -1,4 +1,4 @@
-// CILS B1 Cittadinanza — flagship, 42 items. Everyday/administrative register
+// CILS B1 Cittadinanza — flagship, 60 items. Everyday/administrative register
 // (poste, comune, prefettura, questura, ASL, casa, scuola, lavoro).
 // Scored on the B1c engine only: 4 sections /12, floor 7 each AND total 28/48, NO banking.
 import { ESTIMATE_NOTE, type RawItem } from "./types";
@@ -412,7 +412,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
       ],
     },
   },
-  // ---------------- PRODUZIONE SCRITTA (6): 2 F, 3 C, 1 S — WRITING (estimate) ----------------
+  // ---------------- PRODUZIONE SCRITTA (15): 4 F, 9 C, 2 S — WRITING (estimate) ----------------
   {
     exam: "CILS_B1C", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "FOUNDATION",
     title: "Email all'ufficio anagrafe per un certificato", topicTag: "comune", guidanceNote: est(),
@@ -480,7 +480,106 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     },
   },
 
-  // ---------------- PRODUZIONE ORALE (6): 2 F, 3 C, 1 S — SPEAKING (estimate) ----------------
+  {
+    exam: "CILS_B1C", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "FOUNDATION",
+    title: "Messaggio alla maestra: assenza del figlio", topicTag: "scuola",
+    prompt: "Scrivi il messaggio.", guidanceNote: est(),
+    payload: {
+      task: "Scrivi un breve messaggio alla maestra di tuo figlio per dire che oggi non viene a scuola. Spiega il motivo e di' quando pensi che tornerà.",
+      context: "Registro cortese e semplice, tra genitore e insegnante.",
+      minWords: 40, maxWords: 80,
+      criteria: ["Saluto e chiusura adeguati", "Motivo dell'assenza chiaro", "Indicazione del rientro", "Correttezza di base (verbi, ortografia)"],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "FOUNDATION",
+    title: "Biglietto ai vicini: lavori in casa", topicTag: "casa",
+    prompt: "Scrivi il biglietto.", guidanceNote: est(),
+    payload: {
+      task: "Scrivi un biglietto da mettere nell'ingresso del palazzo: la prossima settimana farai dei lavori in casa e ci sarà rumore. Di' quando, per quanti giorni, e scusati.",
+      context: "Comunicazione tra vicini di casa, tono gentile.",
+      minWords: 40, maxWords: 80,
+      criteria: ["Informazione su giorni e orari", "Motivo del rumore", "Formula di scuse", "Frasi brevi e comprensibili"],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Email alla scuola per la mensa", topicTag: "scuola",
+    prompt: "Scrivi l'email.", guidanceNote: est(),
+    payload: {
+      task: "Scrivi un'email alla segreteria della scuola per chiedere come iscrivere tuo figlio alla mensa. Chiedi che cosa serve e entro quando bisogna iscriversi.",
+      context: "Registro amministrativo, tono formale ma semplice.",
+      minWords: 60, maxWords: 100,
+      criteria: ["Oggetto e formule di apertura/chiusura", "Domande chiare e distinte", "Riferimento al proprio figlio e alla classe", "Correttezza di base"],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Email all'ASL per disdire una visita", topicTag: "asl",
+    prompt: "Scrivi l'email.", guidanceNote: est(),
+    payload: {
+      task: "Hai una visita prenotata ma non puoi andare. Scrivi un'email per disdire l'appuntamento, spiega brevemente perché e chiedi di spostarlo a un'altra data.",
+      context: "Registro formale semplice, con dati dell'appuntamento.",
+      minWords: 60, maxWords: 100,
+      criteria: ["Indica giorno e ora dell'appuntamento", "Comunica chiaramente la disdetta", "Chiede una nuova data", "Tono cortese e formule adeguate"],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Segnalazione al comune: lampione rotto", topicTag: "comune",
+    prompt: "Scrivi la segnalazione.", guidanceNote: est(),
+    payload: {
+      task: "Scrivi una segnalazione all'ufficio del comune: nella tua via un lampione è rotto da due settimane e la sera è tutto buio. Di' dov'è e perché è un problema.",
+      context: "Segnalazione scritta a un ufficio pubblico.",
+      minWords: 60, maxWords: 100,
+      criteria: ["Indica il luogo preciso", "Descrive il problema e da quanto dura", "Spiega perché è un problema", "Chiede un intervento in modo cortese"],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Messaggio al datore di lavoro: cambio turno", topicTag: "lavoro",
+    prompt: "Scrivi il messaggio.", guidanceNote: est(),
+    payload: {
+      task: "Scrivi un messaggio al tuo responsabile per chiedere di cambiare turno giovedì, perché hai un appuntamento. Proponi una soluzione.",
+      context: "Comunicazione di lavoro, tono rispettoso.",
+      minWords: 60, maxWords: 100,
+      criteria: ["Richiesta chiara con il giorno indicato", "Motivo breve e sufficiente", "Proposta di alternativa concreta", "Registro adeguato al contesto di lavoro"],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Risposta a un annuncio di affitto", topicTag: "casa",
+    prompt: "Scrivi il messaggio.", guidanceNote: est(),
+    payload: {
+      task: "Hai visto l'annuncio di un appartamento in affitto. Scrivi un messaggio: presentati, di' da quando ti serve la casa e fai due domande sull'appartamento o sulle spese.",
+      context: "Primo contatto con chi affitta, tono cortese.",
+      minWords: 60, maxWords: 100,
+      criteria: ["Presentazione essenziale", "Indicazione dei tempi", "Almeno due domande pertinenti", "Richiesta di appuntamento per vedere la casa"],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "STRETCH",
+    title: "Richiesta di permesso per un esame", topicTag: "lavoro",
+    prompt: "Scrivi la richiesta.", guidanceNote: est(),
+    payload: {
+      task: "Scrivi al tuo datore di lavoro per chiedere qualche ora di permesso: devi andare a fare l'esame di italiano. Spiega quando, per quanto tempo, e come pensi di recuperare le ore.",
+      context: "Richiesta formale scritta, in ambiente di lavoro.",
+      minWords: 70, maxWords: 120,
+      criteria: ["Richiesta esplicita con data e orario", "Motivo chiaro senza dettagli inutili", "Proposta di recupero delle ore", "Registro formale e organizzazione del testo"],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "STRETCH",
+    title: "Racconto: il mio primo mese in Italia", topicTag: "vita quotidiana",
+    prompt: "Scrivi il racconto.", guidanceNote: est(),
+    payload: {
+      task: "Racconta il tuo primo mese in Italia: che cosa è stato più facile, che cosa più difficile e che cosa faresti diversamente. Parla della tua esperienza.",
+      context: "Testo personale per un giornalino di classe.",
+      minWords: 70, maxWords: 120,
+      criteria: ["Racconta fatti concreti, non impressioni generiche", "Contrappone una cosa facile e una difficile", "Usa i tempi del passato in modo comprensibile", "Resta sulla propria esperienza, senza generalizzare sugli italiani"],
+    },
+  },
+  // ---------------- PRODUZIONE ORALE (15): 5 F, 8 C, 2 S — SPEAKING (estimate) ----------------
   {
     exam: "CILS_B1C", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "FOUNDATION",
     title: "Presentarsi allo sportello", topicTag: "uffici pubblici", guidanceNote: est(),
@@ -544,6 +643,105 @@ export const CILS_B1C_ITEMS: RawItem[] = [
       task: "Spiega perché vorresti diventare cittadino/a italiano/a. Parla della tua vita in Italia, del tuo legame con il Paese e dei tuoi progetti per il futuro.",
       parts: ["La tua vita in Italia", "Il tuo legame con il Paese", "I progetti per il futuro"],
       criteria: ["Capacità di esprimere opinioni e motivi", "Uso del futuro e del condizionale", "Coerenza del discorso", "Ricchezza del vocabolario"],
+      prepSeconds: 60, speakSeconds: 150,
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "FOUNDATION",
+    title: "Fare la spesa al mercato", topicTag: "vita quotidiana",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Sei al mercato. Chiedi quello che ti serve, di' la quantità e chiedi quanto costa. Poi paga e saluta.",
+      parts: ["Che cosa vuoi comprare", "Quantità e prezzo", "Pagamento e saluto"],
+      criteria: ["Formule di cortesia adeguate", "Quantità espresse correttamente", "Comprensione delle risposte del venditore", "Pronuncia comprensibile"],
+      prepSeconds: 30, speakSeconds: 90,
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "FOUNDATION",
+    title: "Descrivere casa e quartiere", topicTag: "casa",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Descrivi la casa dove abiti e il quartiere: quante stanze ci sono, che cosa c'è vicino e che cosa ti piace di più.",
+      parts: ["Com'è la casa", "Che cosa c'è nel quartiere", "Che cosa ti piace di più e perché"],
+      criteria: ["Vocabolario della casa e del quartiere", "Uso di 'c'è / ci sono' e delle preposizioni di luogo", "Frasi complete e collegate", "Pronuncia comprensibile"],
+      prepSeconds: 30, speakSeconds: 90,
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "FOUNDATION",
+    title: "Chiedere indicazioni per strada", topicTag: "vita quotidiana",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Sei per strada e non trovi l'ufficio postale. Ferma una persona, chiedi la strada, ripeti le indicazioni per essere sicuro/a e ringrazia.",
+      parts: ["Come attiri l'attenzione e chiedi", "Che cosa chiedi esattamente", "Come ripeti le indicazioni e ringrazi"],
+      criteria: ["Formula di apertura adeguata (scusi…)", "Domanda chiara", "Ripetizione corretta delle indicazioni ricevute", "Cortesia nel chiudere lo scambio"],
+      prepSeconds: 30, speakSeconds: 90,
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "CORE",
+    title: "Prenotare una visita per telefono", topicTag: "asl",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Telefoni per prenotare una visita. Di' chi sei, spiega di che cosa hai bisogno e concorda giorno e ora. Chiedi anche che cosa devi portare.",
+      parts: ["Presentazione al telefono", "Motivo della chiamata", "Giorno, ora e che cosa portare"],
+      criteria: ["Formule tipiche del telefono", "Motivo espresso con chiarezza", "Conferma finale di giorno e ora", "Gestione di una richiesta di ripetizione"],
+      prepSeconds: 45, speakSeconds: 120,
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "CORE",
+    title: "Parlare del proprio lavoro e degli orari", topicTag: "lavoro",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Parla del tuo lavoro (o di quello che vorresti fare): che cosa fai, con quali orari, e che cosa ti piace o non ti piace.",
+      parts: ["Che lavoro fai e dove", "Orari e giornata tipo", "Che cosa ti piace e che cosa no"],
+      criteria: ["Vocabolario del lavoro e degli orari", "Uso del presente e delle espressioni di tempo", "Opinione motivata", "Discorso organizzato con inizio e fine"],
+      prepSeconds: 45, speakSeconds: 120,
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "CORE",
+    title: "Colloquio con l'insegnante di tuo figlio", topicTag: "scuola",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Parli con l'insegnante di tuo figlio. Chiedi come va a scuola, racconta una difficoltà che vedi a casa e chiedi che cosa puoi fare tu.",
+      parts: ["Come va a scuola", "La difficoltà che hai notato", "Che cosa puoi fare a casa"],
+      criteria: ["Domande formulate con chiarezza", "Descrizione concreta della difficoltà", "Richiesta di consiglio", "Registro cortese e collaborativo"],
+      prepSeconds: 45, speakSeconds: 120,
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "CORE",
+    title: "Spiegare un problema al padrone di casa", topicTag: "casa",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "In casa il riscaldamento non funziona da tre giorni. Telefoni al padrone di casa: spiega il problema, di' che cosa hai già provato e chiedi quando arriva il tecnico.",
+      parts: ["Qual è il problema e da quando", "Che cosa hai già provato", "Che cosa chiedi e quando"],
+      criteria: ["Descrizione precisa del guasto", "Uso del passato prossimo per ciò che hai provato", "Richiesta esplicita di un intervento", "Fermezza senza scortesia"],
+      prepSeconds: 45, speakSeconds: 120,
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "STRETCH",
+    title: "Spiegare come si fa un documento", topicTag: "uffici pubblici",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Un amico appena arrivato ti chiede come si fa una pratica che tu hai già fatto. Spiega i passaggi in ordine, di' che cosa serve portare e avvisalo di un errore comune.",
+      parts: ["I passaggi, in ordine", "Che cosa bisogna portare", "Un errore da evitare"],
+      criteria: ["Sequenza chiara con connettivi (prima, poi, infine)", "Elenco completo di ciò che serve", "Avvertimento concreto e utile", "Parla di ciò che ha fatto, senza dare per certe regole che non conosce"],
+      prepSeconds: 60, speakSeconds: 150,
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "STRETCH",
+    title: "Che cosa è cambiato da quando vivo qui", topicTag: "vita quotidiana",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Racconta che cosa è cambiato nella tua vita da quando vivi in Italia: le abitudini, il lavoro o la famiglia. Di' che cosa è stato più difficile e che cosa hai imparato.",
+      parts: ["Com'era prima", "Che cosa è cambiato", "La difficoltà maggiore e che cosa hai imparato"],
+      criteria: ["Contrasto chiaro fra prima e adesso", "Uso dell'imperfetto e del passato prossimo", "Esempi concreti della propria vita", "Parla della propria esperienza, senza generalizzare su interi popoli"],
       prepSeconds: 60, speakSeconds: 150,
     },
   },

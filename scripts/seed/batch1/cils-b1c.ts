@@ -1,4 +1,4 @@
-// CILS B1 Cittadinanza — flagship, 30 items. Everyday/administrative register
+// CILS B1 Cittadinanza — flagship, 42 items. Everyday/administrative register
 // (poste, comune, prefettura, questura, ASL, casa, scuola, lavoro).
 // Scored on the B1c engine only: 4 sections /12, floor 7 each AND total 28/48, NO banking.
 import { ESTIMATE_NOTE, type RawItem } from "./types";
@@ -7,7 +7,7 @@ const L = "B1C";
 const est = (): string => ESTIMATE_NOTE;
 
 export const CILS_B1C_ITEMS: RawItem[] = [
-  // ---------------- ASCOLTO (9): 3 F, 4 C, 2 S ----------------
+  // ---------------- ASCOLTO (15): 5 F, 7 C, 3 S ----------------
   {
     exam: "CILS_B1C", level: L, section: "ASCOLTO", taskType: "MCQ", difficulty: "FOUNDATION",
     title: "All'ufficio postale: ritiro di un pacco", topicTag: "poste",
@@ -122,7 +122,85 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     },
   },
 
-  // ---------------- LETTURA (9): 3 F, 4 C, 2 S ----------------
+  {
+    exam: "CILS_B1C", level: L, section: "ASCOLTO", taskType: "MCQ", difficulty: "FOUNDATION",
+    title: "In farmacia: come prendere lo sciroppo", topicTag: "salute",
+    prompt: "Ascolta il farmacista e rispondi.",
+    payload: {
+      audioScript: "Allora, questo sciroppo è per la tosse. Ne prenda un cucchiaio la mattina e uno la sera, sempre dopo i pasti. Continui per cinque giorni. Se dopo cinque giorni la tosse non passa, torni dal medico.",
+      questions: [
+        { q: "Quando deve prendere lo sciroppo?", options: ["Prima dei pasti", "Dopo i pasti", "Solo la mattina", "Solo quando ha dolore"], answerIndex: 1 },
+        { q: "Per quanti giorni deve prenderlo?", options: ["Tre giorni", "Cinque giorni", "Dieci giorni", "Un mese"], answerIndex: 1 },
+        { q: "Che cosa deve fare se la tosse non passa?", options: ["Prendere più sciroppo", "Tornare dal medico", "Cambiare farmacia", "Aspettare una settimana"], answerIndex: 1 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "ASCOLTO", taskType: "MCQ", difficulty: "FOUNDATION",
+    title: "Avviso a scuola: uscita anticipata", topicTag: "scuola",
+    prompt: "Ascolta l'avviso della scuola e rispondi.",
+    payload: {
+      audioScript: "Gentili genitori, vi informiamo che venerdì 14 le lezioni finiranno alle 12:30 invece che alle 16:00, per una riunione dei docenti. Il servizio mensa non sarà attivo. Lo scuolabus passerà alle 12:40. Chi non può venire a prendere il bambino deve avvisare la segreteria entro giovedì.",
+      questions: [
+        { q: "A che ora finiscono le lezioni venerdì?", options: ["Alle 12:30", "Alle 12:40", "Alle 16:00", "Alle 14:00"], answerIndex: 0 },
+        { q: "Che cosa non funziona quel giorno?", options: ["Lo scuolabus", "La mensa", "La segreteria", "Le lezioni"], answerIndex: 1 },
+        { q: "Che cosa deve fare chi non può prendere il bambino?", options: ["Telefonare al docente", "Avvisare la segreteria entro giovedì", "Venire alle 16:00", "Scrivere allo scuolabus"], answerIndex: 1 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "ASCOLTO", taskType: "MCQ", difficulty: "CORE",
+    title: "Al CAF: appuntamento per l'ISEE", topicTag: "uffici pubblici",
+    prompt: "Ascolta la telefonata del CAF e rispondi.",
+    payload: {
+      audioScript: "Buongiorno, la chiamo dal CAF per il suo appuntamento. Le confermo martedì 9 alle 10:30. Per fare l'ISEE deve portare i documenti d'identità di tutta la famiglia, il codice fiscale di ciascuno e gli ultimi documenti del reddito. Se manca anche solo un documento non possiamo chiudere la pratica quel giorno.",
+      questions: [
+        { q: "Quando è l'appuntamento?", options: ["Martedì alle 9:00", "Martedì alle 10:30", "Giovedì alle 10:30", "Lunedì alle 9:30"], answerIndex: 1 },
+        { q: "Che cosa deve portare la persona?", options: ["Solo il proprio documento", "I documenti di tutta la famiglia e i codici fiscali", "Una fototessera", "Il permesso di soggiorno"], answerIndex: 1 },
+        { q: "Che cosa succede se manca un documento?", options: ["La pratica non si chiude quel giorno", "L'appuntamento costa di più", "Si perde il diritto all'ISEE", "Si va in un altro ufficio"], answerIndex: 0 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "ASCOLTO", taskType: "MATCHING", difficulty: "CORE",
+    title: "Quattro persone, quattro sportelli", topicTag: "uffici pubblici",
+    prompt: "Ascolta le quattro persone e abbina ognuna all'ufficio giusto.",
+    payload: {
+      audioScript: "Persona 1: Devo rinnovare il permesso di soggiorno, ho già preso l'appuntamento. Persona 2: Io ho cambiato casa e devo comunicare il nuovo indirizzo. Persona 3: A me serve il codice fiscale per il mio bambino. Persona 4: Io devo scegliere il medico di base, sono appena arrivata in città.",
+      instruction: "Abbina ogni persona all'ufficio dove deve andare.",
+      prompts: ["Persona 1", "Persona 2", "Persona 3", "Persona 4"],
+      options: ["Ufficio anagrafe del comune", "Questura", "ASL", "Agenzia delle Entrate"],
+      answerMap: [1, 0, 3, 2],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "ASCOLTO", taskType: "MCQ", difficulty: "CORE",
+    title: "Colloquio di lavoro: orario e contratto", topicTag: "lavoro",
+    prompt: "Ascolta il colloquio e rispondi.",
+    payload: {
+      audioScript: "Allora, il lavoro è part-time: sei ore al giorno, dal lunedì al venerdì, dalle 14:00 alle 20:00. Il contratto è a tempo determinato di sei mesi, poi vediamo. Le ferie si concordano con un mese di anticipo. Ha domande? — Sì, il sabato è sempre libero? — Sì, il sabato non si lavora.",
+      questions: [
+        { q: "Quante ore al giorno si lavora?", options: ["Quattro", "Sei", "Otto", "Dieci"], answerIndex: 1 },
+        { q: "Che tipo di contratto è?", options: ["A tempo indeterminato", "A tempo determinato di sei mesi", "Stagionale", "Di un anno"], answerIndex: 1 },
+        { q: "Si lavora il sabato?", options: ["Sì, sempre", "Sì, una volta al mese", "No, mai", "Solo la mattina"], answerIndex: 2 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "ASCOLTO", taskType: "MCQ", difficulty: "STRETCH",
+    title: "Iscrizione alla mensa scolastica", topicTag: "comune",
+    prompt: "Ascolta la comunicazione del comune e rispondi.",
+    payload: {
+      audioScript: "Gentili famiglie, le iscrizioni al servizio di mensa scolastica si fanno online sul sito del comune, dal 10 al 30 giugno. Serve lo SPID di un genitore. Chi ha già presentato l'ISEE non deve rifarlo: il sistema lo trova da solo. Chi non riesce a iscriversi online può chiedere aiuto allo sportello del comune, ma solo su appuntamento.",
+      questions: [
+        { q: "Come si fa l'iscrizione?", options: ["Allo sportello, senza appuntamento", "Online sul sito del comune", "Per telefono", "A scuola il primo giorno"], answerIndex: 1 },
+        { q: "Che cosa serve per iscriversi online?", options: ["Lo SPID di un genitore", "Una fototessera", "Il permesso di soggiorno", "Il libretto delle vaccinazioni"], answerIndex: 0 },
+        { q: "Chi ha già presentato l'ISEE che cosa deve fare?", options: ["Presentarlo di nuovo", "Niente: il sistema lo trova", "Portarlo a scuola", "Chiedere un appuntamento"], answerIndex: 1 },
+        { q: "Chi non riesce a iscriversi online?", options: ["Perde il posto", "Può andare allo sportello, su appuntamento", "Deve aspettare l'anno dopo", "Deve chiamare la scuola"], answerIndex: 1 },
+      ],
+    },
+  },
+  // ---------------- LETTURA (15): 5 F, 7 C, 3 S ----------------
   {
     exam: "CILS_B1C", level: L, section: "LETTURA", taskType: "MCQ", difficulty: "FOUNDATION",
     title: "Avviso del comune: orari dell'anagrafe", topicTag: "comune",
@@ -247,6 +325,93 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     },
   },
 
+  {
+    exam: "CILS_B1C", level: L, section: "LETTURA", taskType: "MCQ", difficulty: "FOUNDATION",
+    title: "Cartello in farmacia: la farmacia di turno", topicTag: "salute",
+    prompt: "Leggi il cartello e rispondi.",
+    payload: {
+      passage: "FARMACIA CHIUSA — Oggi la farmacia di turno è in via del Mercato 12, aperta tutta la notte. Questa farmacia riapre domani alle 8:30. Per le urgenze chiamare il numero indicato sulla porta.",
+      questions: [
+        { q: "Dove si trova la farmacia aperta stanotte?", options: ["In via del Mercato 12", "In questa farmacia", "In ospedale", "Non è indicato"], answerIndex: 0 },
+        { q: "Quando riapre questa farmacia?", options: ["Stanotte", "Domani alle 8:30", "Dopodomani", "Lunedì"], answerIndex: 1 },
+        { q: "Che cosa si fa in caso di urgenza?", options: ["Si aspetta domani", "Si chiama il numero sulla porta", "Si va in via del Mercato a piedi", "Si torna più tardi"], answerIndex: 1 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "LETTURA", taskType: "MCQ", difficulty: "FOUNDATION",
+    title: "Volantino: corso di italiano gratuito", topicTag: "scuola",
+    prompt: "Leggi il volantino e rispondi.",
+    payload: {
+      passage: "CORSO DI ITALIANO — gratuito. Due sere alla settimana, martedì e giovedì, dalle 18:30 alle 20:00, nella sede del centro civico. Il corso inizia il 7 ottobre e dura tre mesi. I posti sono venti. Per iscriversi bisogna venire di persona con un documento d'identità. Alla fine del corso si riceve un attestato di frequenza, che non è una certificazione ufficiale.",
+      questions: [
+        { q: "Quando si tengono le lezioni?", options: ["Ogni sera", "Martedì e giovedì sera", "Il sabato mattina", "Solo il giovedì"], answerIndex: 1 },
+        { q: "Come ci si iscrive?", options: ["Online", "Per telefono", "Di persona, con un documento", "Il primo giorno di lezione"], answerIndex: 2 },
+        { q: "Che cosa si riceve alla fine?", options: ["Una certificazione ufficiale", "Un attestato di frequenza", "Un diploma di scuola", "Niente"], answerIndex: 1 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "LETTURA", taskType: "MATCHING", difficulty: "CORE",
+    title: "Avvisi del quartiere", topicTag: "vita quotidiana",
+    prompt: "Leggi i quattro avvisi e abbina ognuno alla persona giusta.",
+    payload: {
+      instruction: "Abbina ogni avviso alla persona che lo cerca.",
+      prompts: [
+        "AVVISO A: Giovedì dalle 9 alle 13 manca l'acqua per lavori.",
+        "AVVISO B: Da lunedì lo sportello apre anche il pomeriggio.",
+        "AVVISO C: Sabato raccolta gratuita dei rifiuti ingombranti: prenotare.",
+        "AVVISO D: Cercasi volontari per il doposcuola dei bambini.",
+      ],
+      options: [
+        "Chi lavora la mattina e non riesce mai ad andare in ufficio",
+        "Chi deve buttare un vecchio divano",
+        "Chi vuole aiutare i bambini a fare i compiti",
+        "Chi deve riempire le bottiglie prima di giovedì",
+      ],
+      answerMap: [3, 0, 1, 2],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "LETTURA", taskType: "MCQ", difficulty: "CORE",
+    title: "Avviso ASL: cambio del medico di base", topicTag: "asl",
+    prompt: "Leggi l'avviso dell'ASL e rispondi.",
+    payload: {
+      passage: "CAMBIO DEL MEDICO DI BASE — Si può cambiare medico allo sportello dell'ASL o online. Serve la tessera sanitaria. Il cambio è immediato: da quel momento il nuovo medico può fare ricette e certificati. Chi cambia casa e va in un altro comune deve rifare la scelta del medico nel comune nuovo.",
+      questions: [
+        { q: "Che cosa serve per cambiare medico?", options: ["La tessera sanitaria", "Una fototessera", "Il certificato di residenza", "Il codice fiscale del vecchio medico"], answerIndex: 0 },
+        { q: "Quando si può usare il nuovo medico?", options: ["Dopo trenta giorni", "Subito", "Dopo la prima visita", "Dal mese successivo"], answerIndex: 1 },
+        { q: "Chi si trasferisce in un altro comune che cosa deve fare?", options: ["Niente, il medico resta lo stesso", "Rifare la scelta del medico nel comune nuovo", "Aspettare un anno", "Chiedere al vecchio medico"], answerIndex: 1 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "LETTURA", taskType: "MCQ", difficulty: "CORE",
+    title: "Regolamento del centro sportivo comunale", topicTag: "vita quotidiana",
+    prompt: "Leggi il regolamento e rispondi.",
+    payload: {
+      passage: "CENTRO SPORTIVO COMUNALE — REGOLAMENTO. L'ingresso in piscina è consentito solo con cuffia e ciabatte. I minori di 14 anni devono essere accompagnati da un adulto. I corsi di nuoto si svolgono dalle 17:00 alle 19:00: in quelle ore due delle quattro corsie sono riservate ai corsi. L'abbonamento mensile si sospende solo con certificato medico.",
+      questions: [
+        { q: "Che cosa succede dalle 17:00 alle 19:00?", options: ["La piscina chiude", "Metà delle corsie è riservata ai corsi", "Entrano solo gli adulti", "La cuffia non serve più"], answerIndex: 1 },
+        { q: "Un ragazzo di 12 anni può entrare da solo?", options: ["Sì, sempre", "No, deve essere accompagnato", "Sì, solo la mattina", "Sì, con la cuffia"], answerIndex: 1 },
+        { q: "Quando si può sospendere l'abbonamento?", options: ["Quando si vuole", "Solo con certificato medico", "Solo in estate", "Mai"], answerIndex: 1 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_B1C", level: L, section: "LETTURA", taskType: "MCQ", difficulty: "STRETCH",
+    title: "Rinnovo della carta d'identità elettronica", topicTag: "comune",
+    prompt: "Leggi l'avviso del comune e rispondi.",
+    payload: {
+      passage: "CARTA D'IDENTITÀ ELETTRONICA — Il rinnovo si può chiedere a partire da sei mesi prima della scadenza. Si prenota un appuntamento all'ufficio anagrafe: allo sportello non si accettano persone senza prenotazione. Il giorno dell'appuntamento bisogna portare la vecchia carta e una fototessera recente. La carta non viene consegnata subito: arriva per posta all'indirizzo di residenza entro alcuni giorni. Chi ha bisogno del documento con urgenza deve segnalarlo al momento della prenotazione, non dopo.",
+      questions: [
+        { q: "Da quando si può chiedere il rinnovo?", options: ["Solo dopo la scadenza", "Da sei mesi prima della scadenza", "Da un anno prima", "Il giorno della scadenza"], answerIndex: 1 },
+        { q: "Si può andare allo sportello senza appuntamento?", options: ["Sì, la mattina presto", "No, serve la prenotazione", "Sì, con la vecchia carta", "Solo in caso di urgenza"], answerIndex: 1 },
+        { q: "Come si riceve la carta nuova?", options: ["Subito allo sportello", "Per posta, all'indirizzo di residenza", "In questura", "Si ritira dopo sei mesi"], answerIndex: 1 },
+        { q: "Chi ha urgenza che cosa deve fare?", options: ["Dirlo quando prenota", "Tornare il giorno dopo", "Scrivere una email", "Pagare di più allo sportello"], answerIndex: 0 },
+      ],
+    },
+  },
   // ---------------- PRODUZIONE SCRITTA (6): 2 F, 3 C, 1 S — WRITING (estimate) ----------------
   {
     exam: "CILS_B1C", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "FOUNDATION",

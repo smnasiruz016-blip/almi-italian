@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BY_ORIGIN, isTier1Origin } from "@/lib/seo/data";
-import { canonical, nativeLead, SHAMOOL_LINE, TEST_NOT_CITIZENSHIP, DECREE_CITATION } from "@/lib/seo/content";
+import { canonical, nativeLead, SHAMOOL_LINE, TEST_NOT_CITIZENSHIP, DECREE_CITATION, CITIZENSHIP_ACCEPTED_HEDGE } from "@/lib/seo/content";
 
 export const dynamicParams = true;
 export function generateStaticParams() { return []; }
@@ -35,8 +35,10 @@ export default async function Page({ params }: { params: Promise<{ origin: strin
         Citizenship by naturalisation asks for Italian at <strong className="text-almi-ink">B1</strong>. The dedicated exam is
         {" "}<Link href={`/exam/cils-b1-cittadinanza/from/${o.slug}`} className="text-almi-coral hover:underline">CILS B1 Cittadinanza</Link>{" "}
         — 4 sections, and you must clear a floor in every one <em>and</em> the overall total; it is all-or-nothing with no banking.
-        {" "}<Link href={`/exam/celi-2-b1/from/${o.slug}`} className="text-almi-coral hover:underline">CELI 2 (B1)</Link> is an accepted alternative on its own separate scale.
+        {" "}<Link href={`/exam/celi-2-b1/from/${o.slug}`} className="text-almi-coral hover:underline">CELI 2 (B1)</Link> is another accepted certificate, on its own separate scale.
       </p>
+
+      <p className="mt-3 text-sm text-almi-text-muted">{CITIZENSHIP_ACCEPTED_HEDGE}</p>
 
       <p className="mt-4 rounded-xl bg-almi-bg-peach/40 p-4 text-sm text-almi-text">{TEST_NOT_CITIZENSHIP}</p>
 

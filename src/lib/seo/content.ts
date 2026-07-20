@@ -13,6 +13,35 @@ export const USTAT_ATTRIBUTION =
 export const DECREE_CITATION =
   "Source: Decreto interministeriale 17 novembre 2025, Gazzetta Ufficiale Serie Generale n. 273 del 24-11-2025 (25A06275), implementing Art. 27 co. 1-octies D.Lgs. 286/1998 (DL 36/2025 conv. L. 74/2025). Summarised by AlmiWorld; verify against the official text.";
 
+// FACT BASE — CITIZENSHIP LANGUAGE REQUIREMENT (verified 2026-07-20).
+//
+//   • The level is B1. That part is not in dispute anywhere in this repo.
+//
+//   • CILS B1 Cittadinanza is NOT the only accepted certificate. The accepted list
+//     also includes CELI 2 (B1), PLIDA B1, DILS-PG and IT (cert.it). This product
+//     ships practice for CILS and CELI only — a SCOPE decision — and the copy must
+//     not let that scope read as the accepted list. Say "among the certificates
+//     accepted", never "the exam" or "the two exams you can take".
+//
+//   • Descent applicants are EXEMPT from the B1 requirement.
+//
+//   • The 2025 reform concerned DESCENT, not the B1 requirement. Do not describe it
+//     as having introduced or changed the language level.
+//
+// ⚠️ UNRESOLVED CONTRADICTION, LEFT IN PLACE ON PURPOSE:
+//   src/app/italian-descent/[country]/page.tsx currently tells the reader that
+//   "descent-based routes still run through Italian at B1", which is the opposite of
+//   the exemption above. That page is live and makes a legal claim about who must
+//   sit an exam, so it is not being rewritten as a side effect of a hedge fix — it
+//   needs its own decision and its own change. Whoever picks this up: one of the two
+//   is wrong, and it is not a wording problem.
+
+// The accepted-certificate hedge. Load-bearing: without it, naming CILS and CELI on
+// a citizenship page tells an applicant who already holds PLIDA or IT that they need
+// to sit another exam.
+export const CITIZENSHIP_ACCEPTED_HEDGE =
+  "CILS and CELI are two of the certificates accepted for the B1 citizenship requirement, not the whole list — PLIDA, DILS-PG and IT (cert.it) are accepted too. We ship practice for CILS and CELI, which is a choice about this product, not a statement about what counts.";
+
 // Requirement-not-guarantee doctrine — a certificate is never a visa, a place, or citizenship.
 export const REQ_NOT_GUARANTEE =
   "A CILS or CELI certificate is a requirement some universities and routes ask for — never a visa, an admission, or citizenship on its own.";

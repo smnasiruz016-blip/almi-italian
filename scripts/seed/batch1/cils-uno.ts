@@ -1,4 +1,4 @@
-// CILS UNO (B1 standard) — 53 items, 5 sections incl. Analisi (grammar).
+// CILS UNO (B1 standard) — 75 items, 5 sections incl. Analisi (grammar).
 // Scored on the CILS standard engine: 5 sections /20, floor 11 each, capitalization banking.
 // General/everyday register (NOT the B1c administrative-only world) — kept separate by design.
 import { ESTIMATE_NOTE, type RawItem } from "./types";
@@ -676,6 +676,127 @@ export const CILS_UNO_ITEMS: RawItem[] = [
     },
   },
 
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "FOUNDATION",
+    title: "Biglietto di ringraziamento", topicTag: "vita sociale",
+    prompt: "Scrivi il biglietto.", guidanceNote: est(),
+    payload: {
+      task: "Un vicino ti ha aiutato in un momento difficile. Scrivi un biglietto per ringraziarlo: di' che cosa ha fatto, perché è stato importante per te e proponi qualcosa in cambio.",
+      context: "Registro informale ma sentito, testo breve.",
+      minWords: 60, maxWords: 100,
+      criteria: ["Dice concretamente che cosa ha fatto la persona", "Spiega perché è stato importante", "Propone qualcosa in cambio", "Registro coerente dall'inizio alla fine"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "FOUNDATION",
+    title: "Presentarsi in un gruppo nuovo", topicTag: "vita sociale",
+    prompt: "Scrivi il messaggio.", guidanceNote: est(),
+    payload: {
+      task: "Ti sei iscritto a un gruppo di persone che si trovano per camminare la domenica. Scrivi un messaggio di presentazione: chi sei, che esperienza hai, che cosa cerchi e una domanda pratica.",
+      context: "Messaggio in un gruppo, tono cordiale.",
+      minWords: 60, maxWords: 100,
+      criteria: ["Presentazione essenziale, senza eccessi", "Esperienza descritta con onestà", "Aspettativa dichiarata", "Almeno una domanda pratica"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Raccontare una giornata storta", topicTag: "vita sociale",
+    prompt: "Scrivi il racconto.", guidanceNote: est(),
+    payload: {
+      task: "Racconta una giornata in cui è andato storto tutto quello che poteva andare storto. Di' che cosa è successo, in che ordine, e come è finita.",
+      context: "Testo narrativo per un gruppo di scrittura.",
+      minWords: 80, maxWords: 120,
+      criteria: ["Sequenza chiara degli avvenimenti", "Uso di passato prossimo e imperfetto", "Almeno un dettaglio che rende viva la scena", "Chiusura che non resti sospesa"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Email per proporre uno scambio di lingua", topicTag: "servizi",
+    prompt: "Scrivi l'email.", guidanceNote: est(),
+    payload: {
+      task: "Hai visto l'annuncio di una persona che cerca uno scambio di conversazione. Scrivi: presentati, di' quali lingue parli e a che livello, proponi come organizzarvi e chiedi la sua disponibilità.",
+      context: "Primo contatto, registro cortese e concreto.",
+      minWords: 80, maxWords: 120,
+      criteria: ["Livello linguistico dichiarato con realismo", "Proposta organizzativa concreta (dove, quando, quanto)", "Domanda sulla disponibilità dell'altra persona", "Testo ordinato in paragrafi"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Descrivere il lavoro di una persona che conosci", topicTag: "descrizione",
+    prompt: "Scrivi il testo.", guidanceNote: est(),
+    payload: {
+      task: "Descrivi il lavoro di una persona che conosci bene: che cosa fa in una giornata, che cosa è difficile e che cosa le piace. Scrivi solo quello che sai da lei.",
+      context: "Testo descrittivo per una raccolta di ritratti.",
+      minWords: 80, maxWords: 120,
+      criteria: ["Descrizione concreta di una giornata", "Una difficoltà e un aspetto positivo", "Distingue ciò che la persona ha detto da ciò che tu supponi", "Vocabolario del lavoro appropriato"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Recensione di un posto in cui sei stato", topicTag: "viaggi",
+    prompt: "Scrivi la recensione.", guidanceNote: est(),
+    payload: {
+      task: "Scrivi una recensione di un posto in cui sei stato davvero — un locale, un museo, una spiaggia. Di' che cosa ti è piaciuto, che cosa no, e a chi lo consiglieresti.",
+      context: "Recensione per un sito di viaggi.",
+      minWords: 80, maxWords: 120,
+      criteria: ["Giudizio positivo e negativo, entrambi motivati", "Dettagli verificabili invece di aggettivi generici", "Indica a chi è adatto e a chi no", "Distingue l'esperienza personale da un giudizio assoluto"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Email per rimandare una consegna", topicTag: "lavoro",
+    prompt: "Scrivi l'email.", guidanceNote: est(),
+    payload: {
+      task: "Non riuscirai a consegnare un lavoro nella data prevista. Scrivi a chi lo aspetta: di' quanto ti serve ancora, spiega la ragione senza scusarti troppo e proponi che cosa puoi consegnare subito.",
+      context: "Email di lavoro, registro professionale.",
+      minWords: 80, maxWords: 120,
+      criteria: ["Comunica il ritardo all'inizio, non alla fine", "Indica una nuova data precisa", "Ragione breve e sufficiente", "Propone una consegna parziale o un'alternativa"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Lettera a chi arriverà dopo di te", topicTag: "vita sociale",
+    prompt: "Scrivi la lettera.", guidanceNote: est(),
+    payload: {
+      task: "Scrivi una lettera a una persona che si trasferirà nella città dove vivi adesso. Dalle consigli pratici basati su quello che hai imparato tu, e avvisala di una cosa che all'inizio ti ha sorpreso.",
+      context: "Lettera personale e pratica.",
+      minWords: 80, maxWords: 120,
+      criteria: ["Almeno tre consigli concreti", "Consigli basati sulla propria esperienza", "Una sorpresa iniziale raccontata con un esempio", "Evita di parlare a nome di tutti gli abitanti"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "STRETCH",
+    title: "Opinione: le cose che si comprano usate", topicTag: "opinione",
+    prompt: "Scrivi il testo.", guidanceNote: est(),
+    payload: {
+      task: "Scrivi la tua opinione sull'abitudine di comprare oggetti usati. Presenta un vantaggio e un limite reali, e poi di' che cosa ne pensi tu.",
+      context: "Testo di opinione per un blog.",
+      minWords: 100, maxWords: 150,
+      criteria: ["Un vantaggio e un limite, entrambi concreti", "Non trasforma il limite in una scusa per ignorarlo", "Posizione personale esplicita", "Evita numeri o percentuali inventate", "Connettivi di contrasto e conclusione"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "STRETCH",
+    title: "Rispondere a un'opinione che non condividi", topicTag: "opinione",
+    prompt: "Scrivi la risposta.", guidanceNote: est(),
+    payload: {
+      task: "Hai letto un testo secondo cui «i giovani di oggi non leggono più». Rispondi: di' che cosa c'è di vero, che cosa secondo te è sbagliato in quell'affermazione, e come la riformuleresti.",
+      context: "Lettera di risposta a un giornale locale.",
+      minWords: 100, maxWords: 150,
+      criteria: ["Riconosce ciò che l'affermazione coglie", "Spiega dove la formulazione è troppo larga", "Propone una versione più precisa", "Non risponde a una generalizzazione con un'altra", "Argomentazione ordinata"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "STRETCH",
+    title: "Un cambiamento che hai visto nel tuo quartiere", topicTag: "opinione",
+    prompt: "Scrivi il testo.", guidanceNote: est(),
+    payload: {
+      task: "Descrivi un cambiamento avvenuto nel quartiere dove vivi: com'era prima, che cosa è cambiato e chi ci ha guadagnato o perso. Scrivi di quello che hai visto tu.",
+      context: "Testo per una raccolta di racconti di quartiere.",
+      minWords: 100, maxWords: 150,
+      criteria: ["Contrasto chiaro fra prima e adesso", "Almeno un esempio osservato direttamente", "Dice chi ci ha guadagnato e chi no", "Resta su ciò che ha visto, senza dati inventati", "Uso sicuro dell'imperfetto e del passato prossimo"],
+    },
+  },
   // ---------------- PRODUZIONE ORALE (4): 1 F, 2 C, 1 S — SPEAKING (estimate) ----------------
   {
     exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "FOUNDATION",
@@ -718,6 +839,127 @@ export const CILS_UNO_ITEMS: RawItem[] = [
       task: "Molte persone oggi lavorano da casa. Secondo te, è meglio lavorare da casa o in ufficio? Esponi la tua opinione con vantaggi e svantaggi.",
       parts: ["La tua opinione", "I vantaggi", "Gli svantaggi"],
       criteria: ["Opinione chiara e motivata", "Capacità di confrontare pro e contro", "Connettivi (invece, però, inoltre)", "Ricchezza lessicale"],
+      prepSeconds: 60, speakSeconds: 150,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "FOUNDATION",
+    title: "Parlare di una cosa che sai fare", topicTag: "descrizione",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Parla di una cosa che sai fare bene: come l'hai imparata, quanto tempo ci hai messo e a chi la insegneresti.",
+      parts: ["Che cosa sai fare", "Come l'hai imparata", "A chi la insegneresti e perché"],
+      criteria: ["Descrizione concreta dell'attività", "Racconto dell'apprendimento al passato", "Frasi collegate", "Pronuncia comprensibile"],
+      prepSeconds: 30, speakSeconds: 90,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "FOUNDATION",
+    title: "Descrivere la casa dove vorresti vivere", topicTag: "descrizione",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Descrivi la casa in cui ti piacerebbe vivere: dove sarebbe, com'è fatta e che cosa avrebbe che ora non hai.",
+      parts: ["Dove sarebbe", "Com'è fatta", "Che cosa avrebbe che ora ti manca"],
+      criteria: ["Vocabolario della casa", "Uso del condizionale", "Confronto con la situazione attuale", "Discorso ordinato"],
+      prepSeconds: 30, speakSeconds: 90,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "FOUNDATION",
+    title: "Simulazione: alla biglietteria", topicTag: "viaggi",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Sei alla biglietteria della stazione. Chiedi il biglietto, informati su orari e cambi, e chiedi che cosa succede se perdi la coincidenza.",
+      parts: ["Chiedere il biglietto", "Orari e cambi", "Che cosa succede se perdi la coincidenza"],
+      criteria: ["Richiesta chiara con destinazione e orario", "Domande pertinenti", "Comprensione delle risposte", "Formule di cortesia"],
+      prepSeconds: 30, speakSeconds: 90,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "CORE",
+    title: "Raccontare un errore utile", topicTag: "vita sociale",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Racconta un errore che hai fatto e da cui hai imparato qualcosa: che cosa è successo, come l'hai risolto e che cosa fai diversamente adesso.",
+      parts: ["Che cosa è successo", "Come l'hai risolto", "Che cosa fai diversamente adesso"],
+      criteria: ["Racconto ordinato nel tempo", "Assume la propria parte senza dare la colpa ad altri", "Cambiamento concreto, non generico", "Tempi del passato usati con sicurezza"],
+      prepSeconds: 45, speakSeconds: 120,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "CORE",
+    title: "Simulazione: rimandare un appuntamento di lavoro", topicTag: "lavoro",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Devi rimandare un appuntamento di lavoro importante. Telefona: spiega la situazione, proponi due alternative e reagisci se l'altra persona non è contenta.",
+      parts: ["Spiegare la situazione", "Proporre due alternative", "Reagire a una risposta scontenta"],
+      criteria: ["Comunica il problema subito", "Alternative concrete e realistiche", "Gestisce il malcontento senza cedere né irrigidirsi", "Chiude con un accordo"],
+      prepSeconds: 45, speakSeconds: 120,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "CORE",
+    title: "Confrontare due modi di studiare", topicTag: "opinione",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Confronta lo studiare da soli e lo studiare in gruppo. Di' vantaggi e svantaggi di ciascuno e in quali casi preferisci l'uno o l'altro.",
+      parts: ["Da soli: vantaggi e svantaggi", "In gruppo: vantaggi e svantaggi", "Quando preferisci l'uno o l'altro"],
+      criteria: ["Strutture di confronto", "Almeno due elementi per parte", "Preferenza legata a casi concreti, non assoluta", "Discorso organizzato"],
+      prepSeconds: 45, speakSeconds: 120,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "CORE",
+    title: "Spiegare una ricetta o un procedimento", topicTag: "cucina",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Spiega come si prepara un piatto che sai fare: che cosa serve, i passaggi in ordine e un errore che fanno quasi tutti.",
+      parts: ["Che cosa serve", "I passaggi, in ordine", "L'errore più comune"],
+      criteria: ["Elenco completo degli ingredienti", "Connettivi di sequenza", "Avvertimento concreto e utile", "Verifica finale che l'altro abbia capito"],
+      prepSeconds: 45, speakSeconds: 120,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "CORE",
+    title: "Descrivere un'immagine di una stazione", topicTag: "descrizione",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Guarda l'immagine di una stazione ferroviaria all'ora di punta. Descrivi che cosa vedi, immagina dove stanno andando due persone e di' come ti sentiresti tu lì.",
+      parts: ["Che cosa vedi", "Dove immagini che vadano due persone", "Come ti sentiresti tu"],
+      criteria: ["Descrizione ordinata dello spazio", "Uso di 'stare + gerundio'", "Distingue ciò che vede da ciò che immagina", "Reazione personale motivata"],
+      prepSeconds: 45, speakSeconds: 120,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "STRETCH",
+    title: "Convincere qualcuno a cambiare idea", topicTag: "opinione",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Una persona a te vicina ha deciso una cosa che secondo te le farà male. Parlale: di' che cosa pensi, ascolta la sua ragione e trova un modo di dirle la tua senza rompere il rapporto.",
+      parts: ["Che cosa pensi e perché", "La sua ragione, detta con onestà", "Come chiudi la conversazione"],
+      criteria: ["Espone la preoccupazione senza accusare", "Riformula la ragione dell'altro con correttezza", "Riconosce che la decisione non è sua", "Chiude senza aut aut"],
+      prepSeconds: 60, speakSeconds: 150,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "STRETCH",
+    title: "Che cosa cambieresti nella tua città", topicTag: "opinione",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Di' una cosa che cambieresti nella città in cui vivi: qual è il problema, come lo risolveresti e chi potrebbe non essere d'accordo con te.",
+      parts: ["Il problema, con un esempio visto da te", "La tua soluzione", "Chi potrebbe non essere d'accordo e perché"],
+      criteria: ["Problema descritto con un esempio concreto", "Soluzione realistica", "Riconosce un interesse legittimo contrario", "Parla della propria esperienza senza citare dati inventati"],
+      prepSeconds: 60, speakSeconds: 150,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "STRETCH",
+    title: "Presentare una persona che ammiri", topicTag: "descrizione",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Presenta una persona che ammiri — che conosci di persona o no. Di' chi è, che cosa ha fatto e perché la ammiri, distinguendo quello che sai da quello che immagini.",
+      parts: ["Chi è e che cosa ha fatto", "Perché la ammiri", "Che cosa non sai di lei"],
+      criteria: ["Presentazione ordinata", "Motivi dell'ammirazione concreti", "Distingue ciò che sa da ciò che suppone", "Evita l'elogio senza contenuto"],
       prepSeconds: 60, speakSeconds: 150,
     },
   },

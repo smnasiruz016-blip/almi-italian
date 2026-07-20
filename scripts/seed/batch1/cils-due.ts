@@ -1,4 +1,4 @@
-// CILS DUE (B2 standard) — 53 items, 5 sections incl. Analisi.
+// CILS DUE (B2 standard) — 75 items, 5 sections incl. Analisi.
 // Scored on the CILS standard engine (same shape as UNO, B2-banded difficulty).
 // Academic/current-affairs register — distinct from B1c administrative world.
 import { ESTIMATE_NOTE, type RawItem } from "./types";
@@ -669,6 +669,127 @@ export const CILS_DUE_ITEMS: RawItem[] = [
     },
   },
 
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Recensione critica di un evento", topicTag: "cultura",
+    prompt: "Scrivi la recensione.", guidanceNote: est(),
+    payload: {
+      task: "Scrivi la recensione critica di un evento culturale a cui hai partecipato davvero: situa l'evento, formula un giudizio e sostienilo con elementi concreti di quello che hai visto.",
+      context: "Recensione per una rivista culturale.",
+      minWords: 130, maxWords: 180,
+      criteria: ["Situa l'evento senza riassumerlo per intero", "Giudizio esplicito e argomentato", "Elementi concreti al posto degli aggettivi generici", "Distingue ciò che non è piaciuto da ciò che è riuscito male", "Registro critico senza compiacimento"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Riassumere una discussione per chi non c'era", topicTag: "comprensione",
+    prompt: "Scrivi il resoconto.", guidanceNote: est(),
+    payload: {
+      task: "Hai assistito a una discussione in cui le due parti non si sono trovate d'accordo. Scrivi un resoconto per chi non c'era: esponi le due posizioni, indica dove sta esattamente il disaccordo e che cosa resta aperto.",
+      context: "Resoconto interno, registro neutro.",
+      minWords: 130, maxWords: 180,
+      criteria: ["Espone ciascuna posizione come la sosterrebbe chi la difende", "Individua il punto preciso di divergenza", "Separa il deciso dal rimasto aperto", "Non presenta la propria lettura come conclusione condivisa", "Testo utilizzabile da chi non era presente"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Lettera aperta su una decisione locale", topicTag: "opinione",
+    prompt: "Scrivi la lettera.", guidanceNote: est(),
+    payload: {
+      task: "Nel luogo dove vivi è stata annunciata una decisione che ti sembra sbagliata. Scrivi una lettera aperta: descrivi la decisione, argomenta la tua posizione, riconosci la ragione di chi ha deciso e formula una richiesta concreta.",
+      context: "Lettera pubblica destinata a un giornale locale.",
+      minWords: 150, maxWords: 200,
+      criteria: ["Descrive la decisione senza deformarla", "Argomenti ordinati per peso", "Riconosce l'interesse legittimo di chi ha deciso", "Richiesta concreta e realizzabile", "Non attribuisce numeri a fonti che non può citare"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Relazione su una visita", topicTag: "lavoro",
+    prompt: "Scrivi la relazione.", guidanceNote: est(),
+    payload: {
+      task: "Sei stato incaricato di visitare un luogo e riferire. Scrivi una relazione: che cosa hai osservato, che cosa ne deduci, quali limiti ha la tua osservazione e che cosa raccomandi.",
+      context: "Relazione interna, registro oggettivo.",
+      minWords: 150, maxWords: 200,
+      criteria: ["Separa esplicitamente osservazione e interpretazione", "Organizza per criteri, non in ordine cronologico", "Dichiara almeno un limite della propria osservazione", "Raccomandazione motivata", "Registro impersonale e verificabile"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Rispondere a una critica in parte fondata", topicTag: "opinione",
+    prompt: "Scrivi la risposta.", guidanceNote: est(),
+    payload: {
+      task: "Un gruppo di cui fai parte è stato criticato pubblicamente. Una parte della critica è giusta, una parte si basa su un equivoco. Scrivi una risposta pubblica che accolga la prima e corregga la seconda.",
+      context: "Risposta pubblica, registro sobrio.",
+      minWords: 150, maxWords: 200,
+      criteria: ["Distingue con chiarezza ciò che accoglie da ciò che contesta", "Ammette la parte fondata senza attenuarla", "Corregge l'equivoco senza ironia né attacco personale", "Annuncia una misura concreta", "Struttura in paragrafi con funzione definita"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Testo divulgativo su un argomento che conosci", topicTag: "scienza",
+    prompt: "Scrivi il testo.", guidanceNote: est(),
+    payload: {
+      task: "Spiega a un pubblico non specialista un argomento della tua area di studio o di lavoro. Rendilo comprensibile senza renderlo falso, e indica dove la versione semplificata smette di valere.",
+      context: "Articolo divulgativo per un pubblico generale.",
+      minWords: 150, maxWords: 200,
+      criteria: ["Entrata comprensibile senza conoscenze pregresse", "Termine tecnico introdotto solo quando serve", "Analogia con il suo limite dichiarato", "Segnala dove la semplificazione smette di valere", "Non introduce dati inventati per rendere il testo convincente"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "CORE",
+    title: "Proposta a chi decide", topicTag: "lavoro",
+    prompt: "Scrivi la proposta.", guidanceNote: est(),
+    payload: {
+      task: "Scrivi una proposta breve a chi ha potere di decidere: esponi il problema, la soluzione che proponi, che cosa richiede e come si capirebbe se ha funzionato.",
+      context: "Documento di lavoro, una pagina.",
+      minWords: 150, maxWords: 200,
+      criteria: ["Problema enunciato prima della soluzione", "Proposta concreta e circoscritta", "Dichiara i costi o le condizioni richieste", "Indica un criterio di verifica dell'esito", "Evita di sostenere la proposta con cifre non verificabili"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "STRETCH",
+    title: "Saggio: quando la regola generale non basta", topicTag: "opinione",
+    prompt: "Scrivi il saggio.", guidanceNote: est(),
+    payload: {
+      task: "Scrivi un saggio su una regola generalmente sensata che in certi casi produce l'effetto opposto. Sviluppa un solo caso fino in fondo, invece di accumularne molti.",
+      context: "Saggio breve per una rivista.",
+      minWords: 180, maxWords: 250,
+      criteria: ["Formula la regola nella sua versione più difendibile", "Sviluppa un unico caso in profondità", "Mostra perché l'effetto si rovescia", "Propone una riformulazione, anche provvisoria", "Non generalizza il caso a una legge nuova"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "STRETCH",
+    title: "Argomentare contro la propria posizione", topicTag: "opinione",
+    prompt: "Scrivi il testo.", guidanceNote: est(),
+    payload: {
+      task: "Scegli una posizione che sostieni e scrivi il testo più forte possibile CONTRO di essa. Non concludere a tuo favore e non inserire una difesa finale.",
+      context: "Esercizio di argomentazione; il testo verrà letto da chi conosce la tua posizione reale.",
+      minWords: 180, maxWords: 250,
+      criteria: ["Presenta la posizione contraria senza caricatura", "Almeno tre argomenti seri e distinti", "Esempi concreti al posto di affermazioni generali", "Nessuna confutazione e nessun ritorno alla propria tesi", "Coerenza interna dall'inizio alla fine"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "STRETCH",
+    title: "Un cambiamento nel proprio settore", topicTag: "lavoro",
+    prompt: "Scrivi il testo.", guidanceNote: est(),
+    payload: {
+      task: "Descrivi un cambiamento avvenuto nel tuo settore di studio o di lavoro: com'era prima, che cosa è cambiato, chi ne ha tratto vantaggio e chi no. Scrivi di ciò che hai osservato tu.",
+      context: "Contributo per una raccolta di testimonianze professionali.",
+      minWords: 180, maxWords: 250,
+      criteria: ["Contrasto documentato fra prima e adesso", "Almeno un esempio osservato direttamente", "Indica chi ha guadagnato e chi ha perso", "Limita le conclusioni a ciò che l'esperienza sostiene", "Senza dati o percentuali inventate"],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "STRETCH",
+    title: "Saggio: informare e persuadere", topicTag: "opinione",
+    prompt: "Scrivi il saggio.", guidanceNote: est(),
+    payload: {
+      task: "Scrivi un saggio sul confine fra informare e persuadere: dove passa, se passa, e che cosa cambia quando si cancella. Definisci i termini prima di discuterli.",
+      context: "Saggio per una rivista di attualità.",
+      minWords: 180, maxWords: 250,
+      criteria: ["Definisce i termini prima dell'argomentazione", "Sostiene una posizione riconoscibile", "Distingue i casi che la tesi spiega da quelli che non spiega", "Evita di moralizzare su intere categorie professionali", "Conclude con una formulazione precisa, non con un appello"],
+    },
+  },
   // ---------------- PRODUZIONE ORALE (4): 1 F, 2 C, 1 S — SPEAKING (estimate) ----------------
   {
     exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "FOUNDATION",
@@ -711,6 +832,127 @@ export const CILS_DUE_ITEMS: RawItem[] = [
       task: "Il turismo di massa porta soldi alle città ma crea anche molti problemi. Discuti il tema: presenta i vantaggi e gli svantaggi, poi proponi alcune soluzioni per un turismo più sostenibile.",
       parts: ["Vantaggi del turismo di massa", "Problemi e svantaggi", "Proposte di soluzione"],
       criteria: ["Analisi articolata del tema", "Equilibrio tra pro e contro", "Proposte concrete", "Ricchezza lessicale e fluidità B2"],
+      prepSeconds: 90, speakSeconds: 180,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "CORE",
+    title: "Esporre una posizione che non condividi", topicTag: "opinione",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Esponi una posizione che non condividi, in modo che chi la sostiene la riconosca come propria. Solo alla fine dichiara che non è la tua.",
+      parts: ["La posizione, nella sua versione più forte", "Le obiezioni prevedibili e come chi la sostiene risponderebbe", "La dichiarazione finale"],
+      criteria: ["Nessuna caricatura della posizione esposta", "Nessun segnale ironico o di distanza durante l'esposizione", "Copre le obiezioni dall'interno di quella posizione", "Cambio di voce solo alla fine", "Fluidità e naturalezza prosodica"],
+      prepSeconds: 60, speakSeconds: 150,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "CORE",
+    title: "Spiegare un errore a chi ne ha subito le conseguenze", topicTag: "lavoro",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Un tuo errore ha causato un problema a un'altra persona. Spiegale che cosa è successo, che cosa hai già fatto e che cosa farai perché non si ripeta.",
+      parts: ["Che cosa è successo", "Che cosa hai già fatto", "Come eviterai che si ripeta"],
+      criteria: ["Dice il fatto senza preamboli attenuanti", "Riconosce l'effetto sull'altra persona", "Misura correttiva concreta", "Non diluisce la responsabilità in circostanze esterne", "Mantiene la calma di fronte a una reazione negativa"],
+      prepSeconds: 60, speakSeconds: 150,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "CORE",
+    title: "Presentare due scenari e raccomandarne uno", topicTag: "lavoro",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Presenta due possibili scelte davanti a una decisione, confrontale e raccomandane una, dichiarando su quali presupposti si basa la tua raccomandazione.",
+      parts: ["I due scenari, con pari cura", "Il confronto per criteri espliciti", "La raccomandazione e i suoi presupposti"],
+      criteria: ["Descrive entrambi gli scenari con lo stesso dettaglio", "Criteri di confronto dichiarati", "Raccomandazione senza esitazione", "Esplicita i presupposti e ciò che la farebbe cambiare", "Gestione del tempo fra le tre parti"],
+      prepSeconds: 60, speakSeconds: 150,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "CORE",
+    title: "Rispondere a una domanda ostile", topicTag: "opinione",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Ti viene rivolta una domanda che contiene un presupposto falso e un'accusa implicita. Rispondi senza ostilità e senza cedere sul contenuto.",
+      parts: ["Il presupposto che rifiuti", "La parte legittima della domanda", "La tua risposta"],
+      criteria: ["Individua e rifiuta il presupposto falso", "Risponde a ciò che di legittimo c'è nella domanda", "Non adotta l'inquadramento di chi domanda", "Tono stabile sotto pressione", "Chiusura che riafferma senza ripetere"],
+      prepSeconds: 60, speakSeconds: 150,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "CORE",
+    title: "Sintetizzare un dibattito", topicTag: "comprensione",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Sintetizza per chi non era presente un dibattito che non si è concluso: le posizioni, il punto di disaccordo e ciò che resta da decidere.",
+      parts: ["Le posizioni in campo", "Dove sta il disaccordo", "Che cosa resta aperto"],
+      criteria: ["Rappresenta le posizioni con equità", "Individua il punto esatto di divergenza", "Distingue il deciso dal pendente", "Non presenta la propria opinione come sintesi", "Resa utilizzabile da chi ascolta"],
+      prepSeconds: 60, speakSeconds: 150,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "CORE",
+    title: "Comunicare una decisione impopolare", topicTag: "lavoro",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Comunica a un gruppo una decisione che non gli farà piacere. Di' la decisione, la ragione, ciò che non cambia, e lascia spazio a una domanda.",
+      parts: ["La decisione e la ragione", "Che cosa resta invariato", "Lo spazio per le domande"],
+      criteria: ["Enuncia la decisione all'inizio", "Ragione verificabile, non generica", "Riconosce l'effetto sulle persone", "Non promette ciò che non può garantire", "Gestisce una domanda difficile"],
+      prepSeconds: 60, speakSeconds: 150,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "CORE",
+    title: "Difendere una scelta di metodo", topicTag: "scienza",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Spiega e difendi il modo in cui affronti un problema nel tuo studio o lavoro: che cosa fai, perché lo fai così e in quali casi il tuo metodo non funziona.",
+      parts: ["Come procedi", "Perché così", "Dove il metodo non funziona"],
+      criteria: ["Descrizione precisa del procedimento", "Motivazione fondata, non abitudine", "Dichiara i limiti senza indebolire la difesa", "Distingue preferenza da necessità", "Discorso tecnico ma comprensibile"],
+      prepSeconds: 60, speakSeconds: 150,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "STRETCH",
+    title: "Mediare fra due posizioni legittime", topicTag: "società",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Due parti sono in disaccordo e nessuna delle due agisce in malafede. Rendi il disaccordo comprensibile a entrambe e proponi un passo successivo.",
+      parts: ["Le due posizioni, riformulate", "Il nodo reale del disaccordo", "Il passo successivo proposto"],
+      criteria: ["Riformula ciascuna posizione in modo che chi la sostiene si riconosca", "Distingue disaccordo sui fatti da disaccordo sui valori", "Non simula neutralità dove una ragione è più forte", "Proposta concreta e accettabile per entrambe", "Autorevolezza senza schierarsi troppo presto"],
+      prepSeconds: 90, speakSeconds: 180,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "STRETCH",
+    title: "Criticare una pratica diffusa nel proprio campo", topicTag: "opinione",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Critica in modo fondato una pratica del tuo settore che quasi tutti accettano senza discutere. Spiega prima perché è accettata.",
+      parts: ["La pratica e perché è accettata", "La critica", "Che cosa metteresti al suo posto"],
+      criteria: ["Individua la pratica con precisione", "Spiega la ragione della sua diffusione prima di criticarla", "Critica argomentata, non sprezzante", "Riconosce ciò che la pratica risolve bene", "Propone un'alternativa praticabile"],
+      prepSeconds: 90, speakSeconds: 180,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "STRETCH",
+    title: "Parlare di un cambiamento di opinione", topicTag: "opinione",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Racconta un'opinione che hai cambiato nel tempo: che cosa pensavi, che cosa ti ha convinto e che cosa della posizione precedente resta valido.",
+      parts: ["Che cosa pensavi e perché", "Che cosa ti ha convinto", "Che cosa resta valido della posizione precedente"],
+      criteria: ["Espone la posizione precedente senza caricaturarla", "Individua ciò che concretamente lo ha convinto", "Distingue l'essere convinto dall'essere persuaso", "Conserva ciò che nella vecchia posizione reggeva", "Limita le conclusioni alla propria esperienza"],
+      prepSeconds: 90, speakSeconds: 180,
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ORALE", taskType: "SPEAKING", difficulty: "STRETCH",
+    title: "Chiudere lasciando una questione aperta", topicTag: "comprensione",
+    prompt: "Parla seguendo i punti.", guidanceNote: est(),
+    payload: {
+      task: "Fai un intervento di sintesi che si chiuda indicando con precisione ciò che resta irrisolto, anche se chi ascolta si aspetta una conclusione netta.",
+      parts: ["La sintesi del percorso", "Ciò che è stato stabilito", "La questione che resta aperta"],
+      criteria: ["Sintetizza senza appiattire le differenze", "Distingue il risolto da ciò che sembra risolto", "Formula la questione aperta in termini operativi", "Resiste alla conclusione attesa", "Chiude con autorevolezza malgrado l'apertura"],
       prepSeconds: 90, speakSeconds: 180,
     },
   },

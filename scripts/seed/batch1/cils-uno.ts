@@ -1,4 +1,4 @@
-// CILS UNO (B1 standard) — 26 items, 5 sections incl. Analisi (grammar).
+// CILS UNO (B1 standard) — 53 items, 5 sections incl. Analisi (grammar).
 // Scored on the CILS standard engine: 5 sections /20, floor 11 each, capitalization banking.
 // General/everyday register (NOT the B1c administrative-only world) — kept separate by design.
 import { ESTIMATE_NOTE, type RawItem } from "./types";
@@ -86,6 +86,118 @@ export const CILS_UNO_ITEMS: RawItem[] = [
     },
   },
 
+  {
+    exam: "CILS_STANDARD", level: L, section: "ASCOLTO", taskType: "MCQ", difficulty: "FOUNDATION",
+    title: "Le previsioni del tempo", topicTag: "media",
+    prompt: "Ascolta le previsioni e rispondi.",
+    payload: {
+      audioScript: "Domani cielo coperto al mattino, con qualche pioggia sulla costa. Nel pomeriggio le nuvole si aprono e torna il sole. Temperature in leggero aumento, massime intorno ai diciotto gradi. Vento debole.",
+      questions: [
+        { q: "Com'è il tempo domani mattina?", options: ["Sole", "Coperto con qualche pioggia", "Neve", "Nebbia"], answerIndex: 1 },
+        { q: "Che cosa cambia nel pomeriggio?", options: ["Torna il sole", "Comincia a piovere", "Arriva il vento forte", "Non cambia niente"], answerIndex: 0 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ASCOLTO", taskType: "MCQ", difficulty: "FOUNDATION",
+    title: "Annuncio in biblioteca", topicTag: "cultura",
+    prompt: "Ascolta l'annuncio e rispondi.",
+    payload: {
+      audioScript: "Avvisiamo i lettori che la sala studio chiude oggi alle diciotto, un'ora prima del solito, per una riunione. Il prestito resta attivo fino alle diciannove. Da lunedì torniamo agli orari normali.",
+      questions: [
+        { q: "A che ora chiude oggi la sala studio?", options: ["Alle diciotto", "Alle diciannove", "Alle venti", "Non chiude"], answerIndex: 0 },
+        { q: "Che cosa resta attivo fino alle diciannove?", options: ["La sala studio", "Il prestito", "Il bar", "Il parcheggio"], answerIndex: 1 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ASCOLTO", taskType: "MCQ", difficulty: "CORE",
+    title: "Scegliere un regalo", topicTag: "vita sociale",
+    prompt: "Ascolta la conversazione e rispondi.",
+    payload: {
+      audioScript: "— Che le prendiamo? — Un libro? — Ne ha già tanti e non sappiamo quali ha letto. — Allora una pianta. — Viaggia sempre, chi la annaffia? — Hai ragione. Facciamo un buono per il teatro: sceglie lei lo spettacolo.",
+      questions: [
+        { q: "Che cosa decidono di regalare?", options: ["Un libro", "Una pianta", "Un buono per il teatro", "Niente"], answerIndex: 2 },
+        { q: "Perché scartano la pianta?", options: ["Costa troppo", "La persona viaggia spesso", "Non le piacciono le piante", "È difficile da trasportare"], answerIndex: 1 },
+        { q: "Qual è il vantaggio della scelta finale?", options: ["Costa poco", "Sceglie lei che cosa vedere", "Si può usare subito", "Non serve incartarlo"], answerIndex: 1 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ASCOLTO", taskType: "MCQ", difficulty: "CORE",
+    title: "Intervista a un'artigiana", topicTag: "cultura",
+    prompt: "Ascolta l'intervista e rispondi.",
+    payload: {
+      audioScript: "— Lei ripara scarpe da trent'anni. È un mestiere che sta finendo? — Me lo chiedono spesso. Il lavoro non manca: manca chi lo impari. Ho avuto due ragazzi in bottega l'anno scorso, bravi, ma dopo sei mesi hanno lasciato. Non per i soldi: per la pazienza che serve all'inizio, quando non ti riesce niente.",
+      questions: [
+        { q: "Secondo l'artigiana, che cosa manca davvero?", options: ["Il lavoro", "Chi impari il mestiere", "I materiali", "I clienti"], answerIndex: 1 },
+        { q: "Perché i due ragazzi hanno lasciato?", options: ["Per il guadagno basso", "Per la pazienza che serve all'inizio", "Perché non erano bravi", "Perché la bottega ha chiuso"], answerIndex: 1 },
+        { q: "Di che cosa parla l'artigiana?", options: ["Della sua bottega e della sua esperienza", "Dell'artigianato italiano in generale", "Di una ricerca sul lavoro", "Della scuola professionale"], answerIndex: 0 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ASCOLTO", taskType: "MATCHING", difficulty: "CORE",
+    title: "Quattro persone e il loro tempo libero", topicTag: "vita sociale",
+    prompt: "Ascolta le quattro persone e abbina ognuna alla sua attività.",
+    payload: {
+      audioScript: "Elena: Il sabato mattina vado sempre in piscina, mi sveglia meglio del caffè. Paolo: Io mi chiudo in cucina e provo ricette nuove, anche se poi non vengono. Rita: A me piace camminare in montagna, anche da sola. Sandro: Io suono la chitarra, ma solo in casa, non davanti a nessuno.",
+      instruction: "Abbina ogni persona alla sua attività.",
+      prompts: ["Elena", "Paolo", "Rita", "Sandro"],
+      options: ["Cucinare", "Nuotare", "Suonare uno strumento", "Camminare in montagna"],
+      answerMap: [1, 0, 3, 2],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ASCOLTO", taskType: "MCQ", difficulty: "CORE",
+    title: "Telefonata: disdire una prenotazione", topicTag: "servizi",
+    prompt: "Ascolta la telefonata e rispondi.",
+    payload: {
+      audioScript: "— Buongiorno, avevo un tavolo per otto persone stasera. Purtroppo devo disdire. — Mi dispiace. Le ricordo che entro le cinque non c'è nessun costo. — Sono le quattro e mezza. — Allora siamo in tempo. Vuole spostare a un'altra sera? — Le faccio sapere domani.",
+      questions: [
+        { q: "Che cosa vuole fare il cliente?", options: ["Prenotare un tavolo", "Disdire la prenotazione", "Cambiare il numero di persone", "Chiedere il menù"], answerIndex: 1 },
+        { q: "Perché non paga niente?", options: ["Perché è un cliente abituale", "Perché disdice prima delle cinque", "Perché il ristorante è chiuso", "Perché ha già pagato"], answerIndex: 1 },
+        { q: "Che cosa risponde alla proposta di spostare?", options: ["Accetta subito", "Rifiuta", "Farà sapere domani", "Chiede di parlare con il direttore"], answerIndex: 2 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ASCOLTO", taskType: "MCQ", difficulty: "CORE",
+    title: "Concerto rimandato", topicTag: "attualità",
+    prompt: "Ascolta l'annuncio e rispondi.",
+    payload: {
+      audioScript: "Comunichiamo che il concerto di venerdì è rimandato al mese prossimo per un problema di salute di uno dei musicisti. I biglietti già acquistati restano validi per la nuova data. Chi non potrà venire può chiedere il rimborso entro trenta giorni.",
+      questions: [
+        { q: "Perché il concerto è rimandato?", options: ["Per il maltempo", "Per un problema di salute di un musicista", "Per pochi biglietti venduti", "Per lavori nella sala"], answerIndex: 1 },
+        { q: "Che cosa succede ai biglietti già comprati?", options: ["Non valgono più", "Valgono per la nuova data", "Vanno cambiati alla cassa", "Valgono metà prezzo"], answerIndex: 1 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ASCOLTO", taskType: "MCQ", difficulty: "STRETCH",
+    title: "Discussione: i musei aperti la sera", topicTag: "opinione",
+    prompt: "Ascolta la discussione e rispondi.",
+    payload: {
+      audioScript: "— Aprire i musei la sera porterebbe gente che di giorno lavora. — Sono d'accordo sull'obiettivo, non sul modo: aprire di sera senza assumere nessuno significa chiedere al personale di fare più ore con lo stesso stipendio. — Quindi sei contrario? — No. Dico che la proposta è metà: manca la parte su chi ci lavora.",
+      questions: [
+        { q: "Qual è la posizione della seconda persona?", options: ["È contraria all'apertura serale", "Condivide l'obiettivo ma vuole risolvere la questione del personale", "Pensa che i musei debbano chiudere prima", "Non ha un'opinione"], answerIndex: 1 },
+        { q: "Che cosa significa «la proposta è metà»?", options: ["Che costa troppo", "Che manca la parte su chi ci lavora", "Che riguarda solo alcuni musei", "Che è già stata provata"], answerIndex: 1 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ASCOLTO", taskType: "MCQ", difficulty: "STRETCH",
+    title: "Un'esperienza di volontariato", topicTag: "vita sociale",
+    prompt: "Ascolta il racconto e rispondi.",
+    payload: {
+      audioScript: "Ho cominciato per riempire i sabati, dopo la pensione. Pensavo di andare a dare una mano e basta. La cosa che non mi aspettavo è che dopo un po' fossero loro a chiedere di me quando non andavo. Non me l'aspettavo e, sinceramente, non ero sicuro di volerlo.",
+      questions: [
+        { q: "Perché ha cominciato?", options: ["Per un'esperienza di lavoro", "Per riempire i sabati dopo la pensione", "Perché glielo ha chiesto un amico", "Per motivi di studio"], answerIndex: 1 },
+        { q: "Che cosa non si aspettava?", options: ["Di dover lavorare molto", "Che le persone chiedessero di lui quando mancava", "Di dover imparare cose nuove", "Di smettere presto"], answerIndex: 1 },
+        { q: "Come si sente rispetto a questo?", options: ["Del tutto contento", "Non era sicuro di volerlo", "Infastidito", "Indifferente"], answerIndex: 1 },
+      ],
+    },
+  },
   // ---------------- LETTURA (6): 2 F, 3 C, 1 S ----------------
   {
     exam: "CILS_STANDARD", level: L, section: "LETTURA", taskType: "MCQ", difficulty: "FOUNDATION",
@@ -174,6 +286,134 @@ export const CILS_UNO_ITEMS: RawItem[] = [
     },
   },
 
+  {
+    exam: "CILS_STANDARD", level: L, section: "LETTURA", taskType: "MCQ", difficulty: "FOUNDATION",
+    title: "Orari e regole di un museo", topicTag: "cultura",
+    prompt: "Leggi le informazioni e rispondi.",
+    payload: {
+      passage: "MUSEO CIVICO — Aperto da martedì a domenica, dalle 10 alle 18. Chiuso il lunedì. L'ultimo ingresso è alle 17:15. La prima domenica del mese l'ingresso è gratuito. Non si possono fare foto con il flash. Gli zaini vanno lasciati all'ingresso.",
+      questions: [
+        { q: "Quando è chiuso il museo?", options: ["La domenica", "Il lunedì", "Il sabato", "Mai"], answerIndex: 1 },
+        { q: "Fino a che ora si può entrare?", options: ["Fino alle 17:15", "Fino alle 18", "Fino alle 10", "Non è indicato"], answerIndex: 0 },
+        { q: "Che cosa non è permesso?", options: ["Entrare con lo zaino in sala", "Visitare la domenica", "Entrare gratis", "Fare foto senza flash"], answerIndex: 0 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "LETTURA", taskType: "MCQ", difficulty: "FOUNDATION",
+    title: "Informazioni per gli ospiti di un ostello", topicTag: "viaggi",
+    prompt: "Leggi il foglio e rispondi.",
+    payload: {
+      passage: "BENVENUTI — La cucina è a disposizione di tutti fino alle 22:00: chi la usa la lascia pulita. Le camere si rifanno il mattino, tra le 10 e le 12: vi chiediamo di non restare dentro in quelle ore. Il wi-fi funziona meglio nella sala comune. Dopo le 23:00 si parla a voce bassa nei corridoi.",
+      questions: [
+        { q: "Fino a che ora si può usare la cucina?", options: ["Fino alle 22:00", "Fino alle 23:00", "Fino a mezzanotte", "Sempre"], answerIndex: 0 },
+        { q: "Che cosa si chiede agli ospiti tra le 10 e le 12?", options: ["Di restare in camera", "Di non stare in camera", "Di pulire la cucina", "Di stare in silenzio"], answerIndex: 1 },
+        { q: "Dove funziona meglio il wi-fi?", options: ["In camera", "Nella sala comune", "In cucina", "Nei corridoi"], answerIndex: 1 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "LETTURA", taskType: "MCQ", difficulty: "CORE",
+    title: "Una biblioteca che presta oggetti", topicTag: "attualità",
+    prompt: "Leggi l'articolo e rispondi.",
+    payload: {
+      passage: "In un quartiere della città una biblioteca ha cominciato a prestare anche oggetti: trapani, macchine da cucire, tende da campeggio. L'idea è semplice — ci sono cose che si usano due volte l'anno e che quasi nessuno userebbe abbastanza da giustificarne l'acquisto. Secondo le volontarie che gestiscono il servizio, la difficoltà non è stata trovare gli oggetti, che sono arrivati dalle case del quartiere, ma spiegare che si trattava di un prestito e non di un regalo.",
+      questions: [
+        { q: "Che cosa presta questa biblioteca oltre ai libri?", options: ["Soldi", "Oggetti come trapani e tende", "Spazi per riunioni", "Corsi"], answerIndex: 1 },
+        { q: "Qual è stata la difficoltà, secondo le volontarie?", options: ["Trovare gli oggetti", "Far capire che era un prestito", "Trovare lo spazio", "Pagare le riparazioni"], answerIndex: 1 },
+        { q: "Chi racconta questa difficoltà?", options: ["Il comune", "Le volontarie del servizio", "Un'indagine nazionale", "Gli utenti"], answerIndex: 1 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "LETTURA", taskType: "MCQ", difficulty: "CORE",
+    title: "Programma di una gita", topicTag: "viaggi",
+    prompt: "Leggi il programma e rispondi.",
+    payload: {
+      passage: "GITA DI FINE ANNO — Partenza alle 7:30 dal piazzale della scuola; chi arriva dopo le 7:40 non potrà partire, perché il pullman deve rispettare l'orario della visita. Pranzo al sacco. Nel pomeriggio, passeggiata di circa due ore su un sentiero facile: servono scarpe chiuse. Rientro previsto per le 19:00; in caso di ritardo avviseremo le famiglie con un messaggio.",
+      questions: [
+        { q: "Che cosa succede a chi arriva alle 7:45?", options: ["Aspetta il pullman dopo", "Non potrà partire", "Parte lo stesso", "Paga una penale"], answerIndex: 1 },
+        { q: "Che cosa serve per il pomeriggio?", options: ["Scarpe chiuse", "Un ombrello", "Soldi per il pranzo", "Il costume"], answerIndex: 0 },
+        { q: "Come avvisano in caso di ritardo?", options: ["Con una telefonata alla scuola", "Con un messaggio alle famiglie", "Con un avviso sul sito", "Non avvisano"], answerIndex: 1 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "LETTURA", taskType: "ORDERING", difficulty: "CORE",
+    title: "Come usare la lavatrice a gettoni", topicTag: "servizi",
+    prompt: "Rimetti in ordine le istruzioni.",
+    payload: {
+      instruction: "Ordina le fasi dalla prima all'ultima.",
+      shuffled: [
+        "Inserisci il gettone e premi il pulsante di avvio.",
+        "Scegli il programma in base al tipo di tessuto.",
+        "Metti i panni nel cestello senza riempirlo troppo.",
+        "Aspetta la fine del ciclo e ritira subito il bucato.",
+      ],
+      correctOrder: [2, 1, 0, 3],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "LETTURA", taskType: "MCQ", difficulty: "CORE",
+    title: "Intervista a una fotografa", topicTag: "cultura",
+    prompt: "Leggi l'intervista e rispondi.",
+    payload: {
+      passage: "«Fotografo la stessa piazza da dodici anni», racconta. «All'inizio volevo la foto perfetta: la luce giusta, nessuno che passa. Poi ho capito che stavo aspettando che la piazza fosse vuota per fotografarla, cioè che smettesse di essere quello che è. Adesso scatto quando c'è confusione, e le foto sono peggiori tecnicamente e migliori in tutto il resto.»",
+      questions: [
+        { q: "Che cosa cercava all'inizio?", options: ["La foto perfetta, senza persone", "Il ritratto degli abitanti", "Le fotografie notturne", "Un premio"], answerIndex: 0 },
+        { q: "Che cosa ha capito?", options: ["Che la piazza vuota non è la piazza", "Che la luce non conta", "Che serve una macchina migliore", "Che dodici anni sono troppi"], answerIndex: 0 },
+        { q: "Come giudica le sue foto di adesso?", options: ["Migliori sotto ogni aspetto", "Tecnicamente peggiori ma migliori nel resto", "Uguali a prima", "Peggiori in tutto"], answerIndex: 1 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "LETTURA", taskType: "MATCHING", difficulty: "CORE",
+    title: "Quattro recensioni brevi", topicTag: "opinione",
+    prompt: "Leggi le recensioni e abbina a ognuna il giudizio giusto.",
+    payload: {
+      instruction: "Abbina ogni recensione al giudizio corrispondente. C'è un giudizio in più.",
+      prompts: [
+        "RECENSIONE A: Bello il posto, buono il cibo, ma tre quarti d'ora per un piatto sono troppi.",
+        "RECENSIONE B: Niente di speciale, però costa poco e si mangia in fretta: per la pausa pranzo va benissimo.",
+        "RECENSIONE C: Ci torno da anni e non mi ha mai deluso una volta.",
+        "RECENSIONE D: Il menù promette molto e il piatto arriva senza sapore. Peccato.",
+      ],
+      options: [
+        "Apprezza tutto tranne l'attesa",
+        "Lo consiglia per un uso preciso, senza entusiasmo",
+        "Delusione rispetto alle aspettative",
+        "Soddisfazione costante nel tempo",
+        "Lo sconsiglia per il prezzo alto",
+      ],
+      answerMap: [0, 1, 3, 2],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "LETTURA", taskType: "MCQ", difficulty: "STRETCH",
+    title: "Perché torniamo negli stessi posti", topicTag: "opinione",
+    prompt: "Leggi il testo e rispondi.",
+    payload: {
+      passage: "C'è chi passa mesi a cercare una meta nuova e chi torna ogni anno nello stesso paese, allo stesso albergo, quasi alla stessa camera. Il secondo gruppo viene spesso guardato con un po' di compatimento, come se rinunciasse a qualcosa. Non credo sia così semplice. Chi torna non cerca sorprese: cerca il tempo che si guadagna quando non devi decidere niente. È una vacanza diversa, non una vacanza minore.",
+      questions: [
+        { q: "Qual è la tesi dell'autore?", options: ["Che tornare negli stessi posti è una rinuncia", "Che è una vacanza diversa, non inferiore", "Che bisogna cercare sempre mete nuove", "Che gli alberghi sono tutti uguali"], answerIndex: 1 },
+        { q: "Che cosa cerca, secondo l'autore, chi torna sempre nello stesso posto?", options: ["Il risparmio", "Il tempo che si guadagna non dovendo decidere", "Le sorprese", "La compagnia"], answerIndex: 1 },
+        { q: "Come descrive l'autore lo sguardo degli altri su questo gruppo?", options: ["Di ammirazione", "Di compatimento", "Di invidia", "Di indifferenza"], answerIndex: 1 },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "LETTURA", taskType: "MCQ", difficulty: "STRETCH",
+    title: "Lettera: la palestra della scuola", topicTag: "opinione",
+    prompt: "Leggi la lettera e rispondi.",
+    payload: {
+      passage: "Scrivo come genitore. La palestra della scuola resta chiusa il pomeriggio, mentre nel quartiere non c'è un altro spazio coperto. So che aprirla significa qualcuno che apre, chiude e risponde di quello che succede, e che questo qualcuno va pagato: non chiedo un miracolo a costo zero. Chiedo che il costo venga detto, perché finora la risposta è stata che «non si può», e «non si può» non è una cifra.",
+      questions: [
+        { q: "Che cosa chiede chi scrive?", options: ["L'apertura immediata e gratuita", "Che venga dichiarato quanto costerebbe", "La costruzione di una palestra nuova", "Che la scuola chiuda prima"], answerIndex: 1 },
+        { q: "Che cosa riconosce chi scrive?", options: ["Che aprire comporta un costo e una responsabilità", "Che la palestra è in cattive condizioni", "Che pochi la userebbero", "Che il quartiere ha altri spazi"], answerIndex: 0 },
+        { q: "Che cosa critica della risposta ricevuta finora?", options: ["Che è arrivata tardi", "Che «non si può» non è una cifra", "Che era scritta male", "Che veniva da un ufficio sbagliato"], answerIndex: 1 },
+      ],
+    },
+  },
   // ---------------- ANALISI (6): 2 F, 3 C, 1 S — grammar/structures ----------------
   {
     exam: "CILS_STANDARD", level: L, section: "ANALISI", taskType: "ANALISI", difficulty: "FOUNDATION",
@@ -260,6 +500,136 @@ export const CILS_UNO_ITEMS: RawItem[] = [
     },
   },
 
+  {
+    exam: "CILS_STANDARD", level: L, section: "ANALISI", taskType: "ANALISI", difficulty: "FOUNDATION",
+    title: "Gli articoli", topicTag: "grammatica",
+    prompt: "Completa il testo con la forma corretta.",
+    payload: {
+      text: "Ieri ho comprato ___ libro e ___ rivista. ___ libro è di un autore italiano. Metto tutto ___ borsa e leggo ___ treno.",
+      blanks: [
+        { answer: "un", options: ["un", "una", "il", "lo"] },
+        { answer: "una", options: ["un", "una", "il", "la"] },
+        { answer: "Il", options: ["Il", "Un", "Lo", "La"] },
+        { answer: "in", options: ["in", "a", "su", "da"] },
+        { answer: "sul", options: ["sul", "nel", "al", "col"] },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ANALISI", taskType: "ANALISI", difficulty: "FOUNDATION",
+    title: "Il plurale di nomi e aggettivi", topicTag: "grammatica",
+    prompt: "Completa il testo con la forma corretta.",
+    payload: {
+      text: "In cucina ci sono due ___ rossi e tre ___ bianche. Le ___ sono nuove e i ___ sono vecchi.",
+      blanks: [
+        { answer: "bicchieri", options: ["bicchieri", "bicchiero", "bicchiera", "bicchiere"] },
+        { answer: "tazze", options: ["tazze", "tazzi", "tazza", "tazzo"] },
+        { answer: "sedie", options: ["sedie", "sedia", "sedi", "sedii"] },
+        { answer: "tavoli", options: ["tavoli", "tavole", "tavola", "tavolo"] },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ANALISI", taskType: "ANALISI", difficulty: "CORE",
+    title: "L'imperfetto", topicTag: "grammatica",
+    prompt: "Completa il testo con la forma corretta.",
+    payload: {
+      text: "Da bambino ___ in campagna. Ogni estate ___ dai nonni e ___ tutto il giorno fuori. Non ci ___ la televisione, ma non ci ___ mai.",
+      blanks: [
+        { answer: "vivevo", options: ["vivevo", "ho vissuto", "vivrò", "vivessi"] },
+        { answer: "andavo", options: ["andavo", "sono andato", "andrò", "andassi"] },
+        { answer: "stavo", options: ["stavo", "sono stato", "starò", "stessi"] },
+        { answer: "era", options: ["era", "è stata", "sarà", "fosse"] },
+        { answer: "annoiavamo", options: ["annoiavamo", "siamo annoiati", "annoieremo", "annoiassimo"] },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ANALISI", taskType: "ANALISI", difficulty: "CORE",
+    title: "I pronomi indiretti", topicTag: "grammatica",
+    prompt: "Completa il testo con la forma corretta.",
+    payload: {
+      text: "Ho visto Marta e ___ ho detto tutto. A Luca invece non ___ ho ancora parlato. Se ___ telefoni tu, ___ fai un favore.",
+      blanks: [
+        { answer: "le", options: ["le", "la", "gli", "lo"] },
+        { answer: "gli", options: ["gli", "lo", "le", "la"] },
+        { answer: "gli", options: ["gli", "lo", "le", "ci"] },
+        { answer: "mi", options: ["mi", "me", "a me", "ti"] },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ANALISI", taskType: "ANALISI", difficulty: "CORE",
+    title: "Il futuro semplice", topicTag: "grammatica",
+    prompt: "Completa il testo con la forma corretta.",
+    payload: {
+      text: "L'anno prossimo ___ in un'altra città. ___ una casa piccola e ___ a lavorare in centro. Ti ___ appena arrivo.",
+      blanks: [
+        { answer: "andrò", options: ["andrò", "vado", "andavo", "andrei"] },
+        { answer: "Cercherò", options: ["Cercherò", "Cerco", "Cercavo", "Cercherei"] },
+        { answer: "comincerò", options: ["comincerò", "comincio", "cominciavo", "comincerei"] },
+        { answer: "scriverò", options: ["scriverò", "scrivo", "scrivevo", "scriverei"] },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ANALISI", taskType: "ANALISI", difficulty: "CORE",
+    title: "I possessivi", topicTag: "grammatica",
+    prompt: "Completa il testo con la forma corretta.",
+    payload: {
+      text: "Questa è ___ macchina, non la tua. ___ fratello lavora con me. ___ genitori abitano ancora qui. Dove hai messo ___ chiavi?",
+      blanks: [
+        { answer: "la mia", options: ["la mia", "mia", "il mio", "mio"] },
+        { answer: "Mio", options: ["Mio", "Il mio", "Mia", "La mia"] },
+        { answer: "I miei", options: ["I miei", "Miei", "Le mie", "Mie"] },
+        { answer: "le tue", options: ["le tue", "tue", "i tuoi", "tuoi"] },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ANALISI", taskType: "ANALISI", difficulty: "CORE",
+    title: "Il condizionale presente", topicTag: "grammatica",
+    prompt: "Completa il testo con la forma corretta.",
+    payload: {
+      text: "___ un caffè, per favore. Se avessi tempo, ___ volentieri con voi. ___ dirmi dov'è la stazione? Noi ___ partire presto.",
+      blanks: [
+        { answer: "Vorrei", options: ["Vorrei", "Voglio", "Volevo", "Vorrò"] },
+        { answer: "verrei", options: ["verrei", "vengo", "venivo", "verrò"] },
+        { answer: "Potrebbe", options: ["Potrebbe", "Può", "Poteva", "Potrà"] },
+        { answer: "preferiremmo", options: ["preferiremmo", "preferiamo", "preferivamo", "preferiremo"] },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ANALISI", taskType: "ANALISI", difficulty: "STRETCH",
+    title: "Passato prossimo o imperfetto", topicTag: "grammatica",
+    prompt: "Completa il testo con la forma corretta.",
+    payload: {
+      text: "Mentre ___ , ___ il telefono. ___ ma non ___ nessuno. Quella sera ___ molto stanco, così ___ presto.",
+      blanks: [
+        { answer: "cucinavo", options: ["cucinavo", "ho cucinato", "cucinerò", "cucinassi"] },
+        { answer: "è suonato", options: ["è suonato", "suonava", "suonerà", "suonasse"] },
+        { answer: "Ho risposto", options: ["Ho risposto", "Rispondevo", "Risponderò", "Rispondessi"] },
+        { answer: "c'era", options: ["c'era", "c'è stato", "ci sarà", "ci fosse"] },
+        { answer: "ero", options: ["ero", "sono stato", "sarò", "fossi"] },
+        { answer: "sono andato", options: ["sono andato", "andavo", "andrò", "andassi"] },
+      ],
+    },
+  },
+  {
+    exam: "CILS_STANDARD", level: L, section: "ANALISI", taskType: "ANALISI", difficulty: "STRETCH",
+    title: "Ci e ne", topicTag: "grammatica",
+    prompt: "Completa il testo con la forma corretta.",
+    payload: {
+      text: "— Sei mai stato a Bologna? — Sì, ___ sono stato l'anno scorso. — Quanti giorni ___ sei rimasto? — ___ sono rimasto tre. Del lavoro non ___ parliamo adesso.",
+      blanks: [
+        { answer: "ci", options: ["ci", "ne", "vi", "lo"] },
+        { answer: "ci", options: ["ci", "ne", "li", "gli"] },
+        { answer: "Ne", options: ["Ne", "Ci", "Li", "Le"] },
+        { answer: "ne", options: ["ne", "ci", "lo", "li"] },
+      ],
+    },
+  },
   // ---------------- PRODUZIONE SCRITTA (4): 1 F, 2 C, 1 S — WRITING (estimate) ----------------
   {
     exam: "CILS_STANDARD", level: L, section: "SCRITTA", taskType: "WRITING", difficulty: "FOUNDATION",

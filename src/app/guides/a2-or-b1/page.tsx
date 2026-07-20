@@ -23,7 +23,7 @@ export default function Page() {
         <div className="rounded-2xl border-2 border-almi-coral bg-almi-paper p-5">
           <p className="text-sm font-semibold text-almi-coral">Citizenship (naturalisation)</p>
           <p className="mt-1 text-2xl font-bold text-almi-ink">B1</p>
-          <p className="mt-2 text-sm text-almi-text">Citizenship asks for Italian at B1 — via the all-or-nothing <Link href="/guides/cils-b1-cittadinanza">CILS B1 Cittadinanza</Link> or <Link href="/exam/celi-2-b1/from/argentina">CELI 2 (B1)</Link>.</p>
+          <p className="mt-2 text-sm text-almi-text">Citizenship asks for Italian at B1. Among the accepted certificates are the all-or-nothing <Link href="/guides/cils-b1-cittadinanza">CILS B1 Cittadinanza</Link> and <Link href="/exam/celi-2-b1/from/argentina">CELI 2 (B1)</Link>.</p>
         </div>
       </div>
 

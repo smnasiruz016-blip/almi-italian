@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run seo:test && npm run selftest:engine && npm run validate:batch1 && npm run gate:bank && npm run gate:real-entity && npm run gate:titles && node scripts/seo/uniqueness-gate.mjs && prisma generate && next build",
+    "build": "npm run gate:fork-hygiene && npm run seo:test && npm run selftest:engine && npm run validate:batch1 && npm run gate:bank && npm run gate:real-entity && npm run gate:titles && node scripts/seo/uniqueness-gate.mjs && prisma generate && next build",
     "start": "next start",
     "postinstall": "prisma generate",
     "lint": "next lint",
@@ -15,6 +15,7 @@
     "validate:batch1": "tsx scripts/seed/batch1/batch1.selftest.ts",
     "seed:batch1": "tsx scripts/seed/seed-batch1.ts",
     "db:deploy": "prisma migrate deploy",
+    "gate:fork-hygiene": "node scripts/seo/fork-hygiene-gate.mjs",
     "gate:bank": "tsx scripts/items/bank-gate.mts",
     "gate:real-entity": "tsx scripts/items/real-entity-gate.mts",
     "gate:titles": "tsx scripts/items/title-uniqueness-gate.mts"

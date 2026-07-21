@@ -21,7 +21,7 @@ const SESSION_COOKIE = "almi_italian_session";
  *  2026-08-20 was issued before this rename shipped (2026-07-20). After that date
  *  this is dead code holding another product's name in the repo. Delete it then; do
  *  not let it become permanent furniture. */
-const LEGACY_SESSION_COOKIES = ["almi_korean_session"];
+const LEGACY_SESSION_COOKIES = ["almi_korean_session"]; // hygiene-allow: legacy-cookie-almi_korean
 
 /** Read the session token from the current cookie name, falling back to legacy names.
  *  Current name wins: a browser can carry both while a legacy cookie ages out. */

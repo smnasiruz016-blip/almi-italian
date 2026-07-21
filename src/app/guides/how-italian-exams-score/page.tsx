@@ -5,14 +5,14 @@ import { canonical, TWO_EXAMS_LINE } from "@/lib/seo/content";
 import { CILS_STANDARD_FLOOR, CILS_STANDARD_SECTION_MAX, CILS_B1C_FLOOR, CILS_B1C_TOTAL_FLOOR, CILS_B1C_TOTAL_MAX } from "@/lib/scoring";
 
 export const metadata: Metadata = {
-  title: "How Italian exams are scored — four philosophies compared",
-  description: "Four ways a language exam can decide a pass: JLPT's sectional floors, TOPIK's total-only, CILS's floors-plus-banking, and CELI's two-parts-plus-band. Understand the scale before you sit — no surprises.",
+  title: "How Italian exams are scored — CILS, B1 Cittadinanza & CELI compared",
+  description: "Three ways an Italian exam can decide a pass: CILS's floors-plus-banking, CILS B1 Cittadinanza's all-or-nothing, and CELI's two-parts-plus-band — and which one fits your goal. Understand the scale before you sit, no surprises.",
   alternates: { canonical: canonical("/guides/how-italian-exams-score") },
 };
 
 export default function Page() {
   return (
-    <GuideShell eyebrow="Guide · scoring" title="Four scoring philosophies, side by side">
+    <GuideShell eyebrow="Guide · scoring" title="Italian exam scoring, side by side">
       <p>Two exams can test the same level and still decide a pass completely differently. Knowing which philosophy you&apos;re under changes how you prepare. {TWO_EXAMS_LINE}</p>
 
       <div className="space-y-3">
@@ -30,8 +30,8 @@ export default function Page() {
         </div>
       </div>
 
-      <h2>For contrast — two other systems</h2>
-      <p>Japan&apos;s <a href="https://almijapanese.almiworld.com" className="text-almi-coral hover:underline">JLPT</a> uses <strong>sectional floors</strong> — a minimum in each section as well as a total. Korea&apos;s <a href="https://almikorean.almiworld.com" className="text-almi-coral hover:underline">TOPIK</a> is <strong>total-only</strong> — no section minimums, your total alone sets your level. Seeing all four makes the Italian rules concrete: CILS and CELI are their own animals, and B1 Cittadinanza is the strictest of the lot.</p>
+      <h2>Which rule fits your goal?</h2>
+      <p>The scoring, not just the level, should steer your choice. <strong className="text-almi-ink">CILS standard</strong> is the most forgiving over time — bank the sections you clear and resit only what you missed. <strong className="text-almi-ink">CILS B1 Cittadinanza</strong> is the strictest of the three: every section <em>and</em> the total, on one sitting, no banking — the price of the citizenship route. <strong className="text-almi-ink">CELI</strong> sits between them: Written and Oral each stand on their own, and a part you clear banks for a year. If you need citizenship, B1 Cittadinanza&apos;s rule is fixed; otherwise pick the exam whose <em>failure mode</em> — resit-one-section, all-or-nothing, or part-banks-for-a-year — you can live with.</p>
 
       <p className="pt-2"><Link href="/practice">Practise on the real rules →</Link> · <Link href="/guides/capitalizzazione">How banking works →</Link></p>
     </GuideShell>

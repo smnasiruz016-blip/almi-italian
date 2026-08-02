@@ -1,16 +1,33 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import type { BankItem } from "@/lib/items";
-import { isMcq, isMatching, isOrdering, isCloze } from "@/lib/items";
+// AlmiItalian practice runner.
+//
+// ── WHAT CHANGED, AND WHY IT IS NOT A REFACTOR ──────────────────────────────
+// This component used to grade the section. It received the authored bank as props — keys
+// included — built a list of gradable atoms, compared each one against `answerIndex` /
+// `answerMap` / `correctOrder` / `blank.answer`, and computed the raw score, the percentage,
+// the scaled section result and the CLEAR / BORDERLINE / BELOW verdict, all in the page.
+//
+// It now knows none of that. It collects answers, POSTs them to /api/it/submit, and renders
+// what comes back. The arithmetic did not move for tidiness: a verdict the client computes is
+// a verdict the client can choose, and every number this component used to produce was one a
+// learner could edit into whatever they preferred.
+//
+// It imports from @/lib/runner-items — which imports nothing — rather than @/lib/items. That
+// is load-bearing: the old import of the type guards pulled the entire keyed bank into the
+// client bundle, so the key shipped on every practice page regardless of what the props said.
 
-type Scale = { max: number; floor: number } | null;
-
-// Normalize free-text cloze answers: case-insensitive, trimmed, inner spaces collapsed.
-const norm = (s: string) => s.trim().toLowerCase().replace(/\s+/g, " ");
-
-// One gradable atom (an MCQ question, one matching prompt, one ordering slot, one cloze blank).
-type Atom = { key: string; correct: () => boolean };
+import { useState } from "react";
+import {
+  ATOM,
+  isMcq,
+  isMatching,
+  isOrdering,
+  isCloze,
+  type AtomMark,
+  type RunnerItem,
+  type SubmitResult,
+} from "@/lib/runner-items";
 
 // A browser-voice player (free, client-side Web Speech — no Blob, degrades to transcript-only).
 function AudioPlay({ script }: { script: string }) {
@@ -34,11 +51,14 @@ function AudioPlay({ script }: { script: string }) {
   );
 }
 
+/** Local answer-map key. The envelope posted to the server is grouped by item, so the atom key
+ *  travels scoped to its item; this flat key exists only to drive one React state object. */
+const localKey = (itemId: string, atom: string) => `${itemId}::${atom}`;
+
 export function PracticeRunner({
-  items, scale, honesty, modelNote, celiContext, sectionLabel, trackLabel,
+  items, honesty, modelNote, celiContext, sectionLabel, trackLabel,
 }: {
-  items: BankItem[];
-  scale: Scale;
+  items: RunnerItem[];
   honesty: string;
   modelNote: string;
   celiContext: string | null; // set for CELI (part-scored) — shown instead of a scaled score
@@ -46,34 +66,58 @@ export function PracticeRunner({
   trackLabel: string;
 }) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [result, setResult] = useState<SubmitResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
   const set = (k: string, v: string) => setAnswers((a) => ({ ...a, [k]: v }));
 
-  // Collect every gradable atom so the score reflects real auto-marking, not item count.
-  const atoms = useMemo<Atom[]>(() => {
-    const out: Atom[] = [];
-    items.forEach((it, i) => {
-      const p = it.payload;
-      if (isMcq(p)) p.questions.forEach((q, qi) => { const k = `${i}:mcq:${qi}`; out.push({ key: k, correct: () => answers[k] === String(q.answerIndex) }); });
-      else if (isMatching(p)) p.answerMap.forEach((ans, pi) => { const k = `${i}:mat:${pi}`; out.push({ key: k, correct: () => answers[k] === String(ans) }); });
-      else if (isOrdering(p)) p.correctOrder.forEach((ans, slot) => { const k = `${i}:ord:${slot}`; out.push({ key: k, correct: () => answers[k] === String(ans) }); });
-      else if (isCloze(p)) p.blanks.forEach((b, bi) => { const k = `${i}:clz:${bi}`; out.push({ key: k, correct: () => (b.options ? answers[k] === b.answer : norm(answers[k] ?? "") === norm(b.answer)) }); });
-    });
-    return out;
-  }, [items, answers]);
+  const submitted = result !== null;
 
-  const total = atoms.length;
-  const correct = atoms.filter((a) => a.correct()).length;
-  const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
-  const scaled = scale ? Math.round((total > 0 ? correct / total : 0) * scale.max) : null;
-  const status = scale && scaled !== null ? (scaled >= scale.floor ? "CLEAR" : scaled === scale.floor - 1 ? "BORDERLINE" : "BELOW") : null;
+  // Marks, indexed for lookup while rendering. Empty until the server has replied — which is
+  // also when the correct answers first exist on this side of the wire.
+  const markBy = new Map<string, AtomMark>();
+  if (result) for (const m of result.marks) markBy.set(localKey(m.itemId, m.atom), m);
+
+  async function submit() {
+    setBusy(true);
+    setError(null);
+    try {
+      // Only the item id and the chosen values. No key, no score, no exam/level/section — the
+      // server derives all of those from the items it loads.
+      const payload = {
+        items: items.map((it) => {
+          const own: Record<string, string> = {};
+          for (const [k, v] of Object.entries(answers)) {
+            if (k.startsWith(`${it.id}::`)) own[k.slice(it.id.length + 2)] = v;
+          }
+          return { itemId: it.id, answers: own };
+        }),
+      };
+      const res = await fetch("/api/it/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok || !data?.ok) {
+        setError(typeof data?.error === "string" ? data.error : "Could not mark this section.");
+        return;
+      }
+      setResult(data as SubmitResult);
+    } catch {
+      setError("Could not reach the marking service. Check your connection and try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
 
   return (
     <div className="space-y-6">
-      {items.map((it, i) => {
+      {items.map((it) => {
         const p = it.payload;
+        const mark = (atom: string) => markBy.get(localKey(it.id, atom));
         return (
-          <div key={i} className="rounded-2xl border border-almi-line bg-almi-paper p-5">
+          <div key={it.id} className="rounded-2xl border border-almi-line bg-almi-paper p-5">
             <p className="text-xs font-semibold uppercase tracking-wide text-almi-text-muted">{it.title}</p>
             {it.prompt && <p className="mt-1 text-sm text-almi-text">{it.prompt}</p>}
 
@@ -82,13 +126,25 @@ export function PracticeRunner({
 
             {/* MCQ */}
             {isMcq(p) && p.questions.map((q, qi) => {
-              const k = `${i}:mcq:${qi}`;
+              const atom = ATOM.mcq(qi);
+              const k = localKey(it.id, atom);
+              const m = mark(atom);
               return (
                 <fieldset key={qi} className="mt-3">
                   <legend className="text-sm font-medium text-almi-ink">{q.q}</legend>
                   <div className="mt-2 grid gap-1.5">
                     {q.options.map((o, oi) => (
-                      <Choice key={oi} name={k} chosen={answers[k] === String(oi)} isAnswer={submitted && oi === q.answerIndex} wrong={submitted && answers[k] === String(oi) && oi !== q.answerIndex} disabled={submitted} onPick={() => set(k, String(oi))} text={o} />
+                      <Choice
+                        key={oi}
+                        name={k}
+                        chosen={answers[k] === String(oi)}
+                        // Correctness comes from the server's mark, never from a local comparison.
+                        isAnswer={!!m && m.correctValue === String(oi)}
+                        wrong={!!m && answers[k] === String(oi) && m.correctValue !== String(oi)}
+                        disabled={submitted}
+                        onPick={() => set(k, String(oi))}
+                        text={o}
+                      />
                     ))}
                   </div>
                 </fieldset>
@@ -101,17 +157,19 @@ export function PracticeRunner({
                 <p className="text-sm font-medium text-almi-ink">{p.instruction}</p>
                 <div className="mt-2 space-y-2">
                   {p.prompts.map((pr, pi) => {
-                    const k = `${i}:mat:${pi}`;
-                    const ok = submitted && answers[k] === String(p.answerMap[pi]);
-                    const bad = submitted && answers[k] !== undefined && answers[k] !== String(p.answerMap[pi]);
+                    const atom = ATOM.matching(pi);
+                    const k = localKey(it.id, atom);
+                    const m = mark(atom);
+                    const ok = !!m && m.correct;
+                    const bad = !!m && !m.correct && answers[k] !== undefined;
                     return (
                       <div key={pi} className="flex flex-wrap items-center gap-2 text-sm">
                         <span className="text-almi-text">{pr}</span>
-                        <select disabled={submitted} value={answers[k] ?? ""} onChange={(e) => set(k, e.target.value)} className={`rounded-lg border px-2 py-1 ${ok ? "border-almi-teal bg-almi-teal/10" : bad ? "border-almi-coral-deep bg-almi-coral/10" : "border-almi-line"}`}>
+                        <select id={k} aria-label={pr} disabled={submitted} value={answers[k] ?? ""} onChange={(e) => set(k, e.target.value)} className={`rounded-lg border px-2 py-1 ${ok ? "border-almi-teal bg-almi-teal/10" : bad ? "border-almi-coral-deep bg-almi-coral/10" : "border-almi-line"}`}>
                           <option value="">—</option>
                           {p.options.map((o, oi) => <option key={oi} value={String(oi)}>{o}</option>)}
                         </select>
-                        {submitted && bad && <span className="text-xs text-almi-text-muted">→ {p.options[p.answerMap[pi]]}</span>}
+                        {bad && m && <span className="text-xs text-almi-text-muted">→ {p.options[Number(m.correctValue)]}</span>}
                       </div>
                     );
                   })}
@@ -124,18 +182,22 @@ export function PracticeRunner({
               <div className="mt-3">
                 <p className="text-sm font-medium text-almi-ink">{p.instruction}</p>
                 <div className="mt-2 space-y-2">
-                  {p.correctOrder.map((ans, slot) => {
-                    const k = `${i}:ord:${slot}`;
-                    const ok = submitted && answers[k] === String(ans);
-                    const bad = submitted && answers[k] !== undefined && answers[k] !== String(ans);
+                  {/* Slot count comes from `slots`, not from the length of the key — the key is
+                      no longer here to be counted, which was the point. */}
+                  {Array.from({ length: p.slots }, (_, slot) => {
+                    const atom = ATOM.ordering(slot);
+                    const k = localKey(it.id, atom);
+                    const m = mark(atom);
+                    const ok = !!m && m.correct;
+                    const bad = !!m && !m.correct && answers[k] !== undefined;
                     return (
                       <div key={slot} className="flex flex-wrap items-center gap-2 text-sm">
                         <span className="w-6 text-almi-text-muted">{slot + 1}.</span>
-                        <select disabled={submitted} value={answers[k] ?? ""} onChange={(e) => set(k, e.target.value)} className={`flex-1 rounded-lg border px-2 py-1 ${ok ? "border-almi-teal bg-almi-teal/10" : bad ? "border-almi-coral-deep bg-almi-coral/10" : "border-almi-line"}`}>
+                        <select id={k} aria-label={`Position ${slot + 1}`} disabled={submitted} value={answers[k] ?? ""} onChange={(e) => set(k, e.target.value)} className={`flex-1 rounded-lg border px-2 py-1 ${ok ? "border-almi-teal bg-almi-teal/10" : bad ? "border-almi-coral-deep bg-almi-coral/10" : "border-almi-line"}`}>
                           <option value="">—</option>
                           {p.shuffled.map((frag, fi) => <option key={fi} value={String(fi)}>{frag}</option>)}
                         </select>
-                        {submitted && bad && <span className="text-xs text-almi-text-muted">→ {p.shuffled[ans]}</span>}
+                        {bad && m && <span className="text-xs text-almi-text-muted">→ {p.shuffled[Number(m.correctValue)]}</span>}
                       </div>
                     );
                   })}
@@ -149,23 +211,24 @@ export function PracticeRunner({
                 <p className="whitespace-pre-line text-sm text-almi-text">{p.text}</p>
                 <div className="mt-2 grid gap-2 sm:grid-cols-2">
                   {p.blanks.map((b, bi) => {
-                    const k = `${i}:clz:${bi}`;
-                    const good = b.options ? answers[k] === b.answer : norm(answers[k] ?? "") === norm(b.answer);
-                    const ok = submitted && good;
-                    const bad = submitted && (answers[k] ?? "") !== "" && !good;
+                    const atom = ATOM.cloze(bi);
+                    const k = localKey(it.id, atom);
+                    const m = mark(atom);
+                    const ok = !!m && m.correct;
+                    const bad = !!m && !m.correct && (answers[k] ?? "") !== "";
                     const cls = `rounded-lg border px-2 py-1 text-sm ${ok ? "border-almi-teal bg-almi-teal/10" : bad ? "border-almi-coral-deep bg-almi-coral/10" : "border-almi-line"}`;
                     return (
                       <div key={bi} className="flex flex-wrap items-center gap-2">
                         <span className="text-xs text-almi-text-muted">{bi + 1}.</span>
                         {b.options ? (
-                          <select disabled={submitted} value={answers[k] ?? ""} onChange={(e) => set(k, e.target.value)} className={cls}>
+                          <select id={k} aria-label={`Blank ${bi + 1}`} disabled={submitted} value={answers[k] ?? ""} onChange={(e) => set(k, e.target.value)} className={cls}>
                             <option value="">—</option>
                             {b.options.map((o, oi) => <option key={oi} value={o}>{o}</option>)}
                           </select>
                         ) : (
-                          <input disabled={submitted} value={answers[k] ?? ""} onChange={(e) => set(k, e.target.value)} className={cls} placeholder="…" />
+                          <input id={k} aria-label={`Blank ${bi + 1}`} disabled={submitted} value={answers[k] ?? ""} onChange={(e) => set(k, e.target.value)} className={cls} placeholder="…" />
                         )}
-                        {submitted && bad && <span className="text-xs text-almi-text-muted">→ {b.answer}</span>}
+                        {bad && m && <span className="text-xs text-almi-text-muted">→ {m.correctValue}</span>}
                       </div>
                     );
                   })}
@@ -178,9 +241,19 @@ export function PracticeRunner({
         );
       })}
 
+      {error && (
+        <p role="alert" className="rounded-xl border border-almi-coral-deep bg-almi-coral/10 px-4 py-3 text-sm text-almi-ink">
+          {error}
+        </p>
+      )}
+
       {!submitted ? (
-        <button onClick={() => setSubmitted(true)} className="rounded-full bg-almi-coral px-7 py-3 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">
-          Check my answers
+        <button
+          onClick={submit}
+          disabled={busy}
+          className="rounded-full bg-almi-coral px-7 py-3 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark disabled:opacity-60"
+        >
+          {busy ? "Marking…" : "Check my answers"}
         </button>
       ) : (
         <div className="rounded-2xl border border-almi-line bg-almi-paper p-6">
@@ -189,12 +262,12 @@ export function PracticeRunner({
             <span className="rounded-full bg-almi-bg-peach px-3 py-1 text-xs text-almi-text">practice estimate</span>
           </div>
           <p className="mt-3 text-almi-text">
-            Raw: <strong className="text-almi-ink">{correct}/{total}</strong> correct ({pct}%).
+            Raw: <strong className="text-almi-ink">{result.correct}/{result.total}</strong> correct ({result.percent}%).
           </p>
-          {scale && scaled !== null ? (
+          {result.scaled ? (
             <p className="mt-2 text-almi-text">
-              On this section&apos;s scale that is about <strong className="text-almi-ink">{scaled}/{scale.max}</strong> — you need ≥{scale.floor}/{scale.max} to clear it.{" "}
-              <span className={status === "CLEAR" ? "font-semibold text-almi-teal" : status === "BORDERLINE" ? "font-semibold text-almi-coral" : "font-semibold text-almi-coral-deep"}>{status}</span>
+              On this section&apos;s scale that is about <strong className="text-almi-ink">{result.scaled.score}/{result.scaled.max}</strong> — you need ≥{result.scaled.floor}/{result.scaled.max} to clear it.{" "}
+              <span className={result.scaled.status === "CLEAR" ? "font-semibold text-almi-teal" : result.scaled.status === "BORDERLINE" ? "font-semibold text-almi-coral" : "font-semibold text-almi-coral-deep"}>{result.scaled.status}</span>
             </p>
           ) : (
             celiContext && <p className="mt-2 text-almi-text">{celiContext}</p>

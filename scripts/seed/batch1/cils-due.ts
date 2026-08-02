@@ -15,8 +15,8 @@ export const CILS_DUE_ITEMS: RawItem[] = [
     payload: {
       audioScript: "Nel dibattito di oggi si parla di energia rinnovabile. Secondo l'esperta, l'Italia produce ormai quasi il quaranta per cento della sua elettricità da fonti pulite, come sole e vento. Tuttavia, avverte, serve investire di più nelle reti elettriche, altrimenti l'energia prodotta rischia di andare sprecata nei momenti di maggiore produzione.",
       questions: [
-        { q: "Quanta elettricità pulita produce l'Italia secondo l'esperta?", options: ["Il 10%", "Circa il 40%", "Il 70%", "Il 90%"], answerIndex: 1 },
-        { q: "Di cosa c'è bisogno secondo l'esperta?", options: ["Di meno pannelli solari", "Di investire nelle reti elettriche", "Di chiudere le centrali", "Di importare energia"], answerIndex: 1 },
+        { q: "Quanta elettricità pulita produce l'Italia secondo l'esperta?", options: ["Meno del 10%", "Circa il 40%", "Il 70%", "Il 90%"], answerIndex: 1 },
+        { q: "Di cosa c'è bisogno secondo l'esperta?", options: ["Di installare meno pannelli solari", "Di investire nelle reti elettriche", "Di chiudere le centrali", "Di importare energia"], answerIndex: 1 },
         { q: "Qual è il rischio senza investimenti?", options: ["Sprecare l'energia prodotta", "Aumentare l'inquinamento", "Fermare il sole", "Perdere posti di lavoro"], answerIndex: 0 },
       ],
     },
@@ -29,8 +29,8 @@ export const CILS_DUE_ITEMS: RawItem[] = [
       audioScript: "Nella puntata di oggi parliamo di come la tecnologia cambia il modo di leggere. Sempre più persone usano ebook e audiolibri, comodi perché si portano ovunque. Ma molti lettori restano fedeli alla carta: dicono che il libro di carta si ricorda meglio e stanca meno gli occhi. La verità, forse, è che i due formati possono convivere.",
       questions: [
         { q: "Di cosa parla la puntata?", options: ["Di come cambia il modo di leggere", "Di come scrivere un libro", "Di quanto costano gli ebook", "Di come stampare libri"], answerIndex: 0 },
-        { q: "Perché alcuni preferiscono la carta?", options: ["Costa meno", "Si ricorda meglio e stanca meno gli occhi", "È più moderna", "Si trova ovunque"], answerIndex: 1 },
-        { q: "Qual è la conclusione del podcast?", options: ["La carta sparirà", "I due formati possono convivere", "Gli ebook sono inutili", "Nessuno legge più"], answerIndex: 1 },
+        { q: "Perché alcuni preferiscono la carta?", options: ["Costa meno", "Si ricorda meglio e stanca meno gli occhi", "È più moderna", "Si trova ovunque e costa pochissimo"], answerIndex: 1 },
+        { q: "Qual è la conclusione del podcast?", options: ["La carta sparirà", "I due formati possono convivere", "Gli ebook sono ormai inutili", "Nessuno legge più"], answerIndex: 1 },
       ],
     },
   },
@@ -42,7 +42,7 @@ export const CILS_DUE_ITEMS: RawItem[] = [
       audioScript: "Oggi analizziamo il Rinascimento. È un periodo, tra il Quattrocento e il Cinquecento, in cui l'arte e la scienza fanno enormi passi avanti. Le città italiane, ricche grazie al commercio, diventano centri di cultura. Artisti come Leonardo non erano solo pittori, ma anche scienziati e inventori: per loro arte e conoscenza erano la stessa cosa.",
       questions: [
         { q: "In quali secoli si colloca il Rinascimento?", options: ["Duecento e Trecento", "Quattrocento e Cinquecento", "Seicento e Settecento", "Ottocento e Novecento"], answerIndex: 1 },
-        { q: "Perché le città italiane diventano centri di cultura?", options: ["Grazie alla guerra", "Grazie al commercio e alla ricchezza", "Grazie al clima", "Grazie alla popolazione"], answerIndex: 1 },
+        { q: "Perché le città italiane diventano centri di cultura?", options: ["Grazie alla guerra", "Grazie al commercio e alla ricchezza", "Grazie al clima", "Grazie alla crescita della popolazione"], answerIndex: 1 },
         { q: "Come vedevano arte e conoscenza artisti come Leonardo?", options: ["Come cose separate", "Come la stessa cosa", "Come un lavoro noioso", "Come un passatempo"], answerIndex: 1 },
       ],
     },
@@ -55,7 +55,7 @@ export const CILS_DUE_ITEMS: RawItem[] = [
       audioScript: "Dottoressa, di cosa si occupa la sua ricerca? Studio come le api comunicano tra loro. Abbiamo scoperto che, con una specie di danza, un'ape può indicare alle altre dove trovare i fiori, e persino a che distanza. Purtroppo il numero di api sta diminuendo a causa dei pesticidi, e questo è un problema serio per l'agricoltura.",
       questions: [
         { q: "Cosa studia la ricercatrice?", options: ["Il volo degli uccelli", "Come comunicano le api", "Le malattie delle piante", "Il clima"], answerIndex: 1 },
-        { q: "Cosa indica un'ape con la sua danza?", options: ["Il colore dei fiori", "Dove trovare i fiori e a che distanza", "L'ora del giorno", "Il pericolo"], answerIndex: 1 },
+        { q: "Cosa indica un'ape con la sua danza?", options: ["Il colore e il profumo dei fiori", "Dove trovare i fiori e a che distanza", "L'ora del giorno", "Il pericolo"], answerIndex: 1 },
         { q: "Perché diminuiscono le api?", options: ["Per il freddo", "A causa dei pesticidi", "Per mancanza d'acqua", "Per troppi fiori"], answerIndex: 1 },
       ],
     },
@@ -80,7 +80,7 @@ export const CILS_DUE_ITEMS: RawItem[] = [
       audioScript: "Molti pensano che dormire sia tempo perso, ma è vero il contrario. Durante il sonno il cervello elabora le informazioni della giornata e fissa i ricordi. Chi dorme poco, nel lungo periodo, ha più difficoltà di concentrazione e memoria. Gli studi consigliano agli adulti tra le sette e le otto ore per notte, ma la qualità del sonno conta quanto la quantità.",
       questions: [
         { q: "Cosa fa il cervello durante il sonno?", options: ["Si spegne completamente", "Elabora le informazioni e fissa i ricordi", "Consuma più energia che di giorno", "Non fa nulla"], answerIndex: 1 },
-        { q: "Cosa succede a chi dorme poco?", options: ["Diventa più creativo", "Ha difficoltà di concentrazione e memoria", "Vive più a lungo", "Non ha effetti"], answerIndex: 1 },
+        { q: "Cosa succede a chi dorme poco?", options: ["Diventa più creativo e più veloce", "Ha difficoltà di concentrazione e memoria", "Vive più a lungo", "Non ha effetti"], answerIndex: 1 },
         { q: "Cosa conta oltre alla quantità di sonno?", options: ["Il buio della stanza", "La qualità del sonno", "L'orario della cena", "Il tipo di cuscino"], answerIndex: 1 },
       ],
     },
@@ -119,7 +119,7 @@ export const CILS_DUE_ITEMS: RawItem[] = [
       audioScript: "— Lei sostiene che il rumore sia sottovalutato. — Sottovalutato non perché nessuno se ne lamenti: perché si affronta come una questione di educazione, e non come una questione di come è costruita una strada. Nel quartiere dove abbiamo lavorato, spostare la fermata di trenta metri ha cambiato più cose di anni di cartelli. Parlo di quel caso, non di una regola.",
       questions: [
         { q: "Come viene di solito affrontato il problema del rumore, secondo lei?", options: ["Come una questione di costruzione", "Come una questione di educazione", "Come una questione di orari", "Non viene affrontato"], answerIndex: 1 },
-        { q: "Che cosa ha funzionato nel quartiere di cui parla?", options: ["Nuovi cartelli", "Spostare una fermata di trenta metri", "Una campagna informativa", "Chiudere la strada"], answerIndex: 1 },
+        { q: "Che cosa ha funzionato nel quartiere di cui parla?", options: ["Nuovi cartelli", "Spostare una fermata di trenta metri", "Una campagna informativa nelle scuole", "Chiudere la strada"], answerIndex: 1 },
         { q: "Come presenta questo risultato?", options: ["Come una regola generale", "Come un caso particolare", "Come una previsione", "Come un dato nazionale"], answerIndex: 1 },
       ],
     },
@@ -131,9 +131,9 @@ export const CILS_DUE_ITEMS: RawItem[] = [
     payload: {
       audioScript: "— Valutare gli insegnanti sui risultati degli studenti mi sembra ragionevole. — Il problema è che così si valuta la classe che ti è capitata. — Quindi non valutiamo niente? — Non ho detto questo. Dico che se misuriamo la cosa sbagliata otteniamo comunque un numero, e il numero poi decide. Preferisco una valutazione più lenta e meno pulita.",
       questions: [
-        { q: "Qual è l'obiezione della seconda persona?", options: ["Che gli insegnanti non vanno valutati", "Che così si valuta la classe capitata, non l'insegnante", "Che la valutazione costa troppo", "Che gli studenti non sono affidabili"], answerIndex: 1 },
+        { q: "Qual è l'obiezione della seconda persona?", options: ["Che gli insegnanti non vanno valutati in alcun modo", "Che così si valuta la classe capitata, non l'insegnante", "Che la valutazione costa troppo", "Che gli studenti non sono affidabili"], answerIndex: 1 },
         { q: "Che cosa propone?", options: ["Nessuna valutazione", "Una valutazione più lenta e meno pulita", "Una valutazione solo degli studenti", "Un test nazionale"], answerIndex: 1 },
-        { q: "Che cosa teme rispetto ai numeri?", options: ["Che siano falsi", "Che un numero ottenuto male decida comunque", "Che siano troppo pochi", "Che nessuno li legga"], answerIndex: 1 },
+        { q: "Che cosa teme rispetto ai numeri?", options: ["Che siano falsi", "Che un numero ottenuto male decida comunque", "Che i numeri raccolti siano troppo pochi", "Che nessuno li legga"], answerIndex: 1 },
       ],
     },
   },
@@ -186,8 +186,8 @@ export const CILS_DUE_ITEMS: RawItem[] = [
     payload: {
       audioScript: "— Le recensioni hanno dato voce ai clienti, e questo è un guadagno. — Non lo nego. Osservo però che chi scrive è chi è rimasto molto contento o molto scontento, e che il mezzo non è pensato per chi ha trovato tutto normale. Questo non le rende false: le rende parziali in un modo prevedibile, e la prevedibilità si può correggere.",
       questions: [
-        { q: "Qual è l'osservazione della seconda persona?", options: ["Che le recensioni sono false", "Che vengono scritte soprattutto agli estremi", "Che nessuno le legge", "Che vanno eliminate"], answerIndex: 1 },
-        { q: "Che conclusione trae?", options: ["Che sono inutili", "Che la loro parzialità è prevedibile e correggibile", "Che vanno rese obbligatorie", "Che il problema è chi le scrive"], answerIndex: 1 },
+        { q: "Qual è l'osservazione della seconda persona?", options: ["Che le recensioni sono quasi sempre false", "Che vengono scritte soprattutto agli estremi", "Che nessuno le legge", "Che vanno eliminate"], answerIndex: 1 },
+        { q: "Che conclusione trae?", options: ["Che sono inutili", "Che la loro parzialità è prevedibile e correggibile", "Che vanno rese obbligatorie", "Che il problema principale è chi le scrive"], answerIndex: 1 },
       ],
     },
   },
@@ -198,9 +198,9 @@ export const CILS_DUE_ITEMS: RawItem[] = [
     payload: {
       audioScript: "Un indicatore nasce per rispondere a una domanda precisa, e da quel momento viene usato per rispondere a tutte le altre. Non è colpa di chi lo ha costruito: è comodo avere un numero. Il punto è che, passando di mano, l'indicatore perde la domanda a cui rispondeva e conserva solo la cifra. Chiedere «che cosa misura, esattamente?» non è pedanteria: è l'unico modo per sapere se serve al caso vostro.",
       questions: [
-        { q: "Qual è la tesi di chi parla?", options: ["Che gli indicatori sono inaffidabili", "Che un indicatore, passando di mano, perde la domanda a cui rispondeva", "Che servono più indicatori", "Che i numeri vanno evitati"], answerIndex: 1 },
-        { q: "Come giudica la domanda «che cosa misura, esattamente?»", options: ["Pedanteria", "L'unico modo per sapere se serve al proprio caso", "Una domanda per specialisti", "Una perdita di tempo"], answerIndex: 1 },
-        { q: "Di chi è la responsabilità, secondo chi parla?", options: ["Di chi ha costruito l'indicatore", "Di nessuno in particolare: è comodo avere un numero", "Dei giornalisti", "Di chi non sa la matematica"], answerIndex: 1 },
+        { q: "Qual è la tesi di chi parla?", options: ["Che gli indicatori sono inaffidabili e vanno abbandonati", "Che un indicatore, passando di mano, perde la domanda a cui rispondeva", "Che servono più indicatori", "Che i numeri vanno evitati"], answerIndex: 1 },
+        { q: "Come giudica la domanda «che cosa misura, esattamente?»", options: ["Pedanteria", "L'unico modo per sapere se serve al proprio caso", "Una domanda utile solo agli specialisti", "Una perdita di tempo"], answerIndex: 1 },
+        { q: "Di chi è la responsabilità, secondo chi parla?", options: ["Di chi ha costruito l'indicatore per primo", "Di nessuno in particolare: è comodo avere un numero", "Dei giornalisti", "Di chi non sa la matematica"], answerIndex: 1 },
       ],
     },
   },
@@ -212,7 +212,7 @@ export const CILS_DUE_ITEMS: RawItem[] = [
     payload: {
       passage: "Negli ultimi anni molte città europee hanno deciso di aumentare gli spazi verdi. Piantare alberi non serve solo a rendere le città più belle: gli alberi abbassano la temperatura d'estate, puliscono l'aria e migliorano l'umore dei cittadini. Alcune città hanno persino trasformato vecchie strade in parchi, con ottimi risultati per la qualità della vita.",
       questions: [
-        { q: "Qual è lo scopo principale dell'articolo?", options: ["Criticare le città", "Spiegare i vantaggi degli spazi verdi", "Descrivere un parco famoso", "Vendere alberi"], answerIndex: 1 },
+        { q: "Qual è lo scopo principale dell'articolo?", options: ["Criticare le città", "Spiegare i vantaggi degli spazi verdi", "Descrivere un parco europeo famoso", "Vendere alberi"], answerIndex: 1 },
         { q: "Quale beneficio NON è citato nel testo?", options: ["Abbassare la temperatura", "Pulire l'aria", "Ridurre le tasse", "Migliorare l'umore"], answerIndex: 2 },
         { q: "Cosa hanno fatto alcune città?", options: ["Tagliato gli alberi", "Trasformato strade in parchi", "Vietato le auto", "Costruito grattacieli"], answerIndex: 1 },
       ],
@@ -227,7 +227,7 @@ export const CILS_DUE_ITEMS: RawItem[] = [
       questions: [
         { q: "Qual è l'opinione dell'autore sul tempo libero?", options: ["È una perdita di tempo", "È una necessità, non un lusso", "È solo per i ricchi", "È noioso"], answerIndex: 1 },
         { q: "Cosa nasce nei momenti di pausa, secondo l'autore?", options: ["La stanchezza", "Le idee migliori", "I problemi", "La noia"], answerIndex: 1 },
-        { q: "Cosa significa 'imparare a fermarsi' per l'autore?", options: ["Essere pigri", "Capire che il riposo fa parte del lavoro", "Smettere di lavorare", "Dormire tutto il giorno"], answerIndex: 1 },
+        { q: "Cosa significa 'imparare a fermarsi' per l'autore?", options: ["Essere pigri", "Capire che il riposo fa parte del lavoro", "Smettere di lavorare", "Dormire tutto il giorno quando si può"], answerIndex: 1 },
       ],
     },
   },
@@ -240,7 +240,7 @@ export const CILS_DUE_ITEMS: RawItem[] = [
       questions: [
         { q: "Secondo il testo, cos'è il cibo oltre al nutrimento?", options: ["Solo un piacere", "Cultura, memoria e identità", "Un problema economico", "Una moda"], answerIndex: 1 },
         { q: "Cosa portano con sé spesso le persone che emigrano?", options: ["Le ricette di casa", "I mobili", "I vestiti tradizionali", "Le fotografie"], answerIndex: 0 },
-        { q: "Cucinare i sapori dell'infanzia è descritto come un modo per...", options: ["Guadagnare soldi", "Non perdere le radici e condividerle", "Dimenticare il passato", "Diventare famosi"], answerIndex: 1 },
+        { q: "Cucinare i sapori dell'infanzia è descritto come un modo per...", options: ["Guadagnare soldi", "Non perdere le radici e condividerle", "Dimenticare il passato e le origini", "Diventare famosi"], answerIndex: 1 },
       ],
     },
   },
@@ -266,7 +266,7 @@ export const CILS_DUE_ITEMS: RawItem[] = [
     payload: {
       passage: "L'ultimo romanzo dell'autrice affronta un tema difficile: il rapporto tra madri e figlie. La scrittura è elegante e i personaggi sono descritti con grande profondità. Il difetto principale, però, è il ritmo: la prima parte è troppo lenta e alcuni lettori potrebbero abbandonare il libro prima che la storia decolli. Chi ha pazienza, tuttavia, verrà ricompensato da un finale sorprendente.",
       questions: [
-        { q: "Qual è il tema del romanzo?", options: ["Il rapporto tra madri e figlie", "Una storia d'amore", "Una guerra", "Un viaggio"], answerIndex: 0 },
+        { q: "Qual è il tema del romanzo?", options: ["Il rapporto tra madri e figlie", "Una storia d'amore in campagna", "Una guerra", "Un viaggio"], answerIndex: 0 },
         { q: "Qual è il difetto principale secondo il recensore?", options: ["I personaggi deboli", "La scrittura banale", "Il ritmo lento all'inizio", "Il finale prevedibile"], answerIndex: 2 },
         { q: "Cosa aspetta chi ha pazienza?", options: ["Un finale sorprendente", "Una delusione", "Un secondo libro", "Uno sconto"], answerIndex: 0 },
       ],
@@ -280,9 +280,9 @@ export const CILS_DUE_ITEMS: RawItem[] = [
       passage: "Il lavoro da remoto, diffusosi durante la pandemia, ha cambiato profondamente il mondo del lavoro. I vantaggi sono evidenti: meno tempo perso negli spostamenti e maggiore libertà di organizzare la giornata. Non mancano però le criticità. Molti lavoratori lamentano la difficoltà di separare vita privata e professionale, mentre le aziende temono un calo del senso di appartenenza. La soluzione più diffusa oggi è il modello ibrido, che alterna giorni in ufficio e giorni a casa, cercando di unire i pregi di entrambi.",
       questions: [
         { q: "Quando si è diffuso soprattutto il lavoro da remoto?", options: ["Negli anni Ottanta", "Durante la pandemia", "Solo di recente", "Non si è mai diffuso"], answerIndex: 1 },
-        { q: "Quale criticità lamentano i lavoratori?", options: ["Troppi spostamenti", "La difficoltà di separare vita privata e lavoro", "Stipendi troppo alti", "Troppe riunioni in ufficio"], answerIndex: 1 },
+        { q: "Quale criticità lamentano i lavoratori?", options: ["Troppi spostamenti", "La difficoltà di separare vita privata e lavoro", "Stipendi troppo alti", "Le troppe riunioni da fare in ufficio"], answerIndex: 1 },
         { q: "Qual è la soluzione più diffusa oggi?", options: ["Tornare tutti in ufficio", "Il modello ibrido", "Lavorare solo di notte", "Eliminare gli uffici"], answerIndex: 1 },
-        { q: "Cosa temono le aziende?", options: ["Un calo del senso di appartenenza", "Troppi dipendenti", "L'aumento delle vendite", "La chiusura dei bar"], answerIndex: 0 },
+        { q: "Cosa temono le aziende?", options: ["Un calo del senso di appartenenza", "Troppi dipendenti", "L'aumento improvviso delle vendite", "La chiusura dei bar"], answerIndex: 0 },
       ],
     },
   },
@@ -295,8 +295,8 @@ export const CILS_DUE_ITEMS: RawItem[] = [
       passage: "In alcune zone della città i mercati rionali, dati per finiti, hanno ripreso a riempirsi. Chi ci lavora da vent'anni racconta che non sono cambiati i prodotti, ma gli orari: aprire anche il tardo pomeriggio ha portato una clientela che prima non poteva venire. È una spiegazione modesta, e forse per questo convincente: non chiama in causa nuove abitudini di consumo, ma il fatto che il mercato fosse aperto quando la gente lavorava.",
       questions: [
         { q: "Che cosa è cambiato, secondo chi ci lavora?", options: ["I prodotti", "Gli orari di apertura", "I prezzi", "La posizione del mercato"], answerIndex: 1 },
-        { q: "Perché l'autore trova convincente questa spiegazione?", options: ["Perché viene da un esperto", "Perché è modesta e non chiama in causa grandi cambiamenti", "Perché è confermata da una ricerca", "Perché è la più diffusa"], answerIndex: 1 },
-        { q: "Chi fornisce la spiegazione?", options: ["Un'indagine di mercato", "Chi lavora nei mercati da vent'anni", "Il comune", "Gli acquirenti"], answerIndex: 1 },
+        { q: "Perché l'autore trova convincente questa spiegazione?", options: ["Perché viene da un esperto", "Perché è modesta e non chiama in causa grandi cambiamenti", "Perché è confermata da una ricerca universitaria", "Perché è la più diffusa"], answerIndex: 1 },
+        { q: "Chi fornisce la spiegazione?", options: ["Un'indagine di mercato del comune", "Chi lavora nei mercati da vent'anni", "Il comune", "Gli acquirenti"], answerIndex: 1 },
       ],
     },
   },
@@ -308,7 +308,7 @@ export const CILS_DUE_ITEMS: RawItem[] = [
       passage: "Rispondere in fretta è diventato un segno di serietà: chi tarda sembra distratto. Vorrei difendere il ritardo, ma con un limite. Non tutte le domande meritano tempo, e trattarle tutte come se lo meritassero è un altro modo di non rispondere a nessuna. La distinzione utile non è fra veloce e lento: è fra domande a cui posso rispondere subito senza pensarci e domande in cui la risposta immediata è quasi certamente quella sbagliata.",
       questions: [
         { q: "Qual è la posizione dell'autore?", options: ["Bisogna sempre rispondere lentamente", "La distinzione utile è fra tipi di domanda", "Rispondere in fretta è sempre sbagliato", "Il ritardo è sempre un segno di serietà"], answerIndex: 1 },
-        { q: "Che cosa critica dell'idea di dare tempo a tutto?", options: ["Che costa troppo", "Che equivale a non rispondere a niente", "Che è impossibile", "Che irrita gli altri"], answerIndex: 1 },
+        { q: "Che cosa critica dell'idea di dare tempo a tutto?", options: ["Che costa troppo", "Che equivale a non rispondere a niente", "Che è impossibile", "Che irrita chi aspetta una risposta"], answerIndex: 1 },
       ],
     },
   },
@@ -320,8 +320,8 @@ export const CILS_DUE_ITEMS: RawItem[] = [
       passage: "Si dice spesso che l'umorismo non si traduce, e la formula è comoda quanto imprecisa. Ciò che non si trasporta non è la battuta: è il tempo che la precede, l'attesa costruita da chi ascolta. Un gioco di parole si può sostituire con un altro; il ritmo dell'attesa, no, perché dipende da quello che il pubblico si aspetta e non da quello che il testo dice. Da qui una conseguenza scomoda per il traduttore: per essere fedele deve smettere di essere letterale.",
       questions: [
         { q: "Che cosa, secondo l'autore, non si trasporta?", options: ["Il gioco di parole", "Il ritmo dell'attesa", "Il vocabolario", "Il tono di voce"], answerIndex: 1 },
-        { q: "Qual è la conseguenza per il traduttore?", options: ["Deve essere più letterale", "Per essere fedele deve smettere di essere letterale", "Deve rinunciare a tradurre", "Deve spiegare la battuta"], answerIndex: 1 },
-        { q: "Che giudizio dà l'autore della formula «l'umorismo non si traduce»?", options: ["Che è esatta", "Che è comoda ma imprecisa", "Che è offensiva", "Che è nuova"], answerIndex: 1 },
+        { q: "Qual è la conseguenza per il traduttore?", options: ["Deve essere più letterale", "Per essere fedele deve smettere di essere letterale", "Deve rinunciare a tradurre le battute", "Deve spiegare la battuta"], answerIndex: 1 },
+        { q: "Che giudizio dà l'autore della formula «l'umorismo non si traduce»?", options: ["Che è esatta", "Che è comoda ma imprecisa", "Che è offensiva e ingiusta", "Che è nuova"], answerIndex: 1 },
       ],
     },
   },
@@ -356,7 +356,7 @@ export const CILS_DUE_ITEMS: RawItem[] = [
       questions: [
         { q: "Che cosa suggerisce l'autore di chiedersi?", options: ["Dove sia il confine dell'arte", "Chi pone la domanda e in quali circostanze", "Quanto vale un'opera", "Chi ha ragione fra critici e pubblico"], answerIndex: 1 },
         { q: "Che cosa NON sostiene l'autore?", options: ["Che l'abilità non conti", "Che l'irritazione nasca da un sospetto", "Che il sospetto meriti una risposta", "Che la domanda venga posta spesso"], answerIndex: 0 },
-        { q: "Che cosa critica del mondo dell'arte?", options: ["I prezzi", "Il silenzio degli addetti ai lavori davanti a quel sospetto", "La scelta delle opere", "L'organizzazione delle mostre"], answerIndex: 1 },
+        { q: "Che cosa critica del mondo dell'arte?", options: ["I prezzi", "Il silenzio degli addetti ai lavori davanti a quel sospetto", "La scelta delle opere", "L'organizzazione delle mostre e dei musei pubblici"], answerIndex: 1 },
       ],
     },
   },
@@ -368,8 +368,8 @@ export const CILS_DUE_ITEMS: RawItem[] = [
       passage: "La mostra è ricchissima e proprio per questo non funziona. Le opere ci sono, e sono importanti; manca una ragione per vederle insieme, oltre al fatto che appartengono allo stesso periodo. Il visitatore attraversa sei sale accumulando informazioni e ne esce senza una domanda. È un peccato, perché la sala finale — l'unica costruita intorno a un'idea e non a una data — dimostra che chi ha curato la mostra sapeva benissimo come si fa.",
       questions: [
         { q: "Qual è la critica principale?", options: ["Le opere non sono importanti", "Manca una ragione per vederle insieme", "La mostra è troppo piccola", "Le informazioni sono sbagliate"], answerIndex: 1 },
-        { q: "Perché il critico parla della sala finale?", options: ["Perché è la peggiore", "Perché dimostra che i curatori sapevano fare meglio", "Perché contiene le opere più famose", "Perché è la più visitata"], answerIndex: 1 },
-        { q: "Che cosa riconosce il critico alla mostra?", options: ["La coerenza", "La ricchezza e l'importanza delle opere", "La chiarezza del percorso", "Il prezzo giusto"], answerIndex: 1 },
+        { q: "Perché il critico parla della sala finale?", options: ["Perché è la peggiore", "Perché dimostra che i curatori sapevano fare meglio", "Perché contiene le opere più famose del periodo", "Perché è la più visitata"], answerIndex: 1 },
+        { q: "Che cosa riconosce il critico alla mostra?", options: ["La coerenza", "La ricchezza e l'importanza delle opere", "La chiarezza del percorso tra le sale", "Il prezzo giusto"], answerIndex: 1 },
       ],
     },
   },
@@ -380,9 +380,9 @@ export const CILS_DUE_ITEMS: RawItem[] = [
     payload: {
       passage: "Quando un esperto parla al pubblico gli si chiede di semplificare, e quando semplifica gli si rimprovera di aver detto qualcosa di falso. La contraddizione è reale e non si risolve chiedendogli di essere più chiaro. Si attenua se, insieme alla versione semplice, l'esperto dice dove quella versione smette di valere. È una richiesta modesta e quasi mai soddisfatta, perché segnalare il proprio limite somiglia, a chi ascolta, a un'ammissione di incertezza — mentre è il contrario.",
       questions: [
-        { q: "Qual è la proposta dell'autore?", options: ["Che gli esperti evitino di semplificare", "Che indichino dove la versione semplice smette di valere", "Che il pubblico studi di più", "Che si eviti la divulgazione"], answerIndex: 1 },
-        { q: "Perché la proposta è raramente seguita?", options: ["Perché richiede troppo tempo", "Perché segnalare il limite sembra ammettere incertezza", "Perché il pubblico non ascolta", "Perché è vietato"], answerIndex: 1 },
-        { q: "Che cosa pensa l'autore di quell'apparenza?", options: ["Che sia corretta", "Che sia il contrario della realtà", "Che sia irrilevante", "Che sia inevitabile"], answerIndex: 1 },
+        { q: "Qual è la proposta dell'autore?", options: ["Che gli esperti evitino del tutto di semplificare", "Che indichino dove la versione semplice smette di valere", "Che il pubblico studi di più", "Che si eviti la divulgazione"], answerIndex: 1 },
+        { q: "Perché la proposta è raramente seguita?", options: ["Perché richiede troppo tempo", "Perché segnalare il limite sembra ammettere incertezza", "Perché il pubblico non ascolta gli esperti", "Perché è vietato"], answerIndex: 1 },
+        { q: "Che cosa pensa l'autore di quell'apparenza?", options: ["Che sia corretta", "Che sia il contrario della realtà", "Che sia del tutto irrilevante", "Che sia inevitabile"], answerIndex: 1 },
       ],
     },
   },
@@ -393,8 +393,8 @@ export const CILS_DUE_ITEMS: RawItem[] = [
     payload: {
       passage: "Si dice che certi luoghi conservino memoria di ciò che vi è accaduto. Preso alla lettera è falso: un cortile non ricorda nulla. Preso come descrizione di ciò che facciamo noi, è preciso: torniamo in un posto e vi ritroviamo qualcosa che avevamo lasciato lì, non perché il posto l'abbia custodito, ma perché il nostro ricordo ha bisogno di un appiglio esterno per riaffiorare. È la ragione per cui la demolizione di un edificio ordinario può addolorare più della perdita di un monumento.",
       questions: [
-        { q: "Qual è la posizione dell'autore sulla «memoria dei luoghi»?", options: ["È vera alla lettera", "È falsa alla lettera ma precisa come descrizione del nostro ricordare", "È una superstizione senza interesse", "Riguarda solo i monumenti"], answerIndex: 1 },
-        { q: "Perché la perdita di un edificio ordinario può addolorare tanto?", options: ["Perché era prezioso", "Perché serviva da appiglio a ricordi personali", "Perché era antico", "Perché era protetto"], answerIndex: 1 },
+        { q: "Qual è la posizione dell'autore sulla «memoria dei luoghi»?", options: ["È vera alla lettera", "È falsa alla lettera ma precisa come descrizione del nostro ricordare", "È una superstizione popolare priva di ogni interesse", "Riguarda solo i monumenti"], answerIndex: 1 },
+        { q: "Perché la perdita di un edificio ordinario può addolorare tanto?", options: ["Perché era prezioso per il quartiere", "Perché serviva da appiglio a ricordi personali", "Perché era antico", "Perché era protetto"], answerIndex: 1 },
       ],
     },
   },
@@ -405,9 +405,9 @@ export const CILS_DUE_ITEMS: RawItem[] = [
     payload: {
       passage: "Chiedere i dati prima di decidere è sano, e può diventare un modo elegante di non decidere. Ci sono questioni su cui i dati arriveranno dopo la decisione, perché sono i dati che la decisione produce: se non si prova, non si misura. In quei casi la domanda corretta non è «che cosa dicono i dati», ma «quanto costa provare, e che cosa impariamo se va male». Chi rimanda in attesa di certezze non sta raccogliendo prove: sta scegliendo di non averne.",
       questions: [
-        { q: "Qual è la tesi centrale?", options: ["I dati non servono", "In alcuni casi i dati arrivano solo dopo la decisione", "Bisogna decidere sempre in fretta", "Le certezze sono raggiungibili"], answerIndex: 1 },
-        { q: "Qual è, in quei casi, la domanda corretta?", options: ["Che cosa dicono i dati", "Quanto costa provare e che cosa si impara se va male", "Chi decide", "Quando arriveranno i dati"], answerIndex: 1 },
-        { q: "Come giudica l'autore chi rimanda in attesa di certezze?", options: ["Prudente", "Sta scegliendo di non avere prove", "Rigoroso", "Realista"], answerIndex: 1 },
+        { q: "Qual è la tesi centrale?", options: ["I dati non servono", "In alcuni casi i dati arrivano solo dopo la decisione", "Bisogna decidere sempre in fretta e senza dati", "Le certezze sono raggiungibili"], answerIndex: 1 },
+        { q: "Qual è, in quei casi, la domanda corretta?", options: ["Che cosa dicono i dati", "Quanto costa provare e che cosa si impara se va male", "Chi decide", "Quando arriveranno finalmente i dati completi"], answerIndex: 1 },
+        { q: "Come giudica l'autore chi rimanda in attesa di certezze?", options: ["Prudente e molto responsabile", "Sta scegliendo di non avere prove", "Rigoroso", "Realista"], answerIndex: 1 },
       ],
     },
   },

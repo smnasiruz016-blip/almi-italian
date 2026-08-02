@@ -1,23 +1,26 @@
 "use client";
 
 import { useState } from "react";
-import type { BankItem, WritingPayload, SpeakingPayload } from "@/lib/items";
-import { isWriting, isSpeaking } from "@/lib/items";
+// Imports from @/lib/runner-items, not @/lib/items. Writing and Speaking carry no answer key,
+// so this component never had one to leak — but importing the guards from @/lib/items pulled
+// the whole keyed bank into the client bundle all the same, on every Scritta and Orale page.
+import type { RunnerItem, RunnerWritingPayload, RunnerSpeakingPayload } from "@/lib/runner-items";
+import { isWriting, isSpeaking } from "@/lib/runner-items";
 
 const wordCount = (s: string) => (s.trim() ? s.trim().split(/\s+/).length : 0);
 
 // Writing/Speaking are AI-criteria ESTIMATES — never auto-scored here. This composer gives the task,
 // the official-style criteria, and a live counter; it never asserts a numeric result. Only Siena
 // (CILS) / Perugia (CELI) award a real Writing/Speaking mark.
-export function PracticeComposer({ items, sectionLabel, trackLabel, honesty }: { items: BankItem[]; sectionLabel: string; trackLabel: string; honesty: string }) {
+export function PracticeComposer({ items, sectionLabel, trackLabel, honesty }: { items: RunnerItem[]; sectionLabel: string; trackLabel: string; honesty: string }) {
   return (
     <div className="space-y-6">
       <div className="rounded-xl border border-dashed border-almi-line bg-almi-bg-peach/30 p-4 text-sm text-almi-text">
         {trackLabel} · {sectionLabel} is a productive task. Practise it here against the official-style criteria — this is a
         self-guided estimate, not a mark. Only Siena/Perugia award a real Writing or Speaking result.
       </div>
-      {items.map((it, i) => (
-        <div key={i} className="rounded-2xl border border-almi-line bg-almi-paper p-5">
+      {items.map((it) => (
+        <div key={it.id} className="rounded-2xl border border-almi-line bg-almi-paper p-5">
           <p className="text-xs font-semibold uppercase tracking-wide text-almi-text-muted">{it.title}</p>
           {isWriting(it.payload) && <WritingTask p={it.payload} />}
           {isSpeaking(it.payload) && <SpeakingTask p={it.payload} />}
@@ -28,7 +31,7 @@ export function PracticeComposer({ items, sectionLabel, trackLabel, honesty }: {
   );
 }
 
-function WritingTask({ p }: { p: WritingPayload }) {
+function WritingTask({ p }: { p: RunnerWritingPayload }) {
   const [text, setText] = useState("");
   const n = wordCount(text);
   const under = n < p.minWords;
@@ -50,7 +53,7 @@ function WritingTask({ p }: { p: WritingPayload }) {
   );
 }
 
-function SpeakingTask({ p }: { p: SpeakingPayload }) {
+function SpeakingTask({ p }: { p: RunnerSpeakingPayload }) {
   return (
     <div className="mt-2">
       <p className="text-sm font-medium text-almi-ink">{p.task}</p>

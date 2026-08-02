@@ -17,7 +17,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
       questions: [
         { q: "Com'è il tempo nel pomeriggio?", options: ["Sole", "Qualche pioggia", "Neve", "Vento forte"], answerIndex: 1 },
         { q: "Di che cosa si parla alle nove?", options: ["Di sport", "Di cucina", "Di politica", "Di viaggi"], answerIndex: 1 },
-        { q: "Che musica c'è alle dieci?", options: ["Musica classica", "Musica degli anni Ottanta", "Jazz", "Rap"], answerIndex: 1 },
+        { q: "Che musica c'è alle dieci?", options: ["Musica classica italiana", "Musica degli anni Ottanta", "Jazz", "Rap"], answerIndex: 1 },
       ],
     },
   },
@@ -43,7 +43,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
       questions: [
         { q: "Da chi è nata la passione dello chef?", options: ["Da un famoso cuoco", "Da sua nonna", "Da un libro", "Da un viaggio"], answerIndex: 1 },
         { q: "Che prodotti usa il ristorante?", options: ["Prodotti importati", "Prodotti locali e di stagione", "Prodotti surgelati", "Solo prodotti biologici stranieri"], answerIndex: 1 },
-        { q: "Qual è il piatto più amato?", options: ["La pizza", "I ravioli di zucca", "Il risotto", "Le lasagne"], answerIndex: 1 },
+        { q: "Qual è il piatto più amato?", options: ["La pizza", "I ravioli di zucca", "Il risotto ai funghi", "Le lasagne"], answerIndex: 1 },
       ],
     },
   },
@@ -54,7 +54,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
     payload: {
       audioScript: "Da domani riapre il parco cittadino dopo tre mesi di lavori. Sono stati piantati duecento nuovi alberi ed è stata costruita un'area giochi per i bambini. L'ingresso resta gratuito. Il sindaco invita i cittadini alla festa di apertura, prevista per domenica alle undici.",
       questions: [
-        { q: "Che cosa riapre domani?", options: ["Una scuola", "Il parco cittadino", "Un ospedale", "Un museo"], answerIndex: 1 },
+        { q: "Che cosa riapre domani?", options: ["Una scuola", "Il parco cittadino", "Un ospedale nuovo", "Un museo"], answerIndex: 1 },
         { q: "Quanti alberi sono stati piantati?", options: ["Cento", "Duecento", "Cinquanta", "Mille"], answerIndex: 1 },
         { q: "Quando è la festa di apertura?", options: ["Domani sera", "Sabato", "Domenica alle undici", "La prossima settimana"], answerIndex: 2 },
       ],
@@ -93,7 +93,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
     payload: {
       audioScript: "Domani cielo coperto al mattino, con qualche pioggia sulla costa. Nel pomeriggio le nuvole si aprono e torna il sole. Temperature in leggero aumento, massime intorno ai diciotto gradi. Vento debole.",
       questions: [
-        { q: "Com'è il tempo domani mattina?", options: ["Sole", "Coperto con qualche pioggia", "Neve", "Nebbia"], answerIndex: 1 },
+        { q: "Com'è il tempo domani mattina?", options: ["Sole", "Coperto con qualche pioggia", "Neve", "Nebbia fitta sulla costa"], answerIndex: 1 },
         { q: "Che cosa cambia nel pomeriggio?", options: ["Torna il sole", "Comincia a piovere", "Arriva il vento forte", "Non cambia niente"], answerIndex: 0 },
       ],
     },
@@ -117,7 +117,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
     payload: {
       audioScript: "— Che le prendiamo? — Un libro? — Ne ha già tanti e non sappiamo quali ha letto. — Allora una pianta. — Viaggia sempre, chi la annaffia? — Hai ragione. Facciamo un buono per il teatro: sceglie lei lo spettacolo.",
       questions: [
-        { q: "Che cosa decidono di regalare?", options: ["Un libro", "Una pianta", "Un buono per il teatro", "Niente"], answerIndex: 2 },
+        { q: "Che cosa decidono di regalare?", options: ["Un libro", "Una pianta grassa", "Un buono per il teatro", "Niente"], answerIndex: 2 },
         { q: "Perché scartano la pianta?", options: ["Costa troppo", "La persona viaggia spesso", "Non le piacciono le piante", "È difficile da trasportare"], answerIndex: 1 },
         { q: "Qual è il vantaggio della scelta finale?", options: ["Costa poco", "Sceglie lei che cosa vedere", "Si può usare subito", "Non serve incartarlo"], answerIndex: 1 },
       ],
@@ -130,7 +130,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
     payload: {
       audioScript: "— Lei ripara scarpe da trent'anni. È un mestiere che sta finendo? — Me lo chiedono spesso. Il lavoro non manca: manca chi lo impari. Ho avuto due ragazzi in bottega l'anno scorso, bravi, ma dopo sei mesi hanno lasciato. Non per i soldi: per la pazienza che serve all'inizio, quando non ti riesce niente.",
       questions: [
-        { q: "Secondo l'artigiana, che cosa manca davvero?", options: ["Il lavoro", "Chi impari il mestiere", "I materiali", "I clienti"], answerIndex: 1 },
+        { q: "Secondo l'artigiana, che cosa manca davvero?", options: ["Il lavoro", "Chi impari il mestiere", "I materiali buoni", "I clienti"], answerIndex: 1 },
         { q: "Perché i due ragazzi hanno lasciato?", options: ["Per il guadagno basso", "Per la pazienza che serve all'inizio", "Perché non erano bravi", "Perché la bottega ha chiuso"], answerIndex: 1 },
         { q: "Di che cosa parla l'artigiana?", options: ["Della sua bottega e della sua esperienza", "Dell'artigianato italiano in generale", "Di una ricerca sul lavoro", "Della scuola professionale"], answerIndex: 0 },
       ],
@@ -168,7 +168,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
     payload: {
       audioScript: "Comunichiamo che il concerto di venerdì è rimandato al mese prossimo per un problema di salute di uno dei musicisti. I biglietti già acquistati restano validi per la nuova data. Chi non potrà venire può chiedere il rimborso entro trenta giorni.",
       questions: [
-        { q: "Perché il concerto è rimandato?", options: ["Per il maltempo", "Per un problema di salute di un musicista", "Per pochi biglietti venduti", "Per lavori nella sala"], answerIndex: 1 },
+        { q: "Perché il concerto è rimandato?", options: ["Per il maltempo", "Per un problema di salute di un musicista", "Per il numero di biglietti venduti", "Per lavori nella sala"], answerIndex: 1 },
         { q: "Che cosa succede ai biglietti già comprati?", options: ["Non valgono più", "Valgono per la nuova data", "Vanno cambiati alla cassa", "Valgono metà prezzo"], answerIndex: 1 },
       ],
     },
@@ -180,7 +180,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
     payload: {
       audioScript: "— Aprire i musei la sera porterebbe gente che di giorno lavora. — Sono d'accordo sull'obiettivo, non sul modo: aprire di sera senza assumere nessuno significa chiedere al personale di fare più ore con lo stesso stipendio. — Quindi sei contrario? — No. Dico che la proposta è metà: manca la parte su chi ci lavora.",
       questions: [
-        { q: "Qual è la posizione della seconda persona?", options: ["È contraria all'apertura serale", "Condivide l'obiettivo ma vuole risolvere la questione del personale", "Pensa che i musei debbano chiudere prima", "Non ha un'opinione"], answerIndex: 1 },
+        { q: "Qual è la posizione della seconda persona?", options: ["È contraria all'apertura serale", "Condivide l'obiettivo ma vuole risolvere la questione del personale", "Pensa che i musei debbano chiudere prima della sera", "Non ha un'opinione"], answerIndex: 1 },
         { q: "Che cosa significa «la proposta è metà»?", options: ["Che costa troppo", "Che manca la parte su chi ci lavora", "Che riguarda solo alcuni musei", "Che è già stata provata"], answerIndex: 1 },
       ],
     },
@@ -193,7 +193,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
       audioScript: "Ho cominciato per riempire i sabati, dopo la pensione. Pensavo di andare a dare una mano e basta. La cosa che non mi aspettavo è che dopo un po' fossero loro a chiedere di me quando non andavo. Non me l'aspettavo e, sinceramente, non ero sicuro di volerlo.",
       questions: [
         { q: "Perché ha cominciato?", options: ["Per un'esperienza di lavoro", "Per riempire i sabati dopo la pensione", "Perché glielo ha chiesto un amico", "Per motivi di studio"], answerIndex: 1 },
-        { q: "Che cosa non si aspettava?", options: ["Di dover lavorare molto", "Che le persone chiedessero di lui quando mancava", "Di dover imparare cose nuove", "Di smettere presto"], answerIndex: 1 },
+        { q: "Che cosa non si aspettava?", options: ["Di dover lavorare molto", "Che le persone chiedessero di lui quando mancava", "Di dover imparare molte cose nuove sul posto", "Di smettere presto"], answerIndex: 1 },
         { q: "Come si sente rispetto a questo?", options: ["Del tutto contento", "Non era sicuro di volerlo", "Infastidito", "Indifferente"], answerIndex: 1 },
       ],
     },
@@ -206,7 +206,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
     payload: {
       passage: "Questo fine settimana la città si riempie di eventi. Sabato, in piazza Maggiore, ci sarà un mercato di prodotti tipici dalle 9 alle 20. Domenica, invece, si terrà una corsa podistica di dieci chilometri: le iscrizioni sono ancora aperte. In caso di pioggia, la corsa sarà rimandata alla domenica successiva.",
       questions: [
-        { q: "Cosa c'è sabato in piazza Maggiore?", options: ["Un concerto", "Un mercato di prodotti tipici", "Una partita", "Una mostra"], answerIndex: 1 },
+        { q: "Cosa c'è sabato in piazza Maggiore?", options: ["Un concerto di musica popolare", "Un mercato di prodotti tipici", "Una partita", "Una mostra"], answerIndex: 1 },
         { q: "Quanti chilometri è la corsa?", options: ["Cinque", "Dieci", "Venti", "Due"], answerIndex: 1 },
         { q: "Cosa succede se piove?", options: ["La corsa è annullata", "La corsa è rimandata", "Si corre lo stesso", "Si corre al chiuso"], answerIndex: 1 },
       ],
@@ -219,7 +219,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
     payload: {
       passage: "Il nuovo film del regista italiano racconta la storia di una famiglia che si trasferisce dalla città alla campagna. È un film lento ma pieno di emozioni, con paesaggi bellissimi. Gli attori sono bravi, soprattutto la protagonista. Non è un film per chi cerca l'azione, ma è perfetto per una serata tranquilla.",
       questions: [
-        { q: "Di cosa parla il film?", options: ["Di una guerra", "Di una famiglia che si trasferisce in campagna", "Di un viaggio all'estero", "Di uno sport"], answerIndex: 1 },
+        { q: "Di cosa parla il film?", options: ["Di una guerra", "Di una famiglia che si trasferisce in campagna", "Di un lungo viaggio all'estero in famiglia", "Di uno sport"], answerIndex: 1 },
         { q: "Com'è il ritmo del film?", options: ["Veloce", "Lento", "Confuso", "Noioso"], answerIndex: 1 },
         { q: "Per chi è adatto il film?", options: ["Per chi ama l'azione", "Per una serata tranquilla", "Per i bambini piccoli", "Per chi non ama il cinema"], answerIndex: 1 },
       ],
@@ -281,7 +281,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
       questions: [
         { q: "Cosa fanno molte città italiane?", options: ["Costruiscono più parcheggi", "Riducono il traffico nei centri", "Vietano le biciclette", "Chiudono i negozi"], answerIndex: 1 },
         { q: "Cosa è stato creato al posto delle auto?", options: ["Nuove strade", "Piste ciclabili e aree pedonali", "Grandi centri commerciali", "Stazioni di benzina"], answerIndex: 1 },
-        { q: "Cosa hanno notato molti negozianti?", options: ["Meno clienti", "Che la gente si ferma più volentieri", "Più rumore", "Più traffico"], answerIndex: 1 },
+        { q: "Cosa hanno notato molti negozianti?", options: ["Meno clienti nei negozi del centro", "Che la gente si ferma più volentieri", "Più rumore", "Più traffico"], answerIndex: 1 },
       ],
     },
   },
@@ -308,7 +308,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
       questions: [
         { q: "Fino a che ora si può usare la cucina?", options: ["Fino alle 22:00", "Fino alle 23:00", "Fino a mezzanotte", "Sempre"], answerIndex: 0 },
         { q: "Che cosa si chiede agli ospiti tra le 10 e le 12?", options: ["Di restare in camera", "Di non stare in camera", "Di pulire la cucina", "Di stare in silenzio"], answerIndex: 1 },
-        { q: "Dove funziona meglio il wi-fi?", options: ["In camera", "Nella sala comune", "In cucina", "Nei corridoi"], answerIndex: 1 },
+        { q: "Dove funziona meglio il wi-fi?", options: ["In camera", "Nella sala comune", "In cucina", "Nei corridoi al piano"], answerIndex: 1 },
       ],
     },
   },
@@ -319,8 +319,8 @@ export const CILS_UNO_ITEMS: RawItem[] = [
     payload: {
       passage: "In un quartiere della città una biblioteca ha cominciato a prestare anche oggetti: trapani, macchine da cucire, tende da campeggio. L'idea è semplice — ci sono cose che si usano due volte l'anno e che quasi nessuno userebbe abbastanza da giustificarne l'acquisto. Secondo le volontarie che gestiscono il servizio, la difficoltà non è stata trovare gli oggetti, che sono arrivati dalle case del quartiere, ma spiegare che si trattava di un prestito e non di un regalo.",
       questions: [
-        { q: "Che cosa presta questa biblioteca oltre ai libri?", options: ["Soldi", "Oggetti come trapani e tende", "Spazi per riunioni", "Corsi"], answerIndex: 1 },
-        { q: "Qual è stata la difficoltà, secondo le volontarie?", options: ["Trovare gli oggetti", "Far capire che era un prestito", "Trovare lo spazio", "Pagare le riparazioni"], answerIndex: 1 },
+        { q: "Che cosa presta questa biblioteca oltre ai libri?", options: ["Soldi", "Oggetti come trapani e tende", "Spazi per riunioni e corsi", "Corsi"], answerIndex: 1 },
+        { q: "Qual è stata la difficoltà, secondo le volontarie?", options: ["Trovare gli oggetti", "Far capire che era un prestito", "Trovare lo spazio", "Pagare le riparazioni degli oggetti"], answerIndex: 1 },
         { q: "Chi racconta questa difficoltà?", options: ["Il comune", "Le volontarie del servizio", "Un'indagine nazionale", "Gli utenti"], answerIndex: 1 },
       ],
     },
@@ -362,7 +362,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
       questions: [
         { q: "Che cosa cercava all'inizio?", options: ["La foto perfetta, senza persone", "Il ritratto degli abitanti", "Le fotografie notturne", "Un premio"], answerIndex: 0 },
         { q: "Che cosa ha capito?", options: ["Che la piazza vuota non è la piazza", "Che la luce non conta", "Che serve una macchina migliore", "Che dodici anni sono troppi"], answerIndex: 0 },
-        { q: "Come giudica le sue foto di adesso?", options: ["Migliori sotto ogni aspetto", "Tecnicamente peggiori ma migliori nel resto", "Uguali a prima", "Peggiori in tutto"], answerIndex: 1 },
+        { q: "Come giudica le sue foto di adesso?", options: ["Migliori sotto ogni aspetto, anche tecnico", "Tecnicamente peggiori ma migliori nel resto", "Uguali a prima", "Peggiori in tutto"], answerIndex: 1 },
       ],
     },
   },
@@ -396,7 +396,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
       passage: "C'è chi passa mesi a cercare una meta nuova e chi torna ogni anno nello stesso paese, allo stesso albergo, quasi alla stessa camera. Il secondo gruppo viene spesso guardato con un po' di compatimento, come se rinunciasse a qualcosa. Non credo sia così semplice. Chi torna non cerca sorprese: cerca il tempo che si guadagna quando non devi decidere niente. È una vacanza diversa, non una vacanza minore.",
       questions: [
         { q: "Qual è la tesi dell'autore?", options: ["Che tornare negli stessi posti è una rinuncia", "Che è una vacanza diversa, non inferiore", "Che bisogna cercare sempre mete nuove", "Che gli alberghi sono tutti uguali"], answerIndex: 1 },
-        { q: "Che cosa cerca, secondo l'autore, chi torna sempre nello stesso posto?", options: ["Il risparmio", "Il tempo che si guadagna non dovendo decidere", "Le sorprese", "La compagnia"], answerIndex: 1 },
+        { q: "Che cosa cerca, secondo l'autore, chi torna sempre nello stesso posto?", options: ["Il risparmio di soldi e di fatica", "Il tempo che si guadagna non dovendo decidere", "Le sorprese", "La compagnia"], answerIndex: 1 },
         { q: "Come descrive l'autore lo sguardo degli altri su questo gruppo?", options: ["Di ammirazione", "Di compatimento", "Di invidia", "Di indifferenza"], answerIndex: 1 },
       ],
     },

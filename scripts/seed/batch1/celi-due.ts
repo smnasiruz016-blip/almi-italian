@@ -32,7 +32,7 @@ export const CELI_DUE_ITEMS: RawItem[] = [
       audioScript: "Salve, la chiamo dal negozio di elettronica. Il computer che ha ordinato è arrivato. Può passare a ritirarlo quando vuole, siamo aperti dalle 9 alle 19, dal lunedì al sabato. Ricordi di portare la ricevuta dell'ordine. Grazie e a presto.",
       questions: [
         { q: "Cosa è arrivato al negozio?", options: ["Un telefono", "Un computer", "Una stampante", "Una televisione"], answerIndex: 1 },
-        { q: "Quando è aperto il negozio?", options: ["Solo la domenica", "Dalle 9 alle 19, lunedì-sabato", "Solo di sera", "24 ore su 24"], answerIndex: 1 },
+        { q: "Quando è aperto il negozio?", options: ["Solo la domenica mattina", "Dalle 9 alle 19, lunedì-sabato", "Solo di sera", "24 ore su 24"], answerIndex: 1 },
         { q: "Cosa deve portare il cliente?", options: ["La carta d'identità", "La ricevuta dell'ordine", "Due fototessere", "Il vecchio computer"], answerIndex: 1 },
       ],
     },
@@ -74,7 +74,7 @@ export const CELI_DUE_ITEMS: RawItem[] = [
       questions: [
         { q: "Quale servizio parte lunedì?", options: ["Nuovi autobus", "Biciclette in condivisione", "Un parcheggio gratuito", "Un treno veloce"], answerIndex: 1 },
         { q: "Com'è la prima mezz'ora?", options: ["Gratuita", "Costa un euro", "Costa due euro", "Non è disponibile"], answerIndex: 0 },
-        { q: "Cosa spera di ottenere il Comune?", options: ["Più turisti", "Ridurre traffico e inquinamento", "Più soldi dalle multe", "Aprire nuovi negozi"], answerIndex: 1 },
+        { q: "Cosa spera di ottenere il Comune?", options: ["Più turisti", "Ridurre traffico e inquinamento", "Più soldi dalle multe del centro", "Aprire nuovi negozi"], answerIndex: 1 },
       ],
     },
   },
@@ -87,7 +87,7 @@ export const CELI_DUE_ITEMS: RawItem[] = [
       part: "WRITTEN",
       audioScript: "Gentili clienti, vi ricordiamo che il supermercato chiude tra quindici minuti. Le casse restano aperte fino alle venti e trenta. Da domani il negozio apre alle otto invece che alle nove. Grazie e buona serata.",
       questions: [
-        { q: "Quando chiude il supermercato?", options: ["Tra quindici minuti", "Alle venti", "Domani", "Tra un'ora"], answerIndex: 0 },
+        { q: "Quando chiude il supermercato?", options: ["Tra quindici minuti", "Alle venti e trenta", "Domani", "Tra un'ora"], answerIndex: 0 },
         { q: "Che cosa cambia da domani?", options: ["Il negozio chiude prima", "Il negozio apre un'ora prima", "Le casse chiudono alle venti", "Il negozio resta chiuso"], answerIndex: 1 },
       ],
     },
@@ -102,7 +102,7 @@ export const CELI_DUE_ITEMS: RawItem[] = [
       questions: [
         { q: "Perché chiamano?", options: ["Per spostare l'appuntamento", "Per confermarlo", "Per annullarlo", "Per chiedere un pagamento"], answerIndex: 1 },
         { q: "Entro quando bisogna avvisare se non si può andare?", options: ["Almeno un giorno prima", "La mattina stessa", "Un'ora prima", "Non serve avvisare"], answerIndex: 0 },
-        { q: "Che cosa bisogna portare?", options: ["Una fototessera", "La documentazione della visita precedente", "Il pagamento in contanti", "Niente"], answerIndex: 1 },
+        { q: "Che cosa bisogna portare?", options: ["Una fototessera", "La documentazione della visita precedente", "Il pagamento della visita in contanti", "Niente"], answerIndex: 1 },
       ],
     },
   },
@@ -155,7 +155,7 @@ export const CELI_DUE_ITEMS: RawItem[] = [
       audioScript: "— Allora, partiamo venerdì sera o sabato mattina? — Venerdì sera arriviamo tardi e paghiamo una notte in più. — Però sabato mattina troviamo traffico. — Se partiamo alle sei, no. — Va bene, sabato alle sei. Prenoto io il treno.",
       questions: [
         { q: "Quando partono?", options: ["Venerdì sera", "Sabato alle sei", "Sabato pomeriggio", "Domenica"], answerIndex: 1 },
-        { q: "Perché non partono venerdì sera?", options: ["C'è traffico", "Costerebbe una notte in più", "Non ci sono treni", "Uno dei due lavora"], answerIndex: 1 },
+        { q: "Perché non partono venerdì sera?", options: ["C'è traffico", "Costerebbe una notte in più", "Non ci sono treni", "Uno dei due lavora il venerdì"], answerIndex: 1 },
         { q: "Come viaggiano?", options: ["In macchina", "In treno", "In autobus", "In aereo"], answerIndex: 1 },
       ],
     },
@@ -228,9 +228,9 @@ export const CELI_DUE_ITEMS: RawItem[] = [
       part: "WRITTEN",
       passage: "Torna anche quest'anno la sagra della castagna, in programma il primo weekend di ottobre. Nella piazza del paese ci saranno stand di prodotti tipici, musica dal vivo e giochi per i bambini. L'ingresso è libero. Gli organizzatori consigliano di arrivare presto, perché lo scorso anno la piazza era piena già a mezzogiorno.",
       questions: [
-        { q: "Quando si svolge la sagra?", options: ["Il primo weekend di ottobre", "A Natale", "In estate", "A Pasqua"], answerIndex: 0 },
+        { q: "Quando si svolge la sagra?", options: ["Il primo weekend di ottobre", "A Natale", "All'inizio dell'estate", "A Pasqua"], answerIndex: 0 },
         { q: "Quanto costa l'ingresso?", options: ["Cinque euro", "È libero", "Dieci euro", "Solo per i bambini"], answerIndex: 1 },
-        { q: "Perché conviene arrivare presto?", options: ["Per il parcheggio", "Perché la piazza si riempie subito", "Per lo sconto", "Per il sole"], answerIndex: 1 },
+        { q: "Perché conviene arrivare presto?", options: ["Per trovare il parcheggio libero", "Perché la piazza si riempie subito", "Per lo sconto", "Per il sole"], answerIndex: 1 },
       ],
     },
   },
@@ -256,9 +256,9 @@ export const CELI_DUE_ITEMS: RawItem[] = [
       part: "WRITTEN",
       passage: "Benvenuti a Orvieto! Questa piccola città sorge su una collina di roccia e offre una vista spettacolare sulla campagna. Da non perdere: il Duomo, con la sua facciata dorata, e i pozzi antichi scavati nella roccia. Vi consigliamo di visitare la città a piedi, perché le strade del centro sono strette e in salita. Un trenino turistico collega il parcheggio al centro storico.",
       questions: [
-        { q: "Dove sorge Orvieto?", options: ["Sul mare", "Su una collina di roccia", "In una valle", "Vicino a un lago"], answerIndex: 1 },
+        { q: "Dove sorge Orvieto?", options: ["Sul mare", "Su una collina di roccia", "In una valle", "Vicino a un grande lago"], answerIndex: 1 },
         { q: "Cosa si consiglia di non perdere?", options: ["Il porto", "Il Duomo e i pozzi antichi", "La stazione", "Il centro commerciale"], answerIndex: 1 },
-        { q: "Perché si consiglia di visitare a piedi?", options: ["Perché non ci sono auto", "Perché le strade sono strette e in salita", "Perché è vietato guidare", "Perché è più economico"], answerIndex: 1 },
+        { q: "Perché si consiglia di visitare a piedi?", options: ["Perché non ci sono auto", "Perché le strade sono strette e in salita", "Perché è vietato guidare in centro", "Perché è più economico"], answerIndex: 1 },
       ],
     },
   },
@@ -287,8 +287,8 @@ export const CELI_DUE_ITEMS: RawItem[] = [
       passage: "Comprare frutta e verdura di stagione ha molti vantaggi. Prima di tutto, questi prodotti costano meno, perché ce n'è in abbondanza. Inoltre, hanno più sapore e più sostanze utili, dato che vengono raccolti al momento giusto. Infine, scegliere prodotti locali e di stagione aiuta l'ambiente: si evita di trasportare il cibo da lontano, riducendo l'inquinamento. Basta un po' di attenzione al momento della spesa per fare bene a sé e al pianeta.",
       questions: [
         { q: "Perché i prodotti di stagione costano meno?", options: ["Sono di bassa qualità", "Ce n'è in abbondanza", "Sono importati", "Nessuno li compra"], answerIndex: 1 },
-        { q: "Perché hanno più sapore?", options: ["Sono più costosi", "Vengono raccolti al momento giusto", "Sono più grandi", "Sono conservati a lungo"], answerIndex: 1 },
-        { q: "Come aiutano l'ambiente i prodotti locali?", options: ["Si evita di trasportarli da lontano", "Costano di più", "Sono più colorati", "Si buttano meno"], answerIndex: 0 },
+        { q: "Perché hanno più sapore?", options: ["Sono più costosi", "Vengono raccolti al momento giusto", "Sono più grandi", "Sono conservati a lungo nei magazzini"], answerIndex: 1 },
+        { q: "Come aiutano l'ambiente i prodotti locali?", options: ["Si evita di trasportarli da lontano", "Costano di più", "Sono più colorati e più grandi", "Si buttano meno"], answerIndex: 0 },
       ],
     },
   },
@@ -302,8 +302,8 @@ export const CELI_DUE_ITEMS: RawItem[] = [
       passage: "INFORMAZIONI PER GLI OSPITI — La colazione è servita dalle 7:00 alle 10:00 nella sala al piano terra. Il check-out è entro le 11:00; chi parte più tardi può lasciare i bagagli alla reception. La piscina è aperta dalle 9:00 alle 19:00. Il parcheggio è gratuito per chi soggiorna almeno due notti.",
       questions: [
         { q: "Fino a che ora si può fare colazione?", options: ["Fino alle 7:00", "Fino alle 10:00", "Fino alle 11:00", "Fino alle 19:00"], answerIndex: 1 },
-        { q: "Che cosa può fare chi parte dopo le 11:00?", options: ["Restare in camera", "Lasciare i bagagli alla reception", "Pagare una notte in più", "Usare la piscina"], answerIndex: 1 },
-        { q: "Quando il parcheggio è gratuito?", options: ["Sempre", "Con almeno due notti di soggiorno", "Solo di giorno", "Mai"], answerIndex: 1 },
+        { q: "Che cosa può fare chi parte dopo le 11:00?", options: ["Restare in camera", "Lasciare i bagagli alla reception", "Pagare mezza giornata in più", "Usare la piscina"], answerIndex: 1 },
+        { q: "Quando il parcheggio è gratuito?", options: ["Sempre", "Con almeno due notti di soggiorno", "Solo per una notte di soggiorno", "Mai"], answerIndex: 1 },
       ],
     },
   },
@@ -315,7 +315,7 @@ export const CELI_DUE_ITEMS: RawItem[] = [
       part: "WRITTEN",
       passage: "GIULIA: Ragazzi, cena da me sabato? — LUCA: Per me sì, ma arrivo dopo le nove, esco tardi dal lavoro. — SARA: Io ci sono. Porto il dolce. — GIULIA: Perfetto, allora facciamo alle nove e mezza così ci siamo tutti. Luca, tu porta il pane. — LUCA: Ok!",
       questions: [
-        { q: "A che ora si vedono?", options: ["Alle nove", "Alle nove e mezza", "Alle dieci", "Non è deciso"], answerIndex: 1 },
+        { q: "A che ora si vedono?", options: ["Alle nove", "Alle nove e mezza", "Alle dieci", "Non è ancora deciso"], answerIndex: 1 },
         { q: "Perché hanno spostato l'orario?", options: ["Perché Sara porta il dolce", "Perché Luca finisce tardi di lavorare", "Perché il ristorante apre tardi", "Perché Giulia non è pronta"], answerIndex: 1 },
         { q: "Che cosa porta Luca?", options: ["Il dolce", "Il pane", "Il vino", "Niente"], answerIndex: 1 },
       ],
@@ -345,7 +345,7 @@ export const CELI_DUE_ITEMS: RawItem[] = [
       questions: [
         { q: "Che cosa pensa la persona della cucina?", options: ["È deludente", "È buona", "È troppo cara", "Non ne parla"], answerIndex: 1 },
         { q: "Di che cosa la persona non dà la colpa al ristorante?", options: ["Della lentezza del servizio", "Dell'attesa iniziale", "Dei prezzi", "Del pesce"], answerIndex: 1 },
-        { q: "Che cosa farà la prossima volta?", options: ["Non tornerà", "Prenoterà e andrà in una sera meno affollata", "Andrà a pranzo", "Ordinerà solo il primo"], answerIndex: 1 },
+        { q: "Che cosa farà la prossima volta?", options: ["Non tornerà", "Prenoterà e andrà in una sera meno affollata", "Andrà a pranzo", "Ordinerà soltanto il primo e il dolce"], answerIndex: 1 },
       ],
     },
   },
@@ -358,7 +358,7 @@ export const CELI_DUE_ITEMS: RawItem[] = [
       passage: "In città alcune sale cinematografiche piccole hanno riaperto, dopo anni in cui sembravano destinate a sparire. I gestori raccontano che il pubblico non è tornato per i film nuovi, che si trovano ovunque, ma per le serate con l'incontro dopo la proiezione. «Se offriamo solo il film», dice uno di loro, «non abbiamo niente che una casa non abbia già».",
       questions: [
         { q: "Perché, secondo i gestori, il pubblico è tornato?", options: ["Per i film nuovi", "Per gli incontri dopo la proiezione", "Perché i biglietti costano meno", "Perché le sale sono più comode"], answerIndex: 1 },
-        { q: "Che cosa significa la frase finale?", options: ["Che il cinema deve offrire qualcosa in più della visione", "Che le case sono più comode", "Che i film nuovi non piacciono", "Che le sale devono chiudere"], answerIndex: 0 },
+        { q: "Che cosa significa la frase finale?", options: ["Che il cinema deve offrire qualcosa in più della visione", "Che le case sono più comode", "Che i film nuovi non piacciono più a nessuno", "Che le sale devono chiudere"], answerIndex: 0 },
         { q: "Qual è la fonte di questa spiegazione?", options: ["Uno studio nazionale", "I gestori delle sale", "Il comune", "Gli spettatori intervistati"], answerIndex: 1 },
       ],
     },
@@ -426,7 +426,7 @@ export const CELI_DUE_ITEMS: RawItem[] = [
       questions: [
         { q: "Qual è la tesi dell'autore?", options: ["Che abbiamo molto tempo libero", "Che confondiamo il tempo che manca con quello che non riconosciamo", "Che i ritagli di tempo valgono quanto una serata", "Che bisogna lavorare di meno"], answerIndex: 1 },
         { q: "Che cosa NON sostiene l'autore?", options: ["Che i ritagli sostituiscono una serata intera", "Che esistono ritagli di tempo", "Che ci crediamo più occupati di quanto siamo", "Che in parte è vero che manca il tempo"], answerIndex: 0 },
-        { q: "Come definisce l'autore l'idea che i ritagli bastino?", options: ["Realistica", "Consolatoria e falsa", "Interessante", "Diffusa"], answerIndex: 1 },
+        { q: "Come definisce l'autore l'idea che i ritagli bastino?", options: ["Realistica", "Consolatoria e falsa", "Interessante ma vaga", "Diffusa"], answerIndex: 1 },
       ],
     },
   },
@@ -438,9 +438,9 @@ export const CELI_DUE_ITEMS: RawItem[] = [
       part: "WRITTEN",
       passage: "Leggo che si vuole chiudere il centro alle auto. Non sono contrario per principio: ci vivo e il rumore lo sento anch'io. Chiedo però che si dica come ci arriverà chi oggi usa la macchina perché gli autobus, la sera, semplicemente non ci sono. Chiudere il centro senza toccare gli orari dei mezzi non riduce il traffico: lo sposta, e sposta anche le persone.",
       questions: [
-        { q: "Qual è la posizione di chi scrive?", options: ["È contrario alla chiusura", "Non è contrario, ma chiede che si migliorino i trasporti", "Vuole più parcheggi", "Non esprime un'opinione"], answerIndex: 1 },
-        { q: "Qual è la sua obiezione principale?", options: ["Il costo dei lavori", "La sera gli autobus non ci sono", "Il rumore delle auto", "La mancanza di negozi"], answerIndex: 1 },
-        { q: "Che cosa significa «lo sposta, e sposta anche le persone»?", options: ["Che il traffico sparisce", "Che il problema si trasferisce altrove e allontana chi non ha alternative", "Che le persone cambiano casa per scelta", "Che gli autobus cambiano percorso"], answerIndex: 1 },
+        { q: "Qual è la posizione di chi scrive?", options: ["È contrario alla chiusura del centro alle auto", "Non è contrario, ma chiede che si migliorino i trasporti", "Vuole più parcheggi", "Non esprime un'opinione"], answerIndex: 1 },
+        { q: "Qual è la sua obiezione principale?", options: ["Il costo dei lavori", "La sera gli autobus non ci sono", "Il rumore delle auto", "La mancanza di parcheggi"], answerIndex: 1 },
+        { q: "Che cosa significa «lo sposta, e sposta anche le persone»?", options: ["Che il traffico sparisce", "Che il problema si trasferisce altrove e allontana chi non ha alternative", "Che le persone cambiano casa e quartiere per libera scelta", "Che gli autobus cambiano percorso"], answerIndex: 1 },
       ],
     },
   },

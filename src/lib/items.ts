@@ -1,9 +1,19 @@
-// AlmiItalian — app-side item loader (bundled Batch-1 bank). Same 100 items that seed Neon
-// (dedup key {exam,level,section,title} matches the DB), bundled so the practice runner needs no
-// DB round-trip. Regenerate with: npx tsx scripts/seed/_gen_bank_json.mjs
+// AlmiItalian — SERVER-SIDE authored item loader (bundled Batch-1 bank). Same items that seed
+// Neon (dedup key {exam,level,section,title} matches the DB), bundled so the grader needs no DB
+// round-trip. Regenerate with: npx tsx scripts/seed/_gen_bank_json.mjs
 // Items are bucketed by {exam × level × section}; the SCORING ENGINE — never this file — owns the
 // pass rules, and the three engines' scales are never mixed.
+//
+// ── THIS MODULE HOLDS THE ANSWER KEY. KEEP IT OUT OF THE BROWSER. ───────────
+// Everything below carries `answerIndex` / `answerMap` / `correctOrder` / `blanks[].answer`.
+// It used to be imported by PracticeRunner for its type guards, which put the entire keyed bank
+// into the client bundle on every practice page. The runner's vocabulary now lives in
+// @/lib/runner-items, which imports nothing and therefore cannot drag this along.
+//
+// If you need item shapes in a client component, import from @/lib/runner-items.
+// If you need a served item, build it with toRunnerItem() from @/lib/item-id.
 import bank from "@/data/items-batch1.json";
+import { deGame } from "@/lib/degame";
 
 export type ItalianExam = "CILS_STANDARD" | "CILS_B1C" | "CELI";
 export type TaskType = "MCQ" | "MATCHING" | "ORDERING" | "CLOZE" | "ANALISI" | "WRITING" | "SPEAKING";
@@ -32,7 +42,19 @@ export type BankItem = {
   payload: Payload;
 };
 
-export const BANK = bank as unknown as BankItem[];
+/** The bank exactly as authored, key in the position the author wrote it in. Exported for the
+ *  gates and the de-game proof — never for serving, and never for grading. */
+export const RAW_BANK = bank as unknown as BankItem[];
+
+/**
+ * The bank AS SERVED AND AS GRADED: option positions de-gamed, keys moved with them.
+ *
+ * Everything downstream — toRunnerItem, the grader, /api/status, the bank gate — reads this
+ * one, so the arrangement a learner sees, the key the server marks against, and the
+ * distribution the gate measures are all the same array. See @/lib/degame for what the
+ * transform does and why it runs at load rather than in the seed files.
+ */
+export const BANK: BankItem[] = deGame(RAW_BANK);
 
 /** Items for one bucket, in bank order. */
 export function itemsFor(exam: ItalianExam, level: string, section: string): BankItem[] {

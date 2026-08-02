@@ -113,6 +113,51 @@ export const TRACKS: Track[] = [
   },
 ];
 
+// ── COVERAGE: WHAT THE ENGINES KNOW vs WHAT LEARNERS CAN PRACTISE ───────────
+// The three scoring engines between them declare 13 exam levels. TRACKS routes 4 of them. The
+// other 9 have a verified scoring engine and NO item bank — so the product can score them and
+// cannot give anyone anything to answer.
+//
+// That gap was previously invisible: it existed only as the difference between two lists nobody
+// compared, so a reader of TRACKS saw four tracks and no indication that nine more were implied
+// elsewhere. Declaring them here makes the gap a stated fact with a reason attached, and
+// scripts/items/coverage-gate.mts fails the build if an engine level appears in neither list —
+// so a level can be added to an engine and forgotten, but it cannot be added and hidden.
+//
+// This is a declaration of scope, not a plan. Routing one of these means authoring a full bank
+// at that CEFR level (4–5 sections × 15 items, calibrated), which is content work and belongs in
+// its own batch, not in a grading-integrity change.
+export type Coverage = {
+  exam: ItalianExam;
+  level: string;
+  cefr: string;
+  label: string;
+  status: "ROUTED" | "OUT_OF_SCOPE";
+  note: string;
+};
+
+const NO_BANK = "Scoring engine verified; no item bank authored, so the level is not routed and no practice surface claims it.";
+
+export const COVERAGE: Coverage[] = [
+  { exam: "CILS_B1C", level: "B1C", cefr: "B1", label: "CILS B1 Cittadinanza", status: "ROUTED", note: "Flagship. 4 sections × 15." },
+
+  { exam: "CILS_STANDARD", level: "A1", cefr: "A1", label: "CILS A1", status: "OUT_OF_SCOPE", note: NO_BANK },
+  { exam: "CILS_STANDARD", level: "A2", cefr: "A2", label: "CILS A2", status: "OUT_OF_SCOPE", note: NO_BANK },
+  { exam: "CILS_STANDARD", level: "UNO", cefr: "B1", label: "CILS UNO", status: "ROUTED", note: "5 sections × 15." },
+  { exam: "CILS_STANDARD", level: "DUE", cefr: "B2", label: "CILS DUE", status: "ROUTED", note: "5 sections × 15." },
+  { exam: "CILS_STANDARD", level: "TRE", cefr: "C1", label: "CILS TRE", status: "OUT_OF_SCOPE", note: NO_BANK },
+  { exam: "CILS_STANDARD", level: "QUATTRO", cefr: "C2", label: "CILS QUATTRO", status: "OUT_OF_SCOPE", note: NO_BANK },
+
+  // CELI level→CEFR follows the CVCL (Perugia) mapping the engine encodes and the scoring
+  // selftest asserts: Impatto A1 · CELI 1 A2 · CELI 2 B1 · CELI 3 B2 · CELI 4 C1 · CELI 5 C2.
+  { exam: "CELI", level: "IMPATTO", cefr: "A1", label: "CELI Impatto", status: "OUT_OF_SCOPE", note: NO_BANK },
+  { exam: "CELI", level: "UNO", cefr: "A2", label: "CELI 1", status: "OUT_OF_SCOPE", note: NO_BANK },
+  { exam: "CELI", level: "DUE", cefr: "B1", label: "CELI 2", status: "ROUTED", note: "4 sections × 15." },
+  { exam: "CELI", level: "TRE", cefr: "B2", label: "CELI 3", status: "OUT_OF_SCOPE", note: NO_BANK },
+  { exam: "CELI", level: "QUATTRO", cefr: "C1", label: "CELI 4", status: "OUT_OF_SCOPE", note: NO_BANK },
+  { exam: "CELI", level: "CINQUE", cefr: "C2", label: "CELI 5", status: "OUT_OF_SCOPE", note: NO_BANK },
+];
+
 export const trackBySlug = (slug: string): Track | undefined => TRACKS.find((t) => t.slug === slug);
 export const sectionBySlug = (t: Track, slug: string): SectionMeta | undefined => t.sections.find((s) => s.slug === slug);
 export const sectionCount = (t: Track, s: SectionMeta): number => countFor(t.exam, t.level, s.code);

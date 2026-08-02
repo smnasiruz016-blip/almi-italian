@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run gate:fork-hygiene && npm run seo:test && npm run selftest:engine && npm run validate:batch1 && npm run gate:bank && npm run gate:real-entity && npm run gate:titles && node scripts/seo/uniqueness-gate.mjs && prisma generate && next build",
+    "build": "npm run gate:fork-hygiene && npm run seo:test && npm run selftest:engine && npm run validate:batch1 && npm run gate:bank && npm run gate:item-id && npm run gate:serve && npm run gate:degame && npm run gate:coverage && npm run gate:real-entity && npm run gate:titles && node scripts/seo/uniqueness-gate.mjs && prisma generate && next build",
     "start": "next start",
     "postinstall": "prisma generate",
     "lint": "next lint",
@@ -17,6 +17,10 @@
     "db:deploy": "prisma migrate deploy",
     "gate:fork-hygiene": "node scripts/seo/fork-hygiene-gate.mjs",
     "gate:bank": "tsx scripts/items/bank-gate.mts",
+    "gate:item-id": "tsx scripts/items/id-gate.mts",
+    "gate:serve": "tsx scripts/items/serve-gate.mts",
+    "gate:degame": "tsx scripts/items/degame-gate.mts",
+    "gate:coverage": "tsx scripts/items/coverage-gate.mts",
     "gate:real-entity": "tsx scripts/items/real-entity-gate.mts",
     "gate:titles": "tsx scripts/items/title-uniqueness-gate.mts"
   },

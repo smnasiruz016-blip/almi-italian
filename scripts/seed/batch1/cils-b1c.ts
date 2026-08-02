@@ -15,7 +15,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       audioScript: "Buongiorno. Per ritirare un pacco deve presentare l'avviso di giacenza e un documento d'identità valido. Lo sportello pacchi è il numero 4 ed è aperto dalle 8:30 alle 13:30, dal lunedì al venerdì. Il sabato è chiuso.",
       questions: [
-        { q: "Che cosa deve presentare la persona per ritirare il pacco?", options: ["Solo il documento", "L'avviso di giacenza e un documento", "Il codice fiscale", "Una fototessera"], answerIndex: 1 },
+        { q: "Che cosa deve presentare la persona per ritirare il pacco?", options: ["Solo il documento d'identità", "L'avviso di giacenza e un documento", "Il codice fiscale", "Una fototessera"], answerIndex: 1 },
         { q: "A che ora chiude lo sportello?", options: ["Alle 8:30", "Alle 13:30", "Alle 18:00", "Al sabato"], answerIndex: 1 },
         { q: "Quando è chiuso lo sportello?", options: ["Il lunedì", "Il venerdì", "Il sabato", "Il mercoledì"], answerIndex: 2 },
       ],
@@ -41,7 +41,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
       audioScript: "Ha chiamato l'ufficio anagrafe del Comune. La sua carta d'identità è pronta. Può venire a ritirarla allo sportello 3, il martedì e il giovedì mattina, dalle 9 alle 12. Deve portare la vecchia carta d'identità.",
       questions: [
         { q: "Che cosa è pronto da ritirare?", options: ["Il passaporto", "La carta d'identità", "La patente", "Il permesso di soggiorno"], answerIndex: 1 },
-        { q: "Che cosa deve portare la persona?", options: ["Due fototessere", "La vecchia carta d'identità", "Il codice fiscale", "Una marca da bollo"], answerIndex: 1 },
+        { q: "Che cosa deve portare la persona?", options: ["Due fototessere", "La vecchia carta d'identità", "Il codice fiscale", "Una marca da bollo nuova"], answerIndex: 1 },
       ],
     },
   },
@@ -52,8 +52,8 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       audioScript: "Gentile signore, il suo appuntamento per il rinnovo del permesso di soggiorno è fissato per giovedì 12 alle ore 9:00. Deve presentarsi allo sportello immigrazione con il passaporto, la ricevuta della domanda e quattro fototessere. Se non può venire, chiami almeno due giorni prima per spostare l'appuntamento.",
       questions: [
-        { q: "Per che cosa è l'appuntamento?", options: ["Per il rinnovo del permesso di soggiorno", "Per la cittadinanza", "Per la carta d'identità", "Per il passaporto"], answerIndex: 0 },
-        { q: "Quante fototessere deve portare?", options: ["Due", "Tre", "Quattro", "Sei"], answerIndex: 2 },
+        { q: "Per che cosa è l'appuntamento?", options: ["Per il rinnovo del permesso di soggiorno", "Per la cittadinanza", "Per la carta d'identità elettronica", "Per il passaporto"], answerIndex: 0 },
+        { q: "Quante fototessere deve portare?", options: ["Cinque", "Tre", "Quattro", "Sei"], answerIndex: 2 },
         { q: "Cosa deve fare se non può venire?", options: ["Non presentarsi", "Chiamare almeno due giorni prima", "Mandare un'email il giorno stesso", "Andare un altro giorno senza avvisare"], answerIndex: 1 },
       ],
     },
@@ -144,7 +144,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
       questions: [
         { q: "A che ora finiscono le lezioni venerdì?", options: ["Alle 12:30", "Alle 12:40", "Alle 16:00", "Alle 14:00"], answerIndex: 0 },
         { q: "Che cosa non funziona quel giorno?", options: ["Lo scuolabus", "La mensa", "La segreteria", "Le lezioni"], answerIndex: 1 },
-        { q: "Che cosa deve fare chi non può prendere il bambino?", options: ["Telefonare al docente", "Avvisare la segreteria entro giovedì", "Venire alle 16:00", "Scrivere allo scuolabus"], answerIndex: 1 },
+        { q: "Che cosa deve fare chi non può prendere il bambino?", options: ["Telefonare al docente", "Avvisare la segreteria entro giovedì", "Venire alle 16:00", "Scrivere alla ditta dello scuolabus"], answerIndex: 1 },
       ],
     },
   },
@@ -156,7 +156,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
       audioScript: "Buongiorno, la chiamo dal CAF per il suo appuntamento. Le confermo martedì 9 alle 10:30. Per fare l'ISEE deve portare i documenti d'identità di tutta la famiglia, il codice fiscale di ciascuno e gli ultimi documenti del reddito. Se manca anche solo un documento non possiamo chiudere la pratica quel giorno.",
       questions: [
         { q: "Quando è l'appuntamento?", options: ["Martedì alle 9:00", "Martedì alle 10:30", "Giovedì alle 10:30", "Lunedì alle 9:30"], answerIndex: 1 },
-        { q: "Che cosa deve portare la persona?", options: ["Solo il proprio documento", "I documenti di tutta la famiglia e i codici fiscali", "Una fototessera", "Il permesso di soggiorno"], answerIndex: 1 },
+        { q: "Che cosa deve portare la persona?", options: ["Soltanto il proprio documento d'identità", "I documenti di tutta la famiglia e i codici fiscali", "Una fototessera", "Il permesso di soggiorno"], answerIndex: 1 },
         { q: "Che cosa succede se manca un documento?", options: ["La pratica non si chiude quel giorno", "L'appuntamento costa di più", "Si perde il diritto all'ISEE", "Si va in un altro ufficio"], answerIndex: 0 },
       ],
     },
@@ -181,7 +181,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
       audioScript: "Allora, il lavoro è part-time: sei ore al giorno, dal lunedì al venerdì, dalle 14:00 alle 20:00. Il contratto è a tempo determinato di sei mesi, poi vediamo. Le ferie si concordano con un mese di anticipo. Ha domande? — Sì, il sabato è sempre libero? — Sì, il sabato non si lavora.",
       questions: [
         { q: "Quante ore al giorno si lavora?", options: ["Quattro", "Sei", "Otto", "Dieci"], answerIndex: 1 },
-        { q: "Che tipo di contratto è?", options: ["A tempo indeterminato", "A tempo determinato di sei mesi", "Stagionale", "Di un anno"], answerIndex: 1 },
+        { q: "Che tipo di contratto è?", options: ["A tempo indeterminato pieno", "A tempo determinato di sei mesi", "Stagionale", "Di un anno"], answerIndex: 1 },
         { q: "Si lavora il sabato?", options: ["Sì, sempre", "Sì, una volta al mese", "No, mai", "Solo la mattina"], answerIndex: 2 },
       ],
     },
@@ -196,7 +196,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
         { q: "Come si fa l'iscrizione?", options: ["Allo sportello, senza appuntamento", "Online sul sito del comune", "Per telefono", "A scuola il primo giorno"], answerIndex: 1 },
         { q: "Che cosa serve per iscriversi online?", options: ["Lo SPID di un genitore", "Una fototessera", "Il permesso di soggiorno", "Il libretto delle vaccinazioni"], answerIndex: 0 },
         { q: "Chi ha già presentato l'ISEE che cosa deve fare?", options: ["Presentarlo di nuovo", "Niente: il sistema lo trova", "Portarlo a scuola", "Chiedere un appuntamento"], answerIndex: 1 },
-        { q: "Chi non riesce a iscriversi online?", options: ["Perde il posto", "Può andare allo sportello, su appuntamento", "Deve aspettare l'anno dopo", "Deve chiamare la scuola"], answerIndex: 1 },
+        { q: "Chi non riesce a iscriversi online?", options: ["Perde il posto", "Può andare allo sportello, su appuntamento", "Deve aspettare l'anno scolastico dopo", "Deve chiamare la scuola"], answerIndex: 1 },
       ],
     },
   },
@@ -210,7 +210,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
       questions: [
         { q: "In quale giorno l'ufficio è chiuso?", options: ["Lunedì", "Martedì", "Giovedì", "Venerdì"], answerIndex: 2 },
         { q: "Quando è aperto anche il pomeriggio?", options: ["Il lunedì", "Il martedì", "Il venerdì", "Ogni giorno"], answerIndex: 1 },
-        { q: "Come si possono ottenere i certificati?", options: ["Solo di persona", "Solo per telefono", "Anche dal sito del Comune", "Solo per posta"], answerIndex: 2 },
+        { q: "Come si possono ottenere i certificati?", options: ["Solo di persona", "Soltanto per telefono", "Anche dal sito del Comune", "Solo per posta"], answerIndex: 2 },
       ],
     },
   },
@@ -235,8 +235,8 @@ export const CILS_B1C_ITEMS: RawItem[] = [
       passage: "AVVISO AI VIAGGIATORI\nDa lunedì 5 la linea 12 cambia percorso per lavori in via Roma. La fermata di piazza Dante è sospesa. Usare la fermata di via Verdi, a cento metri. I biglietti si comprano in tabaccheria o con l'app. Non si vendono biglietti a bordo.",
       questions: [
         { q: "Perché la linea 12 cambia percorso?", options: ["Per uno sciopero", "Per lavori in via Roma", "Per una festa", "Per il maltempo"], answerIndex: 1 },
-        { q: "Dove si può prendere l'autobus?", options: ["In piazza Dante", "Alla fermata di via Verdi", "Alla stazione", "In via Roma"], answerIndex: 1 },
-        { q: "Dove NON si vendono i biglietti?", options: ["In tabaccheria", "Con l'app", "A bordo dell'autobus", "In edicola"], answerIndex: 2 },
+        { q: "Dove si può prendere l'autobus?", options: ["Alla fermata di piazza Dante", "Alla fermata di via Verdi", "Alla stazione", "In via Roma"], answerIndex: 1 },
+        { q: "Dove NON si vendono i biglietti?", options: ["Nelle tabaccherie", "Con l'app", "A bordo dell'autobus", "In edicola"], answerIndex: 2 },
       ],
     },
   },
@@ -275,9 +275,9 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       passage: "Il contratto di affitto dura quattro anni. L'affitto è di 600 euro al mese e va pagato entro il giorno 5 di ogni mese. All'inizio l'inquilino versa un deposito di due mesi, che sarà restituito alla fine, se non ci sono danni. Gli animali domestici non sono ammessi.",
       questions: [
-        { q: "Quanto dura il contratto?", options: ["Un anno", "Due anni", "Quattro anni", "Sei anni"], answerIndex: 2 },
+        { q: "Quanto dura il contratto?", options: ["Un anno", "Cinque anni", "Quattro anni", "Sei anni"], answerIndex: 2 },
         { q: "Entro quando si paga l'affitto?", options: ["Entro il giorno 5", "Entro il giorno 10", "Entro fine mese", "Il primo del mese"], answerIndex: 0 },
-        { q: "Quando viene restituito il deposito?", options: ["Mai", "Alla fine, se non ci sono danni", "Dopo un anno", "Ogni mese"], answerIndex: 1 },
+        { q: "Quando viene restituito il deposito?", options: ["Mai", "Alla fine, se non ci sono danni", "Dopo il primo anno di affitto", "Ogni mese"], answerIndex: 1 },
         { q: "Sono ammessi gli animali domestici?", options: ["Sì", "No", "Solo i gatti", "Solo con un permesso"], answerIndex: 1 },
       ],
     },
@@ -333,7 +333,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
       passage: "FARMACIA CHIUSA — Oggi la farmacia di turno è in via del Mercato 12, aperta tutta la notte. Questa farmacia riapre domani alle 8:30. Per le urgenze chiamare il numero indicato sulla porta.",
       questions: [
         { q: "Dove si trova la farmacia aperta stanotte?", options: ["In via del Mercato 12", "In questa farmacia", "In ospedale", "Non è indicato"], answerIndex: 0 },
-        { q: "Quando riapre questa farmacia?", options: ["Stanotte", "Domani alle 8:30", "Dopodomani", "Lunedì"], answerIndex: 1 },
+        { q: "Quando riapre questa farmacia?", options: ["Stanotte", "Domani alle 8:30", "Dopodomani mattina", "Lunedì"], answerIndex: 1 },
         { q: "Che cosa si fa in caso di urgenza?", options: ["Si aspetta domani", "Si chiama il numero sulla porta", "Si va in via del Mercato a piedi", "Si torna più tardi"], answerIndex: 1 },
       ],
     },
@@ -392,9 +392,9 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       passage: "CENTRO SPORTIVO COMUNALE — REGOLAMENTO. L'ingresso in piscina è consentito solo con cuffia e ciabatte. I minori di 14 anni devono essere accompagnati da un adulto. I corsi di nuoto si svolgono dalle 17:00 alle 19:00: in quelle ore due delle quattro corsie sono riservate ai corsi. L'abbonamento mensile si sospende solo con certificato medico.",
       questions: [
-        { q: "Che cosa succede dalle 17:00 alle 19:00?", options: ["La piscina chiude", "Metà delle corsie è riservata ai corsi", "Entrano solo gli adulti", "La cuffia non serve più"], answerIndex: 1 },
-        { q: "Un ragazzo di 12 anni può entrare da solo?", options: ["Sì, sempre", "No, deve essere accompagnato", "Sì, solo la mattina", "Sì, con la cuffia"], answerIndex: 1 },
-        { q: "Quando si può sospendere l'abbonamento?", options: ["Quando si vuole", "Solo con certificato medico", "Solo in estate", "Mai"], answerIndex: 1 },
+        { q: "Che cosa succede dalle 17:00 alle 19:00?", options: ["La piscina chiude", "Metà delle corsie è riservata ai corsi", "Possono entrare solo gli adulti", "La cuffia non serve più"], answerIndex: 1 },
+        { q: "Un ragazzo di 12 anni può entrare da solo?", options: ["Sì, sempre", "No, deve essere accompagnato", "Sì, solo la mattina presto", "Sì, con la cuffia"], answerIndex: 1 },
+        { q: "Quando si può sospendere l'abbonamento?", options: ["Quando si vuole, senza motivo", "Solo con certificato medico", "Solo in estate", "Mai"], answerIndex: 1 },
       ],
     },
   },
@@ -407,7 +407,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
       questions: [
         { q: "Da quando si può chiedere il rinnovo?", options: ["Solo dopo la scadenza", "Da sei mesi prima della scadenza", "Da un anno prima", "Il giorno della scadenza"], answerIndex: 1 },
         { q: "Si può andare allo sportello senza appuntamento?", options: ["Sì, la mattina presto", "No, serve la prenotazione", "Sì, con la vecchia carta", "Solo in caso di urgenza"], answerIndex: 1 },
-        { q: "Come si riceve la carta nuova?", options: ["Subito allo sportello", "Per posta, all'indirizzo di residenza", "In questura", "Si ritira dopo sei mesi"], answerIndex: 1 },
+        { q: "Come si riceve la carta nuova?", options: ["Subito allo sportello", "Per posta, all'indirizzo di residenza", "In questura", "Si ritira allo sportello dopo sei mesi"], answerIndex: 1 },
         { q: "Chi ha urgenza che cosa deve fare?", options: ["Dirlo quando prenota", "Tornare il giorno dopo", "Scrivere una email", "Pagare di più allo sportello"], answerIndex: 0 },
       ],
     },

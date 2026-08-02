@@ -6,6 +6,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { hasPaidAccess, needsEmailVerification, isBillingEnabled } from "@/lib/access";
 import { TRACKS, trackBySlug, sectionBySlug } from "@/lib/practice";
 import { itemsFor } from "@/lib/items";
+import { runnerItemsFor } from "@/lib/item-id";
 import { CELI_CONFIG, type CeliLevel } from "@/lib/scoring";
 import { PracticeRunner } from "@/components/PracticeRunner";
 import { PracticeComposer } from "@/components/PracticeComposer";
@@ -36,7 +37,11 @@ export default async function Page({ params }: { params: Promise<{ track: string
   const s = t && sectionBySlug(t, section);
   if (!t || !s) notFound();
 
+  // Authored items stay on the server. `served` is the same set with every answer key removed —
+  // it is the only thing that crosses into a client component, and its TYPE has no key fields,
+  // so handing the authored bank to the runner by mistake does not compile.
   const items = itemsFor(t.exam, t.level, s.code);
+  const served = runnerItemsFor(items);
   const user = await getCurrentUser();
   const needsPaid = s.kind === "estimate"; // AI Writing/Speaking → paid; objective skills are free
   const paid = hasPaidAccess(user);
@@ -84,7 +89,7 @@ export default async function Page({ params }: { params: Promise<{ track: string
       </div>
     );
   } else if (s.kind === "estimate") {
-    body = <div className="mt-8"><PracticeComposer items={items} sectionLabel={s.label} trackLabel={t.label} honesty={t.honesty} /></div>;
+    body = <div className="mt-8"><PracticeComposer items={served} sectionLabel={s.label} trackLabel={t.label} honesty={t.honesty} /></div>;
   } else {
     const celiCfg = t.exam === "CELI" ? CELI_CONFIG[t.level as CeliLevel] : null;
     const celiContext = celiCfg
@@ -92,7 +97,9 @@ export default async function Page({ params }: { params: Promise<{ track: string
       : null;
     body = (
       <div className="mt-8">
-        <PracticeRunner items={items} scale={t.scale} honesty={t.honesty} modelNote={t.modelNote} celiContext={celiContext} sectionLabel={s.label} trackLabel={t.label} />
+        {/* No `scale` prop: the scaled read-out and its CLEAR/BORDERLINE/BELOW verdict are
+            computed by /api/it/submit from the engine, server-side, and arrive with the marks. */}
+        <PracticeRunner items={served} honesty={t.honesty} modelNote={t.modelNote} celiContext={celiContext} sectionLabel={s.label} trackLabel={t.label} />
       </div>
     );
   }

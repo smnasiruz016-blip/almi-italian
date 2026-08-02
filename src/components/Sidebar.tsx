@@ -111,8 +111,15 @@ export function Sidebar({
     if (!open) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    // Escape closes the drawer. Without it this dialog was dismissable by mouse only: the
+    // backdrop takes a click, and a keyboard user who opened the drawer had no way out of it
+    // except tabbing to the close button. That is the real accessibility defect here — not the
+    // backdrop's missing key handler, which is decoration and correctly aria-hidden.
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = prev;
+      document.removeEventListener("keydown", onKey);
     };
   }, [open]);
 
@@ -132,7 +139,12 @@ export function Sidebar({
         <NavBody items={items} active={active} email={email} logout={logout} />
       </aside>
 
-      {/* Mobile drawer */}
+      {/* Mobile drawer.
+          The backdrop below is aria-hidden with an onClick, which is correct — it is decoration,
+          and the drawer has its own visible close button. What was missing is Escape: a dialog a
+          mouse can dismiss and a keyboard cannot is the actual defect, and closing the backdrop's
+          "click without key handler" by bolting a role onto a decorative div would have satisfied
+          a checker without helping anyone. */}
       {open && (
         <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true" aria-label="Navigation">
           <div className="absolute inset-0 bg-almi-ink/40" aria-hidden onClick={() => setOpen(false)} />

@@ -1,13 +1,15 @@
 import { getCurrentUser } from "@/lib/auth";
+import { logRefusal } from "@/lib/observability";
 import { issueEmailVerificationToken, verifyUrlFor, RESEND_COOLDOWN_MS } from "@/lib/verify";
 import { sendEmailVerification } from "@/lib/email";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function POST(): Promise<Response> {
+export async function POST(req: Request): Promise<Response> {
   const user = await getCurrentUser();
   if (!user) {
+    logRefusal({ route: "/api/auth/resend-verification", status: 401, reason: "no-session", req });
     return Response.json({ ok: false, error: "Not authenticated" }, { status: 401 });
   }
 

@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { hashPassword, createSession } from "@/lib/auth";
 import { issueEmailVerificationToken, verifyUrlFor } from "@/lib/verify";
 import { sendEmailVerification } from "@/lib/email";
+import { limitByClient, tooManyRequests } from "@/lib/rate-limit";
+import { logRefusal } from "@/lib/observability";
 
 const schema = z.object({
   email: z.string().email(),
@@ -12,6 +14,14 @@ const schema = z.object({
 });
 
 export async function POST(req: Request) {
+  // Each signup creates a row AND sends an email, so this is a spend limit as much as a
+  // security one.
+  const limit = limitByClient("signup", req);
+  if (!limit.ok) {
+    logRefusal({ route: "/api/auth/signup", status: 429, reason: "rate-limited", req });
+    return tooManyRequests(limit.retryAfterSeconds);
+  }
+
   const parsed = schema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Invalid email or password (min 8 chars)." }, { status: 400 });
   const { email, password, name } = parsed.data;

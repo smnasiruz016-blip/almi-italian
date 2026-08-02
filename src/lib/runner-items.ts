@@ -167,3 +167,32 @@ export type SubmitResult = {
   scaled: { score: number; max: number; floor: number; status: "CLEAR" | "BORDERLINE" | "BELOW" } | null;
   marks: AtomMark[];
 };
+
+/**
+ * Runtime check for a scored reply.
+ *
+ * The runner used to do `data as SubmitResult` on `await res.json()`, which asserts a shape for
+ * a value that arrived over the network. It is our own endpoint, so the shape is very likely
+ * right — but "very likely" is what a cast turns into a compile-time guarantee, and a proxy, a
+ * stale service worker or a redeployed route mid-session all produce a 200 with something else
+ * in it. The failure mode of the cast is `result.marks.map` on undefined, which renders the
+ * component as a blank screen with a console error; the failure mode of this is an honest
+ * "could not mark this section".
+ *
+ * Deliberately shallow: it checks the fields the component actually reads before it reads them.
+ * A full schema validator here would be a dependency and a maintenance burden for one endpoint.
+ */
+export function isSubmitResult(v: unknown): v is SubmitResult {
+  if (!v || typeof v !== "object") return false;
+  const r = v as Record<string, unknown>;
+  if (r.ok !== true) return false;
+  if (typeof r.correct !== "number" || typeof r.total !== "number" || typeof r.percent !== "number") return false;
+  if (!Array.isArray(r.marks)) return false;
+  if (r.scaled !== null && typeof r.scaled !== "object") return false;
+  return r.marks.every((m) => {
+    if (!m || typeof m !== "object") return false;
+    const k = m as Record<string, unknown>;
+    return typeof k.itemId === "string" && typeof k.atom === "string" &&
+      typeof k.correct === "boolean" && typeof k.correctValue === "string";
+  });
+}

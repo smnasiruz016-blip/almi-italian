@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run gate:fork-hygiene && npm run seo:test && npm run selftest:engine && npm run validate:batch1 && npm run gate:bank && npm run gate:item-id && npm run gate:serve && npm run gate:degame && npm run gate:coverage && npm run gate:real-entity && npm run gate:titles && node scripts/seo/uniqueness-gate.mjs && prisma generate && next build",
+    "build": "npm run gate:fork-hygiene && npm run seo:test && npm run selftest:engine && npm run validate:batch1 && npm run gate:bank && npm run gate:item-id && npm run gate:serve && npm run gate:degame && npm run gate:coverage && npm run gate:security && npm run gate:real-entity && npm run gate:titles && node scripts/seo/uniqueness-gate.mjs && prisma generate && next build",
     "start": "next start",
     "postinstall": "prisma generate",
     "lint": "next lint",
@@ -22,13 +22,14 @@
     "gate:degame": "tsx scripts/items/degame-gate.mts",
     "gate:coverage": "tsx scripts/items/coverage-gate.mts",
     "gate:real-entity": "tsx scripts/items/real-entity-gate.mts",
-    "gate:titles": "tsx scripts/items/title-uniqueness-gate.mts"
+    "gate:titles": "tsx scripts/items/title-uniqueness-gate.mts",
+    "gate:security": "tsx scripts/items/security-gate.mts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
     "@smnasiruz016-blip/almi-data": "^0.5.0",
     "bcryptjs": "^3.0.3",
-    "next": "16.2.6",
+    "next": "16.2.12",
     "prisma": "^6.19.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",
@@ -44,5 +45,9 @@
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5"
+  },
+  "overrides": {
+    "sharp": "^0.35.3",
+    "postcss": "^8.5.25"
   }
 }

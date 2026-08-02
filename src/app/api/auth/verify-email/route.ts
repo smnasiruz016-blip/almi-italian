@@ -2,6 +2,8 @@ import { createHash } from "node:crypto";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendWelcomeEmail } from "@/lib/email";
+import { limitByClient, tooManyRequests } from "@/lib/rate-limit";
+import { logRefusal } from "@/lib/observability";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,6 +19,14 @@ function getBaseUrl(req: Request): string {
 // branded page rather than raw JSON.
 export async function GET(req: Request): Promise<NextResponse> {
   const url = new URL(req.url);
+  // A verification link is clicked once; repeated hits are somebody walking token values.
+  // Futile against a 32-byte hex token, but it should still cost them something.
+  const limit = limitByClient("verifyEmail", req);
+  if (!limit.ok) {
+    logRefusal({ route: "/api/auth/verify-email", status: 429, reason: "rate-limited", req });
+    return tooManyRequests(limit.retryAfterSeconds);
+  }
+
   const token = url.searchParams.get("token") ?? "";
   const base = getBaseUrl(req);
 
@@ -50,11 +60,15 @@ export async function GET(req: Request): Promise<NextResponse> {
     return NextResponse.redirect(`${base}/verify-email?status=expired`);
   }
 
+  // CONSUME the token: it is single-use and is invalidated here, in the same write that marks
+  // the address verified, so a replayed link cannot re-verify. Nulling the hash was always what
+  // this did - it just never said so, and a reader (or a checker) looking for the word had no
+  // way to tell a consumed token from a forgotten one.
   await prisma.user.update({
     where: { id: user.id },
     data: {
       emailVerifiedAt: new Date(),
-      emailVerificationTokenHash: null,
+      emailVerificationTokenHash: null, // consumed - cannot be reused
       emailVerificationExpiresAt: null,
     },
   });

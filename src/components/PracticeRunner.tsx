@@ -24,6 +24,7 @@ import {
   isMatching,
   isOrdering,
   isCloze,
+  isSubmitResult,
   type AtomMark,
   type RunnerItem,
   type SubmitResult,
@@ -103,7 +104,12 @@ export function PracticeRunner({
         setError(typeof data?.error === "string" ? data.error : "Could not mark this section.");
         return;
       }
-      setResult(data as SubmitResult);
+      // Checked, not asserted: this value came over the wire. See isSubmitResult.
+      if (!isSubmitResult(data)) {
+        setError("The marking service replied with something we could not read. Please try again.");
+        return;
+      }
+      setResult(data);
     } catch {
       setError("Could not reach the marking service. Check your connection and try again.");
     } finally {

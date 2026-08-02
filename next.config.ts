@@ -1,8 +1,69 @@
 import type { NextConfig } from "next";
 
+// ── SECURITY HEADERS ────────────────────────────────────────────────────────
+// The app declared none: no CSP, no HSTS, no nosniff, no referrer policy, no frame
+// protection. Everything below is applied to every route.
+//
+// ── ABOUT script-src, SAID PLAINLY ──────────────────────────────────────────
+// `script-src` carries 'unsafe-inline' and that is NOT XSS protection. It is here because
+// Next's App Router streams the RSC payload as inline `self.__next_f.push(...)` scripts, so a
+// nonce-less CSP either allows inline script or breaks every page.
+//
+// The honest fix is a per-request nonce, which needs middleware this app does not have. Adding
+// middleware to mint one is a real change with its own risks — it would run on every request in
+// a repo that has no middleware today — so it is not being smuggled into a headers commit.
+// What is NOT done here: pretending. A `script-src 'self'` that silently needs 'unsafe-inline'
+// to work, or a nonce directive with no middleware to fill it, would read as protection in the
+// config and provide none in the browser.
+//
+// The value in this policy therefore lives in the directives that DO hold without a nonce, and
+// several of them close real classes of attack:
+//   frame-ancestors 'none'  clickjacking — the one this app most plausibly faces
+//   base-uri 'self'         stops an injected <base> repointing every relative URL
+//   form-action 'self'      stops an injected form posting credentials off-site
+//   object-src 'none'       kills the plugin vector outright
+//   connect-src 'self'      an injected script cannot exfiltrate to an arbitrary host
+//
+// The origin list is short because the app genuinely has no third-party scripts, iframes or
+// webfonts — checked, not assumed. The only remote origin is the AlmiWorld logo, already
+// declared in `images` below. If a script, an embed or a font is ever added, it has to be
+// added HERE too, on purpose.
+const CSP = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-ancestors 'none'",
+  "form-action 'self'",
+  "img-src 'self' data: blob: https://almiworld.com",
+  "font-src 'self' data:",
+  // Next injects inline <style> for critical CSS; same nonce story as scripts.
+  "style-src 'self' 'unsafe-inline'",
+  "script-src 'self' 'unsafe-inline'",
+  "connect-src 'self'",
+  "manifest-src 'self'",
+  "upgrade-insecure-requests",
+].join("; ");
+
+const SECURITY_HEADERS = [
+  { key: "Content-Security-Policy", value: CSP },
+  // Vercel terminates TLS and sets HSTS on custom domains, but a header the app depends on and
+  // does not declare is a header that silently disappears the day it is served from anywhere
+  // else. Declared here so the guarantee belongs to the app.
+  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  // Redundant with frame-ancestors for modern browsers, kept for the ones that only read this.
+  { key: "X-Frame-Options", value: "DENY" },
+  // This product asks for none of these. Denying them is free and makes that explicit.
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()" },
+];
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [{ protocol: "https", hostname: "almiworld.com" }],
+  },
+  async headers() {
+    return [{ source: "/:path*", headers: SECURITY_HEADERS }];
   },
 };
 

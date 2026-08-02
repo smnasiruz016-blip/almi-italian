@@ -40,7 +40,16 @@ function WritingTask({ p }: { p: RunnerWritingPayload }) {
     <div className="mt-2">
       <p className="text-sm font-medium text-almi-ink">{p.task}</p>
       <p className="mt-1 text-sm text-almi-text">{p.context}</p>
-      <textarea value={text} onChange={(e) => setText(e.target.value)} rows={7} className="mt-3 w-full rounded-lg border border-almi-line bg-white p-3 text-sm text-almi-text" placeholder="Scrivi qui la tua risposta…" />
+      {/* The task text is the label. A placeholder is not one: it disappears on first keystroke
+          and screen readers are not required to announce it, so this box had no accessible name. */}
+      <textarea
+        aria-label={p.task}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        rows={7}
+        className="mt-3 w-full rounded-lg border border-almi-line bg-white p-3 text-sm text-almi-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-almi-coral"
+        placeholder="Scrivi qui la tua risposta…"
+      />
       <div className="mt-1 flex items-center justify-between text-xs">
         <span className={under || over ? "text-almi-coral-deep" : "text-almi-teal"}>
           {n} word{n === 1 ? "" : "s"} · target {p.minWords}{p.maxWords ? `–${p.maxWords}` : "+"}

@@ -327,12 +327,23 @@ export function deGame(bank: readonly BankItem[]): BankItem[] {
 /** Read an atom's option list and key index, whatever kind it is. A cloze key is the ANSWER
  *  TEXT, so its index is looked up rather than stored. */
 function readAtom(a: AtomRef): [string[], number] {
+  // Narrowed through the guards rather than asserted. An AtomRef is only ever built inside
+  // deGame() from a payload that already satisfied the matching guard, so the throw is
+  // unreachable — but `as McqPayload` on a Payload union states that as a fact the compiler
+  // cannot check, and if the invariant ever broke the cast would hand back `undefined` fields
+  // and de-game a bank silently wrong. This fails loudly instead.
   if (a.kind === "mcq") {
-    const q = (a.item.payload as McqPayload).questions[a.qi];
+    const p = a.item.payload;
+    if (!isMcqPayload(p)) throw new Error(`mcq atom on a non-MCQ payload: ${a.item.title}`);
+    const q = p.questions[a.qi];
     return [q.options, q.answerIndex];
   }
-  const b = (a.item.payload as ClozePayload).blanks[a.bi];
-  return [b.options!, b.options!.indexOf(b.answer)];
+  const p = a.item.payload;
+  if (!isClozePayload(p)) throw new Error(`cloze atom on a non-cloze payload: ${a.item.title}`);
+  const b = p.blanks[a.bi];
+  const opts = b.options;
+  if (!opts) throw new Error(`cloze atom on a blank with no options: ${a.item.title}`);
+  return [opts, opts.indexOf(b.answer)];
 }
 
 /** Write the rearranged options back. For MCQ the key is an INDEX and must be remapped; for a
@@ -340,13 +351,16 @@ function readAtom(a: AtomRef): [string[], number] {
  *  deliberately left alone — rewriting it here is how a permutation would quietly become a
  *  content edit. */
 function writeAtom(a: AtomRef, options: string[], keyIndex: number): void {
+  const p = a.item.payload;
   if (a.kind === "mcq") {
-    const q = (a.item.payload as McqPayload).questions[a.qi];
+    if (!isMcqPayload(p)) throw new Error(`mcq atom on a non-MCQ payload: ${a.item.title}`);
+    const q = p.questions[a.qi];
     q.options = options;
     q.answerIndex = keyIndex;
     return;
   }
-  (a.item.payload as ClozePayload).blanks[a.bi].options = options;
+  if (!isClozePayload(p)) throw new Error(`cloze atom on a non-cloze payload: ${a.item.title}`);
+  p.blanks[a.bi].options = options;
 }
 
 // Local shape guards. These deliberately do not import the ones in @/lib/items: this module is

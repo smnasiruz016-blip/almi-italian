@@ -16,7 +16,9 @@ const HEAVY_BOTS = [
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
-      { userAgent: ["Googlebot", "Bingbot"], allow: "/", disallow: ["/api/"] },
+      // HOLDING 2026-08-09 — DEEP_LEAVES now applies to Googlebot and Bingbot too; those routes
+      // no longer render. Advisory only — the route config is what stops the ISR writes.
+      { userAgent: ["Googlebot", "Bingbot"], allow: "/", disallow: ["/api/", ...DEEP_LEAVES] },
       { userAgent: "*", allow: "/", disallow: ["/api/", ...DEEP_LEAVES], crawlDelay: 10 },
       { userAgent: HEAVY_BOTS, disallow: "/" },
     ],

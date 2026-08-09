@@ -4,8 +4,11 @@ import { notFound } from "next/navigation";
 import { BY_PROPOSED } from "@/lib/seo/data";
 import { canonical, SHAMOOL_LINE, DECREE_CITATION } from "@/lib/seo/content";
 
-export const dynamicParams = true;
-export function generateStaticParams() { return []; }
+// HOLDING 2026-08-09 — keep-set (proposed descent countries). Bounded tier, so it is prerendered at build
+// and served as static HTML: no on-demand rendering, therefore no ISR writes. Anything
+// outside the set 404s. Reverse by restoring `dynamicParams = true` + `return []`.
+export const dynamicParams = false;
+export function generateStaticParams() { return [...BY_PROPOSED.keys()].map((country) => ({ country })); }
 
 export async function generateMetadata({ params }: { params: Promise<{ country: string }> }): Promise<Metadata> {
   const { country } = await params;

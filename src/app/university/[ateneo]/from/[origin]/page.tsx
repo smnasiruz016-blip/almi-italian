@@ -5,7 +5,10 @@ import { BY_ORIGIN, BY_ATENEO, COURSES_BY_ATENEO } from "@/lib/seo/data";
 import { canonical, nativeLead, USTAT_ATTRIBUTION, SHAMOOL_LINE, REQ_NOT_GUARANTEE, TWO_EXAMS_LINE } from "@/lib/seo/content";
 import { OriginRecognitionSection } from "@/components/seo/OriginRecognitionSection";
 
-export const dynamicParams = true;
+// HOLDING 2026-08-09 — ISR page-generation frozen (ateneo x origin). Nothing is prerendered and
+// nothing renders on demand, so every URL under this route 404s and no ISR write can occur.
+// Data and templates are untouched. Reverse by restoring `dynamicParams = true`.
+export const dynamicParams = false;
 export function generateStaticParams() { return []; }
 
 export async function generateMetadata({ params }: { params: Promise<{ ateneo: string; origin: string }> }): Promise<Metadata> {

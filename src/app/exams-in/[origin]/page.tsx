@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BY_ORIGIN, celiCentersForOrigin } from "@/lib/seo/data";
+import { BY_ORIGIN, ORIGINS, celiCentersForOrigin } from "@/lib/seo/data";
 import { canonical, nativeLead, SHAMOOL_LINE, TWO_EXAMS_LINE } from "@/lib/seo/content";
 
-export const dynamicParams = true;
-export function generateStaticParams() { return []; }
+// HOLDING 2026-08-09 — keep-set (origin hub). Bounded tier, so it is prerendered at build
+// and served as static HTML: no on-demand rendering, therefore no ISR writes. Anything
+// outside the set 404s. Reverse by restoring `dynamicParams = true` + `return []`.
+export const dynamicParams = false;
+export function generateStaticParams() { return ORIGINS.map((o) => ({ origin: o.slug })); }
 
 export async function generateMetadata({ params }: { params: Promise<{ origin: string }> }): Promise<Metadata> {
   const { origin } = await params;

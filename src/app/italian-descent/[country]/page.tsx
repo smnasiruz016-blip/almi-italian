@@ -4,8 +4,11 @@ import { notFound } from "next/navigation";
 import { BY_TIER1, BY_ORIGIN } from "@/lib/seo/data";
 import { canonical, SHAMOOL_LINE, DECREE_CITATION, TEST_NOT_CITIZENSHIP, DESCENT_LANGUAGE_LINE, CONFIRM_WITH_OFFICE } from "@/lib/seo/content";
 
-export const dynamicParams = true;
-export function generateStaticParams() { return []; }
+// HOLDING 2026-08-09 — keep-set (tier-1 descent countries). Bounded tier, so it is prerendered at build
+// and served as static HTML: no on-demand rendering, therefore no ISR writes. Anything
+// outside the set 404s. Reverse by restoring `dynamicParams = true` + `return []`.
+export const dynamicParams = false;
+export function generateStaticParams() { return [...BY_TIER1.keys()].map((country) => ({ country })); }
 
 export async function generateMetadata({ params }: { params: Promise<{ country: string }> }): Promise<Metadata> {
   const { country } = await params;

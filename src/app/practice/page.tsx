@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
-import { hasPaidAccess } from "@/lib/access";
+import { getAccessLevel, getFreeAccessDaysRemaining } from "@/lib/access";
 import { TRACKS, sectionCount } from "@/lib/practice";
 import { canonical } from "@/lib/site";
 
@@ -14,24 +13,32 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   const user = await getCurrentUser();
-  // FOUNDER GATE (trio): a logged-in non-subscribed user gets no practice — funnel to the
-  // single forward path (trial checkout on /account). Logged-out visitors keep the public
-  // SEO surface untouched.
-  if (user && !hasPaidAccess(user)) redirect("/account");
-  const banner = !user
-    ? null
-    : hasPaidAccess(user)
-      ? "AlmiItalian Pro active — Writing and Speaking feedback included."
-      : "Reading, Listening and Analysis, plus Writing and Speaking feedback, are part of Pro — 7-day free trial (card saved, not charged), then $12/month.";
+  // The founder gate that used to sit here (`if (user && !hasPaidAccess(user))
+  // redirect("/account")`) is GONE: it sent every signed-in non-subscriber away from the
+  // picker, which is what made the free tier described in lib/access.ts unreachable. The
+  // per-section gate in practice/[track]/[section] is the real one; this page only lists.
+  const level = getAccessLevel(user);
+  const daysLeft = user ? getFreeAccessDaysRemaining(user) : null;
+
+  const banner =
+    level === "NONE" && !user
+      ? null
+      : level === "PAID"
+        ? "AlmiItalian Pro active — every section open."
+        : level === "FREE_3DAY"
+          ? `Free practice: ${daysLeft} day${daysLeft === 1 ? "" : "s"} left on Ascolto, Lettura and Analisi — no card. Produzione scritta and orale are part of Pro.`
+          : level === "FREE_EXPIRED"
+            ? "Your 3 free days have ended. Start a 7-day free trial — card saved, not charged — then $12/month, cancel anytime."
+            : "Ascolto, Lettura and Analisi are free for 3 days — no card needed. Produzione scritta and orale are part of Pro: 7-day free trial (card saved, not charged), then $12/month.";
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
       <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">Practice</p>
       <h1 className="mt-3 text-3xl font-bold text-almi-ink">Choose your Italian exam</h1>
       <p className="mt-4 text-almi-text">
-        CILS and CELI are scored differently, so we keep them apart — pick the exam you&apos;re actually sitting. Listening,
-        Reading and Grammar are auto-marked on each engine&apos;s own scale; Writing and Speaking are practised against the
-        official-style criteria and always labelled AI estimates.
+        CILS and CELI are scored differently, so we keep them apart — pick the exam you&apos;re actually sitting. Ascolto,
+        Lettura and Analisi are auto-marked on each engine&apos;s own scale. Produzione scritta and orale give you the task
+        and that exam&apos;s official-style criteria to work against — they are not auto-marked.
       </p>
       {banner && <p className="mt-4 rounded-xl border border-almi-line bg-almi-bg-peach/40 px-4 py-2 text-sm text-almi-text">{banner}</p>}
 

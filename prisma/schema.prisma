@@ -68,6 +68,10 @@ model User {
   compGrantedAt                DateTime? // when the comp was granted
   compGrantedBy                String?   // admin email that granted it
   compReason                   String?   // free-text note (e.g. "Beta tester batch 1")
+  // The 3-day no-card window on the OBJECTIVE sections. NULL = never started; the clock is
+  // set by the first graded submission, never by signup, and never restarted (see
+  // src/lib/free-window.ts). Network standard, ported from AlmiCELPIP.
+  freeAccessStartedAt          DateTime?
   createdAt                    DateTime     @default(now())
   updatedAt                    DateTime     @updatedAt
 

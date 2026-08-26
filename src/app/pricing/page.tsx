@@ -16,6 +16,7 @@ const INCLUDED = [
   "CILS standard capitalization: the sections you'd bank today vs retake",
   "CELI two-part readout with A–E grade-band estimate (labelled estimate)",
   "100% original material — flat monthly price, cancel in one click",
+  "Ascolto, Lettura and Analisi: free for 3 days, no card required",
 ];
 
 export default function Page() {
@@ -23,7 +24,7 @@ export default function Page() {
     <Article
       eyebrow="Pricing"
       title="Simple, honest pricing"
-      lede="$12/month — 7-day free trial, cancel anytime."
+      lede="3 days free without a card. Then $12/month with a 7-day free trial, cancel anytime."
     >
       <ul className="space-y-2">
         {INCLUDED.map((li) => (

@@ -75,8 +75,10 @@ model User {
   createdAt                    DateTime     @default(now())
   updatedAt                    DateTime     @updatedAt
 
-  attempts     ItalianAttempt[]
-  sessions     ItalianSession[]
+  attempts      ItalianAttempt[]
+  sessions      ItalianSession[]
+  aiCosts       AICostLedger[]
+  aiEvaluations AiEvaluation[]
   authSessions AuthSession[]
   reviews      Review[]
 }
@@ -169,4 +171,73 @@ model Review {
 
   @@index([userId])
   @@index([approved, createdAt])
+}
+
+// ── AI FEEDBACK (Produzione scritta / orale) ────────────────────────────────
+// The estimate skills. Everything here is an ESTIMATE, never an official result — see
+// AiEvaluation.labelKind, which the renderer requires and scripts/gates/honesty-gate.mts
+// enforces at build time.
+
+enum AiSkill {
+  SCRITTA
+  ORALE
+}
+
+/// Every metered model call, including the failures at cost 0. Written by recordCost() in
+/// src/lib/ai/anthropic-client.ts. Costs are integer 1/100-cents (1 = $0.0001) so tiny
+/// amounts store exactly without Decimal overhead — AlmiPTE's unit, kept identical so the
+/// network's ledgers stay comparable.
+model AICostLedger {
+  id              String   @id @default(cuid())
+  userId          String?
+  feature         String //  e.g. "scritta.evaluate", "orale.transcribe"
+  model           String
+  inputTokens     Int      @default(0)
+  outputTokens    Int      @default(0)
+  cacheReadTokens Int      @default(0)
+  cacheWriteTokens Int     @default(0)
+  costCents       Int      @default(0) // 1/100 cents
+  success         Boolean  @default(true)
+  errorMessage    String?
+  createdAt       DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([feature, createdAt])
+}
+
+/// One AI-estimated attempt at a Produzione scritta or orale task.
+///
+/// Keyed by the bank's STABLE ITEM ID (sha256 of {exam, level, section, title}), not by a
+/// foreign key: the item bank lives in src/data/items-batch1.json and ItalianItem is an empty
+/// Phase-2 seed target, so an FK here would reference nothing.
+model AiEvaluation {
+  id            String   @id @default(cuid())
+  userId        String
+  skill         AiSkill
+  stableItemId  String
+  exam          ItalianExam
+  level         String
+  section       String
+  /// The learner's text, or the Whisper transcript for ORALE.
+  response      String
+  /// ORALE only: the stored clip and how confident the transcription was.
+  audioUrl      String?
+  transcriptConfidence Float?
+  /// Low-confidence transcriptions are flagged rather than silently scored.
+  needsReview   Boolean  @default(false)
+  /// The labelled estimate. Shape is validated by Zod before it is written.
+  evaluation    Json
+  /// Carried on the row as well as inside `evaluation` so the honesty gate can assert it
+  /// without parsing JSON, and so a row can never exist without saying what it is.
+  labelKind     String //  always "ESTIMATE"
+  model         String
+  costCents     Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([stableItemId])
 }

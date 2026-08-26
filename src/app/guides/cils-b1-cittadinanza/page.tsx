@@ -27,7 +27,7 @@ export default function Page() {
       <p>B1 Cittadinanza lives in the world of Italian administration — the <em>poste</em>, the <em>comune</em>, the <em>prefettura</em>, tenancy and utility letters. Writing that is grammatically fine but slips out of that administrative register is exactly what pushes the Produzione scritta section under the floor. Practising general B1 is not the same as practising this.</p>
 
       <h2>How we show it</h2>
-      <p>Our practice keeps this exam on its own engine: four sections out of {CILS_B1C_SECTION_MAX}, both conditions shown every time, and no banking offered. Writing and speaking are labelled AI estimates — only the University for Foreigners of Siena awards the real result.</p>
+      <p>Our practice keeps this exam on its own engine: four sections out of {CILS_B1C_SECTION_MAX}, both conditions shown every time, and no banking offered. Writing and speaking are labelled estimates — writing from your text, speaking from an automatic transcript of your recording — and only the University for Foreigners of Siena awards the real result.</p>
       <p className="pt-2"><Link href="/practice">Practise CILS B1 Cittadinanza →</Link> · <Link href="/guides/a2-or-b1">Is it A2 or B1 you actually need?</Link></p>
     </GuideShell>
   );

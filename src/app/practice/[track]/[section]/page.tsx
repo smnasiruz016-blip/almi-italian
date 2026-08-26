@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
-import { hasPaidAccess, needsEmailVerification, isBillingEnabled } from "@/lib/access";
+import { isBillingEnabled } from "@/lib/access";
+import { wouldRefuseSection } from "@/lib/free-window";
 import { TRACKS, trackBySlug, sectionBySlug } from "@/lib/practice";
 import { itemsFor } from "@/lib/items";
 import { runnerItemsFor } from "@/lib/item-id";
@@ -43,13 +44,17 @@ export default async function Page({ params }: { params: Promise<{ track: string
   const items = itemsFor(t.exam, t.level, s.code);
   const served = runnerItemsFor(items);
   const user = await getCurrentUser();
-  const needsPaid = true; // every skill needs a subscription now
-  const paid = hasPaidAccess(user);
 
-  // FOUNDER GATE (trio, screenshot-confirmed): any logged-in non-subscribed user gets no
-  // practice of ANY kind pre-checkout — funnel to the trial checkout on /account. Logged-out
-  // visitors keep the public sign-in surface below (SEO untouched). Owner/paid pass through.
-  if (user && !paid) redirect("/account");
+  // ENTITLEMENT (revised 2026-08-28) — the page and /api/it/submit MUST agree about who is
+  // refused, so both ask lib/free-window.ts and neither decides for itself. This is the
+  // read-only half: it never starts anyone's clock, because a Server Component must not
+  // write on render and a prefetch would otherwise burn a window nobody used.
+  //
+  // This replaces the founder gate (`if (user && !paid) redirect("/account")`), which sent
+  // every signed-in non-subscriber away before any section rendered — the reason the free
+  // tier described in lib/access.ts did not exist. Owner and comp doors are unchanged: both
+  // are inside hasPaidAccess(), which wouldRefuseSection() checks first.
+  const refusal = wouldRefuseSection(user, s.kind);
 
   const header = (
     <>
@@ -61,27 +66,30 @@ export default async function Page({ params }: { params: Promise<{ track: string
     </>
   );
 
-  // Gate (network standard): signed out → sign-in prompt; an AI Writing/Speaking skill without a
-  // paid subscription → subscribe gate; objective skills are free to any signed-in user.
+  // One branch per refusal reason, in the same order lib/free-window.ts decides them.
   let body: ReactNode;
-  if (!user) {
+  if (refusal === "SIGN_IN") {
     body = (
       <div className="mt-8 rounded-2xl border border-almi-line bg-almi-paper p-6">
         <h2 className="text-lg font-semibold text-almi-ink">Sign in to practise</h2>
-        <p className="mt-2 text-sm text-almi-text">Create your account and start a 7-day free trial — card saved, not charged — to practise CILS and CELI, then $12/month.</p>
+        <p className="mt-2 text-sm text-almi-text">
+          Create a free account to practise {s.kind === "objective" ? "this section" : "the objective sections"} free
+          for 3 days — no card. Produzione scritta and orale are part of Pro: a 7-day free trial, card saved, not
+          charged, then $12/month.
+        </p>
         <div className="mt-4 flex flex-wrap gap-3">
-          <Link href="/signup" className="inline-flex rounded-full bg-almi-coral px-6 py-2.5 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">Start 7-day free trial</Link>
+          <Link href="/signup" className="inline-flex rounded-full bg-almi-coral px-6 py-2.5 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">Create free account</Link>
           <Link href="/login" className="inline-flex rounded-full border border-almi-line px-6 py-2.5 font-medium text-almi-ink hover:border-almi-coral">Log in</Link>
         </div>
       </div>
     );
-  } else if (needsPaid && !paid) {
-    // Subscribed but unverified → prompt verification, not another subscribe.
-    body = needsEmailVerification(user) ? (
-      <div className="mt-8"><EmailVerifyBanner email={user.email} /></div>
-    ) : (
-      <PracticeGate billingLive={isBillingEnabled()} />
-    );
+  } else if (refusal === "VERIFY_EMAIL") {
+    body = <div className="mt-8"><EmailVerifyBanner email={user!.email} /></div>;
+  } else if (refusal) {
+    // PAYWALL (Produzione scritta/orale) or WINDOW_EXPIRED. A subscriber who simply has not
+    // verified yet is caught by VERIFY_EMAIL above, so this is never "subscribe" shown to
+    // someone who already has.
+    body = <PracticeGate billingLive={isBillingEnabled()} reason={refusal} />;
   } else if (items.length === 0) {
     body = (
       <div className="mt-8 rounded-2xl border border-dashed border-almi-line bg-almi-paper p-6 text-almi-text">

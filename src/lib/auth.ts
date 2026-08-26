@@ -5,33 +5,17 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
 // Canonical AlmiWorld auth: bcrypt password hashing + a hashed session token in an httpOnly cookie.
-// The session cookie. Named for THIS product — it carried the Korean product's name
-// on every visitor's browser until 2026-07-20, inherited when this repo was forked
-// from almi-korean and invisible to every check we had.
+// The session cookie, named for THIS product. It carried the ancestor product's name on
+// every visitor's browser until the 2026-07-20 rename — inherited at the fork and
+// invisible to every check we had at the time. The fork-hygiene gate exists so that
+// class of leak cannot ship again.
 const SESSION_COOKIE = "almi_italian_session";
 
-/** Cookie names we still READ but never write. Renaming a session cookie normally
- *  logs out every live session — the browser keeps sending the old name and nothing
- *  reads it. Nobody has to be logged out here: the cookie is only a container for the
- *  token, and the session is found in the DB by tokenHash, so the NAME on the
- *  envelope is irrelevant to the lookup. Read both, write one, and the rename is free.
- *
- *  🔴 REMOVAL: safe to delete this list once every legacy cookie has expired. They
- *  were issued with a 30-day life (SESSION_DURATION_MS), so any still valid on
- *  2026-08-20 was issued before this rename shipped (2026-07-20). After that date
- *  this is dead code holding another product's name in the repo. Delete it then; do
- *  not let it become permanent furniture. */
-const LEGACY_SESSION_COOKIES = ["almi_korean_session"]; // hygiene-allow: legacy-cookie-almi_korean
-
-/** Read the session token from the current cookie name, falling back to legacy names.
- *  Current name wins: a browser can carry both while a legacy cookie ages out. */
+/** Read the session token. The session is found in the DB by tokenHash, so the cookie
+ *  only has to carry the token to the server. */
 async function readSessionToken(): Promise<string | undefined> {
   const store = await cookies();
-  for (const name of [SESSION_COOKIE, ...LEGACY_SESSION_COOKIES]) {
-    const value = store.get(name)?.value;
-    if (value) return value;
-  }
-  return undefined;
+  return store.get(SESSION_COOKIE)?.value;
 }
 const SESSION_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
@@ -58,10 +42,8 @@ export async function createSession(userId: string): Promise<void> {
 export async function destroySession(): Promise<void> {
   const token = await readSessionToken();
   if (token) await prisma.authSession.deleteMany({ where: { tokenHash: hashToken(token) } });
-  // Clear BOTH names. Deleting only the current one would leave a stale legacy cookie
-  // in the browser that logs the user straight back in.
   const store = await cookies();
-  for (const name of [SESSION_COOKIE, ...LEGACY_SESSION_COOKIES]) store.delete(name);
+  store.delete(SESSION_COOKIE);
 }
 
 export async function getCurrentUser() {

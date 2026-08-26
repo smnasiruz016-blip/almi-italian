@@ -65,23 +65,7 @@ const ALLOWLIST = new Map([
 // Every escape carries an expiry. The gate FAILS once the date passes, so the hole closes
 // on a deadline that is wired into the build rather than hoped for. Escapes are always
 // printed on success — a hole nobody is reminded of is a hole nobody closes.
-const EXPIRING_ESCAPES = [
-  {
-    id: "legacy-cookie-almi_korean",
-    file: "src/lib/auth.ts",
-    term: "almi_korean_session",
-    reason:
-      "read-only legacy session cookie inherited from the almi-korean fork; the current " +
-      "cookie is almi_italian_session (renamed 2026-07-20). Dropping the legacy NAME before " +
-      "the old cookies expire would not log anyone out (sessions resolve by tokenHash) but " +
-      "the read costs nothing and keeps the rename provably zero-logout.",
-    // Legacy cookies were issued with a 30-day life (SESSION_DURATION_MS) and the rename
-    // shipped 2026-07-20, so every one of them is dead by 2026-08-20. Same date as the
-    // scheduled Aug-2026 cookie-cleanup task and the 🔴 REMOVAL note in src/lib/auth.ts —
-    // deliberately identical so the three cannot drift apart.
-    expires: "2026-08-20",
-  },
-];
+const EXPIRING_ESCAPES = [];
 
 /** Marker that must appear on the escaped line itself, e.g.
  *  `// hygiene-allow: legacy-cookie-almi_korean` */

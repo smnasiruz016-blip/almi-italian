@@ -108,7 +108,7 @@ export default function HomePage() {
               <p className="mt-1 text-sm text-almi-text">Task addressed, but register slips out of the administrative context — that&apos;s what&apos;s holding Scritta under the floor.</p>
             </div>
 
-            <p className="mt-4 text-[10px] text-almi-text-muted">* AI criteria estimate. Illustrative example — not a real CILS result. Only Siena awards official results.</p>
+            <p className="mt-4 text-[10px] text-almi-text-muted">* Criteria-based estimate. Illustrative example — not a real CILS result. Only Siena awards official results.</p>
           </div>
         </div>
       </section>
@@ -174,7 +174,7 @@ export default function HomePage() {
               )}
             </div>
           </div>
-          <p className="mt-4 text-center text-xs text-almi-text-muted">* Writing &amp; speaking are AI criteria estimates — only Siena / Perugia award real results.</p>
+          <p className="mt-4 text-center text-xs text-almi-text-muted">* Writing is estimated from your text, speaking from an automatic transcript of your recording — criteria-based estimates, not marks. Only Siena / Perugia award real results.</p>
         </div>
       </section>
 
@@ -224,7 +224,7 @@ export default function HomePage() {
               },
               {
                 q: "Are the Writing and Speaking scores official?",
-                a: "No. They are AI criteria-based estimates to guide your preparation — only Siena (CILS) and Perugia (CELI) award real results.",
+                a: "No. Writing is assessed from your text and speaking from an automatic transcript of your recording, against each task's own criteria — estimates to guide your preparation. Because speaking is read as a transcript, it cannot judge your pronunciation. Only Siena (CILS) and Perugia (CELI) award real results.",
               },
               {
                 q: "Do I need an account to start?",

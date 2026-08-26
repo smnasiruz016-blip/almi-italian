@@ -10,10 +10,11 @@ import { useState } from "react";
 // Pro" answers a question they did not ask. A user who merely has not verified their email is
 // NOT sent here — the page shows EmailVerifyBanner instead.
 //
-// ⚠️ NO FEEDBACK CLAIM. This product does not analyse Produzione scritta or orale today: there
-// is no model call anywhere in the repo, and /api/it/submit refuses those sections outright.
-// What Pro actually buys on those two skills is the task set and the official-style criteria to
-// self-assess against. Do not write "AI feedback" here until that feature exists.
+// The feedback claim is now TRUE and may be made — but only as far as the code goes. Produzione
+// scritta is assessed from the learner's text; Produzione orale is assessed from an AUTOMATIC
+// TRANSCRIPT of the recording, so it judges what was said and not how it sounded. Saying
+// "pronunciation feedback" here would be false again. Every result is a labelled estimate
+// (src/lib/ai/schemas.ts), and scripts/gates/honesty-gate.mts fails the build if one is not.
 //
 // If Stripe isn't wired yet (billingLive=false) the subscribe button shows its honest
 // unavailable state — the fail-closed path — rather than starting a checkout that can't complete.
@@ -51,8 +52,8 @@ export function PracticeGate({
       </h2>
       <p className="mt-2 text-sm text-almi-text">
         {reason === "WINDOW_EXPIRED"
-          ? "Ascolto, Lettura and Analisi were free for 3 days, no card. To keep practising them — and to open Produzione scritta and orale — "
-          : "Ascolto, Lettura and Analisi are free for 3 days, no card. Produzione scritta and orale — the task sets and each exam's official-style criteria, 100% original material — are "}
+          ? "Ascolto, Lettura and Analisi were free for 3 days, no card. To keep practising them — and to open criteria-based feedback on Produzione scritta and orale — "
+          : "Ascolto, Lettura and Analisi are free for 3 days, no card. Produzione scritta and orale add criteria-based feedback on what you write and say — 100% original material — for "}
         <strong className="text-almi-ink">$12/month</strong>. Start with a 7-day free trial: your card is saved but not
         charged, and you can cancel anytime before the trial ends and pay nothing.
       </p>

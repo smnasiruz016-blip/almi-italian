@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run gate:fork-hygiene && npm run seo:test && npm run selftest:engine && npm run validate:batch1 && npm run gate:bank && npm run gate:item-id && npm run gate:serve && npm run gate:degame && npm run gate:coverage && npm run gate:security && npm run gate:real-entity && npm run gate:titles && node scripts/seo/uniqueness-gate.mjs && npm run gate:entitlement && npm run gate:ascolto-audio && prisma generate && next build",
+    "build": "npm run gate:fork-hygiene && npm run seo:test && npm run selftest:engine && npm run validate:batch1 && npm run gate:bank && npm run gate:item-id && npm run gate:serve && npm run gate:degame && npm run gate:coverage && npm run gate:security && npm run gate:real-entity && npm run gate:titles && node scripts/seo/uniqueness-gate.mjs && npm run gate:entitlement && npm run gate:ascolto-audio && npm run gate:ai-cost && npm run gate:honesty && npm run gate:ai-e2e && prisma generate && next build",
     "start": "next start",
     "postinstall": "prisma generate",
     "lint": "next lint",
@@ -26,11 +26,16 @@
     "gate:security": "tsx scripts/items/security-gate.mts",
     "gate:entitlement": "tsx scripts/billing/entitlement.selftest.ts",
     "gate:ascolto-audio": "tsx scripts/gates/ascolto-audio-gate.mts",
-    "audio:render": "tsx scripts/audio/render-ascolto.mts"
+    "audio:render": "tsx scripts/audio/render-ascolto.mts",
+    "gate:ai-cost": "tsx scripts/gates/ai-cost-gate.mts",
+    "gate:honesty": "tsx scripts/gates/honesty-gate.mts",
+    "gate:ai-e2e": "tsx scripts/ai/mock-e2e.mts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.121.0",
     "@prisma/client": "^6.19.3",
     "@smnasiruz016-blip/almi-data": "^0.5.0",
+    "@vercel/blob": "^2.8.0",
     "bcryptjs": "^3.0.3",
     "next": "16.2.12",
     "prisma": "^6.19.3",

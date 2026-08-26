@@ -12,7 +12,9 @@ export const CILS_STANDARD_FLOOR = 11; // ≥11/20 required in EVERY section
 export const CILS_STANDARD_TOTAL_MAX = 100;
 
 // Analisi (grammar/structures) is a CILS distinctive — a first-class section. Produzione scritta/orale
-// are AI criteria estimates (only Siena awards real results); every readout carries an estimate label.
+// are criteria-based estimates — Scritta from the text, Orale from an automatic transcript, so it
+// judges what was said and not how it sounded (only Siena awards real results); every readout
+// carries an estimate label, enforced by scripts/gates/honesty-gate.mts.
 export const CILS_STANDARD_SECTIONS: { section: CilsStandardSection; label: string; isEstimate: boolean }[] = [
   { section: "ASCOLTO", label: "Ascolto (Listening)", isEstimate: false },
   { section: "LETTURA", label: "Lettura (Reading)", isEstimate: false },
@@ -27,7 +29,7 @@ const LEVEL_LABEL: Record<CilsStandardLevel, string> = {
 
 export interface CilsStandardInput {
   section: CilsStandardSection;
-  score: number; // 0..20 (raw for Ascolto/Lettura/Analisi; AI estimate for Scritta/Orale)
+  score: number; // 0..20 (raw for Ascolto/Lettura/Analisi; criteria estimate for Scritta/Orale)
 }
 
 export interface CilsStandardSectionResult {
@@ -83,7 +85,7 @@ export function scoreCilsStandard(level: CilsStandardLevel, inputs: CilsStandard
     bankedToday,
     toRetake,
     honestyLine:
-      "CILS standard uses capitalization: you keep (bank) every section you pass and retake only the ones below 11/20 at a later sitting. Writing and Speaking here are AI criteria estimates — only Siena awards a real result.",
+      "CILS standard uses capitalization: you keep (bank) every section you pass and retake only the ones below 11/20 at a later sitting. Writing is estimated from your text and Speaking from an automatic transcript of your recording — estimates against this task's criteria; only Siena awards a real result.",
   };
 }
 

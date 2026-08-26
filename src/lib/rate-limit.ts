@@ -86,6 +86,11 @@ export const LIMITS = {
   verifyEmail: { limit: 20, windowMs: 60 * 60_000 },
   // Resending is a mail send per call; this is a spend limit as much as a security one.
   resendVerification: { limit: 5, windowMs: 60 * 60_000 },
+  // Each AI evaluation is a metered model call — an Anthropic call for both skills, plus a
+  // Whisper transcription for ORALE. This is a SPEND limit first: entitlement decides WHO may
+  // call, this decides how fast a single entitled account can burn money.
+  aiScritta: { limit: 12, windowMs: 60 * 60_000 },
+  aiOrale: { limit: 8, windowMs: 60 * 60_000 },
   // /api/billing/health makes THREE live Stripe calls per hit. This is a spend and quota
   // limit first and a security one second: an operator checks it a handful of times, never
   // in a loop. Applied BEFORE the auth check so it also costs something to guess the secret.

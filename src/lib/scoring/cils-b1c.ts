@@ -12,7 +12,8 @@ export const CILS_B1C_TOTAL_MAX = 48;
 export const CILS_B1C_TOTAL_FLOOR = 28; //  AND ≥28/48 overall
 
 // Register is everyday/administrative Italian life (poste, comune, prefettura) — a "simplified B1"
-// scoped for citizenship, not academic use. Scritta/Orale are AI criteria estimates.
+// scoped for citizenship, not academic use. Scritta/Orale are criteria-based estimates: Scritta
+// from the learner's text, Orale from an automatic transcript (so it cannot judge pronunciation).
 export const CILS_B1C_SECTIONS: { section: CilsB1cSection; label: string; isEstimate: boolean }[] = [
   { section: "ASCOLTO", label: "Ascolto (Listening)", isEstimate: false },
   { section: "LETTURA", label: "Lettura + strutture (Reading)", isEstimate: false },
@@ -75,7 +76,7 @@ export function scoreCilsB1c(inputs: CilsB1cInput[]): CilsB1cResult {
     conditions: { perSectionFloorMet, totalThresholdMet },
     passed: perSectionFloorMet && totalThresholdMet,
     honestyLine:
-      "CILS B1 Cittadinanza has NO capitalization: you must clear ≥7/12 in every one of the four sections AND reach ≥28/48 overall on the same sitting. Miss either condition and the whole exam is retaken — there is nothing to bank. Writing and Speaking here are AI criteria estimates.",
+      "CILS B1 Cittadinanza has NO capitalization: you must clear ≥7/12 in every one of the four sections AND reach ≥28/48 overall on the same sitting. Miss either condition and the whole exam is retaken — there is nothing to bank. Writing is estimated from your text and Speaking from an automatic transcript of your recording, both against this task's own criteria — estimates, never a mark.",
   };
 }
 

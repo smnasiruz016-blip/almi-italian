@@ -17,7 +17,7 @@
 // is load-bearing: the old import of the type guards pulled the entire keyed bank into the
 // client bundle, so the key shipped on every practice page regardless of what the props said.
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   ATOM,
   isMcq,
@@ -30,24 +30,74 @@ import {
   type SubmitResult,
 } from "@/lib/runner-items";
 
-// A browser-voice player (free, client-side Web Speech — no Blob, degrades to transcript-only).
-function AudioPlay({ script }: { script: string }) {
-  const [on, setOn] = useState(false);
-  const speak = () => {
-    if (typeof window === "undefined" || !window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(script);
-    u.lang = "it-IT";
-    u.rate = 0.92;
-    window.speechSynthesis.speak(u);
-  };
+// ── LISTENING PLAYBACK ──────────────────────────────────────────────────────
+// This used to call window.speechSynthesis with the transcript, in the learner's own browser.
+// It was free and it was not audio:
+//   * `if (!window.speechSynthesis) return;` — no Italian voice installed and the Play button
+//     silently did nothing. It looked functional and was not.
+//   * every learner heard a different voice, accent and quality. In a listening item the audio
+//     IS the item, so the item was not the same item twice.
+// The clips are now pre-rendered ONCE with edge-tts and served as static files
+// (scripts/audio/render-ascolto.mts → public/audio/ascolto/, manifest in
+// src/data/ascolto-audio.json). Playing one costs nothing per play: it is a file on the CDN.
+//
+// THE RUNTIME SYNTHESISER IS GONE, DELIBERATELY AND PERMANENTLY. A missing clip is SILENCE
+// with an honest message, never a fallback that synthesises something. While the fallback
+// existed a gap in coverage was invisible — every item "worked" — which is exactly why
+// scripts/gates/ascolto-audio-gate.mts can now be the thing that tells us.
+
+/** How many times a listening text may be played.
+ *
+ *  TWO, because that is what the exam does: the CILS B1 Cittadinanza sillabo specifies the
+ *  listening texts are played twice
+ *  (https://cils.unistrasi.it/public/articoli/382/B1%20Cittadinanza_Sillabo.pdf).
+ *
+ *  ⚠️ SOURCED FOR B1 CITTADINANZA ONLY. It is applied to CILS standard and CELI as well
+ *  because two plays is the common convention across both, but I did not verify their
+ *  syllabuses — if either differs, this becomes a per-track value rather than a constant. */
+const LISTENING_PLAYS = 2;
+
+function AudioPlay({ url, title }: { url?: string; title: string }) {
+  const [played, setPlayed] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const ref = useRef<HTMLAudioElement>(null);
+
+  // No stored clip: say so. Nothing is synthesised, and nothing pretends to work.
+  if (!url) {
+    return (
+      <div className="mb-3 rounded-lg border border-dashed border-almi-line bg-almi-paper p-3 text-sm text-almi-text-muted">
+        Audio for this item has not been recorded yet. Nothing will play.
+      </div>
+    );
+  }
+
+  const left = LISTENING_PLAYS - played;
+  const spent = left <= 0;
+
   return (
     <div className="mb-3 rounded-lg bg-almi-bg-peach/40 p-3 text-sm">
+      {/* Deliberately NO `controls`: the native player offers scrubbing and unlimited replay,
+          which would make the two-play limit decorative. */}
+      <audio
+        ref={ref}
+        src={url}
+        preload="none"
+        onEnded={() => { setPlaying(false); setPlayed((n) => n + 1); }}
+        aria-label={`Listening audio: ${title}`}
+      />
       <div className="flex flex-wrap items-center gap-3">
-        <button type="button" onClick={speak} className="rounded-full bg-almi-ink px-3 py-1 text-xs font-semibold text-almi-on-dark">▶ Play (browser voice)</button>
-        <button type="button" onClick={() => setOn((v) => !v)} className="text-xs font-medium text-almi-coral hover:underline">{on ? "Hide" : "Show"} transcript</button>
+        <button
+          type="button"
+          disabled={spent || playing}
+          onClick={() => { void ref.current?.play(); setPlaying(true); }}
+          className="rounded-full bg-almi-ink px-3 py-1 text-xs font-semibold text-almi-on-dark disabled:opacity-50"
+        >
+          {playing ? "▶ Playing…" : spent ? "No plays left" : `▶ Play (${left} of ${LISTENING_PLAYS} left)`}
+        </button>
+        <span className="text-xs text-almi-text-muted">
+          Played twice in the exam — you get {LISTENING_PLAYS}.
+        </span>
       </div>
-      {on && <p className="mt-2 whitespace-pre-line text-almi-text">{script}</p>}
     </div>
   );
 }
@@ -127,7 +177,21 @@ export function PracticeRunner({
             <p className="text-xs font-semibold uppercase tracking-wide text-almi-text-muted">{it.title}</p>
             {it.prompt && <p className="mt-1 text-sm text-almi-text">{it.prompt}</p>}
 
-            {"audioScript" in p && p.audioScript && <div className="mt-3"><AudioPlay script={p.audioScript} /></div>}
+            {"audioScript" in p && p.audioScript && (
+              <div className="mt-3">
+                <AudioPlay url={it.audioUrl} title={it.title} />
+                {/* The transcript is REVIEW material, not attempt material. Shown only after
+                    submission: an exam does not hand you the script while you are listening,
+                    and a two-play limit beside an always-open transcript would be decorative.
+                    (It used to be toggleable at any time.) */}
+                {submitted && (
+                  <details className="mt-2 rounded-lg bg-almi-bg-peach/30 p-3 text-sm">
+                    <summary className="cursor-pointer text-xs font-medium text-almi-coral">Show transcript</summary>
+                    <p className="mt-2 whitespace-pre-line text-almi-text">{p.audioScript}</p>
+                  </details>
+                )}
+              </div>
+            )}
             {"passage" in p && p.passage && <p className="mt-3 whitespace-pre-line rounded-lg bg-almi-bg-peach/30 p-3 text-sm text-almi-text">{p.passage}</p>}
 
             {/* MCQ */}

@@ -100,6 +100,11 @@ export type RunnerItem = {
   prompt?: string;
   topicTag?: string;
   guidanceNote?: string;
+  /** Pre-rendered ASCOLTO clip, served as a static file. Present only when a stored file
+   *  exists for this item (src/data/ascolto-audio.json). ABSENT MEANS SILENCE — the player
+   *  says so. There is no runtime synthesiser to fall back to any more, deliberately: while
+   *  one existed, a gap in coverage was invisible. */
+  audioUrl?: string;
   payload: RunnerPayload;
 };
 

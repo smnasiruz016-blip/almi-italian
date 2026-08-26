@@ -22,7 +22,7 @@ export default async function Page() {
     ? null
     : hasPaidAccess(user)
       ? "AlmiItalian Pro active — Writing and Speaking feedback included."
-      : "Reading, Listening and Analysis are free. Writing and Speaking feedback is part of Pro — 7-day free trial (card saved, not charged), then $12/month.";
+      : "Reading, Listening and Analysis, plus Writing and Speaking feedback, are part of Pro — 7-day free trial (card saved, not charged), then $12/month.";
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">

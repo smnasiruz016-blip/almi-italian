@@ -29,7 +29,7 @@ export function PracticeGate({ billingLive }: { billingLive: boolean }) {
     <div className="mt-8 rounded-2xl border border-almi-line bg-almi-paper p-6">
       <h2 className="text-lg font-semibold text-almi-ink">Writing &amp; Speaking is part of AlmiItalian Pro</h2>
       <p className="mt-2 text-sm text-almi-text">
-        Reading, Listening and Analysis are free. AI feedback on Writing and Speaking — on each exam&apos;s official-style
+        Reading, Listening and Analysis, plus AI feedback on Writing and Speaking, — on each exam&apos;s official-style
         criteria, 100% original material — is <strong className="text-almi-ink">$12/month</strong>. Start with a 7-day
         free trial: your card is saved but not charged, and you can cancel anytime before the trial ends and pay nothing.
       </p>

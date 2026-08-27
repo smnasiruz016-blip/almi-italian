@@ -1,18 +1,43 @@
 "use client";
 
-// Session-aware product nav for the family header. The header shell stays a
-// static server component (keeps SEO pages static); this small client piece
-// asks /api/me who's logged in and swaps the links:
-//   logged out -> Practice · Log in · [Start 7-day free trial CTA]
-//   logged in  -> Practice · Account
-// First paint (server + first client render) shows the logged-out set, which
-// matches SSR markup (no hydration mismatch) and is correct for the common
-// anonymous visitor; it swaps once /api/me resolves.
+// Session-aware product nav for the family header. The header shell stays a static server
+// component (keeps SEO pages static); this small client piece asks /api/me who's logged in
+// and swaps the links:
+//   logged out -> Practice · Log in · [Start 7-day free trial]
+//   logged in  -> Practice · [Account]
+// First paint (server + first client render) shows the logged-out set, which matches SSR
+// markup (no hydration mismatch) and is correct for the common anonymous visitor; it swaps
+// once /api/me resolves.
+//
+// ── TREATMENT PORTED FROM almi-prep-v2 ──────────────────────────────────────
+// Prep's cluster is: plain links at `text-base font-semibold`, `gap-x-4` between them, ending
+// in ONE filled coral pill. This used to be `text-sm font-medium` with `gap-3`, which is why
+// the same links read as lighter than the family strip sitting above them instead of as the
+// product's own controls.
+//
+// ⚠️ ONE THING IS NOT COPIED, BECAUSE PREP HAS NOTHING TO COPY. AlmiPrep's header is
+// STATELESS — PRODUCT_NAV is a hardcoded const, so it shows "Log in" and the trial button to
+// everyone, signed in or not, and there is no logged-in variant anywhere in that repo. Mirroring
+// that exactly would delete this product's logged-in entry point, which the brief explicitly
+// says to keep. So the ARRANGEMENT is prep's and the STATE-AWARENESS is this product's own.
+//
+// For the logged-in state that leaves one judgement call: the cluster's shape is
+// [link] [link] [pill], and if Account were a plain link a signed-in visitor would again see
+// only bare words under the strip — the exact complaint this change exists to fix. So Account
+// takes the pill. It is the same two-item shape, ending the same way.
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type Me = { loggedIn: boolean; email: string | null };
+
+/** Plain link treatment — matches the family strip's weight so the cluster reads as one group. */
+const LINK =
+  "rounded-sm text-base font-semibold text-almi-ink hover:text-almi-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-almi-coral focus-visible:ring-offset-2 focus-visible:ring-offset-almi-bg";
+
+/** The one filled pill that ends the cluster. */
+const PILL =
+  "inline-flex min-h-[40px] items-center justify-center rounded-full bg-almi-coral px-5 py-2 text-sm font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-almi-coral/30";
 
 export function AuthNav() {
   const [me, setMe] = useState<Me | null>(null);
@@ -29,23 +54,20 @@ export function AuthNav() {
   const loggedIn = me?.loggedIn ?? false;
 
   return (
-    <nav aria-label="AlmiItalian" className="flex items-center gap-3 text-sm">
-      <Link href="/practice" className="font-medium text-almi-ink hover:text-almi-coral">
+    <nav aria-label="AlmiItalian" className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2">
+      <Link href="/practice" className={LINK}>
         Practice
       </Link>
       {loggedIn ? (
-        <Link href="/account" className="font-medium text-almi-ink hover:text-almi-coral">
+        <Link href="/account" className={PILL}>
           Account
         </Link>
       ) : (
         <>
-          <Link href="/login" className="font-medium text-almi-ink hover:text-almi-coral">
+          <Link href="/login" className={LINK}>
             Log in
           </Link>
-          <Link
-            href="/signup"
-            className="ml-1 inline-flex min-h-[40px] items-center justify-center rounded-full bg-almi-coral px-5 py-2 text-sm font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark"
-          >
+          <Link href="/signup" className={PILL}>
             Start 7-day free trial
           </Link>
         </>

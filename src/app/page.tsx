@@ -56,7 +56,6 @@ export default function HomePage() {
               <Link href="/practice" className="rounded-full border border-almi-line px-7 py-3 font-semibold text-almi-text hover:border-almi-coral">
                 Practice
               </Link>
-              <Link href="/login" className="text-sm text-almi-text-muted hover:text-almi-coral">Already have an account? Log in →</Link>
             </div>
             <p className="mt-4 text-sm text-almi-text-muted">
               $12/month, 7-day free trial, cancel anytime · CILS &amp; CELI, each on its own real scale · 100% original material, never copied

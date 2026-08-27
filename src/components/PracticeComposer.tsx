@@ -9,8 +9,11 @@ import { isWriting, isSpeaking } from "@/lib/runner-items";
 import { AudioRecorder, type Recording } from "@/components/AudioRecorder";
 import { EstimateReport } from "@/components/EstimateReport";
 import type { LabelledEstimate } from "@/lib/ai/schemas";
+// ONE word-count implementation, shared with the evaluator — the number under the textarea and
+// the number the model is given must be the same number, not two that happen to agree.
+import { wordCount } from "@/lib/text/word-count";
 
-const wordCount = (s: string) => (s.trim() ? s.trim().split(/\s+/).length : 0);
+
 
 // Produzione scritta / orale: the two skills the engine marks `kind: "estimate"`. Until this
 // change the composer had no submit button at all — it showed the task and counted words. It

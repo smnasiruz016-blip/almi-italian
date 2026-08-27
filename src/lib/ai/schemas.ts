@@ -43,10 +43,20 @@ export const ESTIMATE_DISCLAIMER =
 export const BAND = ["NON_RAGGIUNTO", "PARZIALE", "RAGGIUNTO"] as const;
 
 export const CriterionAssessmentSchema = z.object({
-  /** Echoed back VERBATIM from the item's authored criteria, so the UI can pair them up and
-   *  the gate can prove the model scored the right rubric. */
+  /** Echoed back VERBATIM from the rubric the model was given — the official CILS criterion for
+   *  B1 Cittadinanza, or the item's own authored criterion elsewhere — so the UI can pair them
+   *  up and the gate can prove the model scored the right rubric. */
   criterion: z.string().min(1),
-  band: z.enum(BAND),
+  /** Null ONLY for a criterion this product appends itself because it cannot assess it — the
+   *  model is never shown such a criterion, so it can never produce a null here. */
+  band: z.enum(BAND).nullable(),
+  /** Points awarded against this criterion's OFFICIAL ceiling. Null where the module has no
+   *  published per-criterion weights (CILS UNO/DUE, CELI) and the band is the whole verdict. */
+  points: z.number().min(0).max(12).nullable(),
+  /** This criterion's published ceiling. NEVER supplied by the model — our code stamps it from
+   *  the official rubric, so a report stored today still renders its own maxima correctly if
+   *  the rubric is ever revised. Null where the module publishes no per-criterion weights. */
+  pointsMax: z.number().min(0).max(12).nullable().optional(),
   /** One or two sentences, in Italian, pointing at the learner's actual text. */
   comment: z.string().min(1).max(600),
 });
@@ -76,10 +86,16 @@ export type ModelAssessment = z.infer<typeof ModelAssessmentSchema>;
 /** A score that cannot be rendered without the numbers that make it mean something. */
 export type EstimatedScore = {
   value: number;
+  /** What this product could actually award — the official max minus anything it cannot judge. */
   max: number;
   floor: number;
   /** CLEAR / BORDERLINE / BELOW against the engine's own floor. */
   status: "CLEAR" | "BORDERLINE" | "BELOW";
+  /** The exam's own maximum, when it differs from `max` because something is not assessable.
+   *  Present so the learner is never shown "9/11" without being told the exam scores out of 12. */
+  officialMax?: number;
+  /** Human-readable note about what was excluded and why. */
+  notAssessedNote?: string;
 };
 
 /**
@@ -106,6 +122,8 @@ export const LabelledEstimateSchema = ModelAssessmentSchema.extend({
       max: z.number(),
       floor: z.number(),
       status: z.enum(["CLEAR", "BORDERLINE", "BELOW"]),
+      officialMax: z.number().optional(),
+      notAssessedNote: z.string().optional(),
     })
     .nullable(),
   engineNote: z.string(),

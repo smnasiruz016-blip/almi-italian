@@ -35,7 +35,10 @@ export function EstimateReport({ estimate, transcript, needsReview }: {
       {s ? (
         <div className="mt-4 flex flex-wrap items-baseline gap-3">
           <span className="text-3xl font-bold text-almi-ink">{s.value}<span className="text-lg text-almi-text-muted">/{s.max}</span></span>
-          <span className="text-sm text-almi-text-muted">soglia {s.floor}/{s.max}</span>
+          <span className="text-sm text-almi-text-muted">soglia {s.floor}/{s.officialMax ?? s.max}</span>
+          {s.officialMax && s.officialMax !== s.max && (
+            <span className="text-xs text-almi-text-muted">(l&apos;esame assegna {s.officialMax} punti; qui se ne valutano {s.max})</span>
+          )}
           <span className={`rounded-full px-3 py-1 text-xs font-semibold ${
             s.status === "CLEAR" ? "bg-almi-teal/15 text-almi-teal"
               : s.status === "BORDERLINE" ? "bg-almi-bg-peach text-almi-ink"
@@ -47,6 +50,12 @@ export function EstimateReport({ estimate, transcript, needsReview }: {
       ) : (
         <p className="mt-4 text-sm text-almi-text">
           Nessun punteggio di sezione per questo esame — è valutato per parte.
+        </p>
+      )}
+
+      {s?.notAssessedNote && (
+        <p className="mt-3 rounded-lg border border-dashed border-almi-line px-3 py-2 text-xs text-almi-text-muted">
+          {s.notAssessedNote}
         </p>
       )}
 
@@ -62,12 +71,24 @@ export function EstimateReport({ estimate, transcript, needsReview }: {
       <h3 className="mt-6 text-sm font-semibold text-almi-ink">Criteri</h3>
       <ul className="mt-2 space-y-3">
         {estimate.criteria.map((c, i) => {
-          const b = BAND_LABEL[c.band] ?? { text: c.band, cls: "bg-almi-line" };
+          // A criterion with no band is one this product could not assess — it is appended by
+          // our own code, never by the model, and it must never look like a zero.
+          const notAssessed = c.band === null;
+          const b = c.band ? (BAND_LABEL[c.band] ?? { text: c.band, cls: "bg-almi-line" }) : null;
           return (
-            <li key={i} className="rounded-lg border border-almi-line p-3">
+            <li key={i} className={`rounded-lg border p-3 ${notAssessed ? "border-dashed border-almi-line bg-almi-bg-peach/20" : "border-almi-line"}`}>
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="text-sm font-medium text-almi-ink">{c.criterion}</span>
-                <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${b.cls}`}>{b.text}</span>
+                <span className="flex items-center gap-2">
+                  {typeof c.points === "number" && (
+                    <span className="text-sm font-semibold text-almi-ink">{c.points}<span className="text-xs text-almi-text-muted">/{c.pointsMax ?? "?"}</span></span>
+                  )}
+                  {notAssessed ? (
+                    <span className="rounded-full bg-almi-line px-2 py-0.5 text-xs font-semibold text-almi-text-muted">Non valutato</span>
+                  ) : (
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${b!.cls}`}>{b!.text}</span>
+                  )}
+                </span>
               </div>
               <p className="mt-1 text-sm text-almi-text">{c.comment}</p>
             </li>

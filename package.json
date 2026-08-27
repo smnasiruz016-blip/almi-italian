@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run gate:fork-hygiene && npm run seo:test && npm run selftest:engine && npm run validate:batch1 && npm run gate:bank && npm run gate:item-id && npm run gate:serve && npm run gate:degame && npm run gate:coverage && npm run gate:security && npm run gate:real-entity && npm run gate:titles && node scripts/seo/uniqueness-gate.mjs && npm run gate:entitlement && npm run gate:ascolto-audio && npm run gate:ai-cost && npm run gate:honesty && npm run gate:ai-e2e && npm run gate:marking && npm run gate:reveal && npm run gate:content && prisma generate && next build",
+    "build": "npm run gate:fork-hygiene && npm run seo:test && npm run selftest:engine && npm run validate:batch1 && npm run gate:bank && npm run gate:item-id && npm run gate:serve && npm run gate:degame && npm run gate:coverage && npm run gate:security && npm run gate:real-entity && npm run gate:titles && node scripts/seo/uniqueness-gate.mjs && npm run gate:entitlement && npm run gate:ascolto-audio && npm run gate:ai-cost && npm run gate:honesty && npm run gate:ai-e2e && npm run gate:marking && npm run gate:reveal && npm run gate:content && npm run gate:static-shell && prisma generate && next build",
     "start": "next start",
     "postinstall": "prisma generate",
     "lint": "next lint",
@@ -33,6 +33,7 @@
     "gate:marking": "tsx scripts/gates/marking-gate.mts",
     "gate:reveal": "tsx scripts/gates/reveal-gate.mts",
     "gate:content": "tsx scripts/gates/content-gate.mts",
+    "gate:static-shell": "tsx scripts/gates/static-shell-gate.mts",
     "gate:content:full": "tsx scripts/gates/content-gate.mts --expect-full"
   },
   "dependencies": {

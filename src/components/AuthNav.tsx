@@ -5,9 +5,16 @@
 // and swaps the links:
 //   logged out -> Practice · Log in · [Start 7-day free trial]
 //   logged in  -> Practice · [Account]
-// First paint (server + first client render) shows the logged-out set, which matches SSR
-// markup (no hydration mismatch) and is correct for the common anonymous visitor; it swaps
-// once /api/me resolves.
+// ── WHAT IS RENDERED BEFORE /api/me ANSWERS ─────────────────────────────────
+// The link every visitor gets either way (Practice), and NOTHING auth-shaped.
+//
+// This used to render the full logged-OUT set on first paint — "Log in" plus the trial pill —
+// and swap when the answer arrived. For an anonymous visitor that is right. For a SIGNED-IN
+// learner it is a flash of the WRONG state: their own header inviting them to log in and start
+// a trial they already have. Showing nothing for that slot until the answer lands is honest in
+// both directions, and it still matches the SSR markup, so there is no hydration mismatch.
+//
+// The slot holds its width while pending, so resolving does not shove the row sideways.
 //
 // ── TREATMENT PORTED FROM almi-prep-v2 ──────────────────────────────────────
 // Prep's cluster is: plain links at `text-base font-semibold`, `gap-x-4` between them, ending
@@ -51,6 +58,8 @@ export function AuthNav() {
     return () => { alive = false; };
   }, []);
 
+  // null = not answered yet. Deliberately distinct from "answered: signed out".
+  const resolved = me !== null;
   const loggedIn = me?.loggedIn ?? false;
 
   return (
@@ -58,7 +67,11 @@ export function AuthNav() {
       <Link href="/practice" className={LINK}>
         Practice
       </Link>
-      {loggedIn ? (
+      {!resolved ? (
+        // Pending: reserve the row's height so the header does not jump, and say nothing about
+        // who the visitor is. aria-hidden because there is no information here to announce.
+        <span aria-hidden className="inline-flex min-h-[40px] items-center" />
+      ) : loggedIn ? (
         <Link href="/account" className={PILL}>
           Account
         </Link>

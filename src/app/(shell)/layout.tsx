@@ -1,52 +1,31 @@
 // THE LEARNER SHELL — the Sidebar, for the pages learners actually live in.
 //
-// ── THE DEFECT THIS CLOSES ──────────────────────────────────────────────────
-// Sidebar.tsx was already the Tier-A shell, already ported and good, and it rendered only
-// inside (app) — which held /account and /admin/* and nothing else. /practice and the attempt
-// pages sat on the root layout, so a paying learner never saw the shell anywhere they spent
-// their time. The nav existed and was invisible to the people it was for.
+// ── WHY THIS FILE READS NO SESSION ──────────────────────────────────────────
+// It used to call getCurrentUser(). A layout that reads the session cookie opts EVERY route in
+// its group into dynamic rendering, so /learn and its articles rendered `ƒ` and returned no
+// `x-nextjs-cache` header at all, while the /guides pages they replace were static and returned
+// `HIT`. Across the 52 articles that is 53 server renders per crawl instead of 53 CDN hits, on a
+// repo that already has a crawl-cost history and an ISR holding freeze.
 //
-// ── WHY THIS IS A NEW GROUP AND NOT JUST A MOVE INTO (app) ──────────────────
-// (app)/layout.tsx calls requireUser(), which REDIRECTS an anonymous visitor to /login.
-// AlmiPrep does exactly that and it is right for AlmiPrep — its /practice is not in its
-// sitemap. Ours IS: src/app/sitemap.ts ships entry("/practice", 0.7), robots allows it, and the
-// page sets a canonical with no noindex. Moving it under requireUser() would hand Googlebot a
-// redirect to /login and delete an indexed page.
+// So the session moved to the client, exactly as AuthNav already does for the root layout:
+// src/components/ShellChrome.tsx asks /api/me and renders the sidebar, the verify banner and the
+// sidebar's page margin. This file is now pure, and the group is static by default.
 //
-// So this group gives the shell WITHOUT gating: getCurrentUser(), never requireUser().
-//   signed in  → the Sidebar, exactly as /account and /admin get it
-//   anonymous  → the page renders precisely as it does today, still indexable
-// The per-section entitlement gate (lib/free-window.ts) is unchanged and is still the thing
-// that decides what a visitor may actually practise.
+// ⚠️ DO NOT REINTRODUCE A SERVER SESSION READ HERE. A route in this group that genuinely needs
+// the server session must opt into dynamic ITSELF, in its own file — /practice does exactly
+// that, because its page calls getCurrentUser() for the entitlement decision, and it stays `ƒ`
+// on its own terms while its siblings prerender. Putting the read back here would silently drag
+// /learn back with it. scripts/gates/static-shell-gate.mts fails the build if it returns.
+//
+// ── WHY THE GROUP STILL EXISTS ──────────────────────────────────────────────
+// It is not (app). (app)/layout.tsx calls requireUser() and redirects anonymous visitors to
+// /login; /learn and /practice are public surfaces in the sitemap and must answer 200 to a
+// crawler. This group gives the shell without gating.
 
-import { redirect } from "next/navigation";
-import { destroySession, getCurrentUser } from "@/lib/auth";
-import { canAccessAdmin } from "@/lib/access";
-import { Sidebar } from "@/components/Sidebar";
-import { EmailVerifyBanner } from "@/components/EmailVerifyBanner";
+import { ShellChrome } from "@/components/ShellChrome";
 
-async function logoutAction() {
-  "use server";
-  await destroySession();
-  redirect("/");
-}
-
-export default async function ShellLayout({
+export default function ShellLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const user = await getCurrentUser();
-
-  // No session: render exactly what the root layout rendered before this group existed.
-  // Nothing is hidden from an anonymous visitor that was visible to them yesterday.
-  if (!user) return <>{children}</>;
-
-  return (
-    <div className="bg-almi-bg">
-      {!user.emailVerifiedAt && <EmailVerifyBanner email={user.email} />}
-      <Sidebar email={user.email} isAdmin={canAccessAdmin(user.email)} logout={logoutAction} />
-      <main className="px-4 py-8 sm:px-6 md:ml-60 md:px-8">
-        <div className="mx-auto w-full max-w-5xl">{children}</div>
-      </main>
-    </div>
-  );
+  return <ShellChrome>{children}</ShellChrome>;
 }

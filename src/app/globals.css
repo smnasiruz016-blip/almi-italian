@@ -25,3 +25,68 @@ html {
   color: var(--color-almi-text);
   -webkit-font-smoothing: antialiased;
 }
+
+/* ── /learn article body ─────────────────────────────────────────────────────
+ * The markdown from content/learn/*.md renders as bare HTML elements, so it is
+ * styled here rather than by per-element class injection.
+ *
+ * ⚠️ NOT `prose`. That class comes from @tailwindcss/typography, which this repo does not
+ * install and does not use anywhere else — writing `prose prose-almi` would have compiled
+ * fine, shipped green, and rendered 52 articles completely unstyled. A class that silently
+ * does nothing is worse than one that errors.
+ *
+ * Every colour below is an existing token, so articles inherit the product's palette. */
+.learn-prose {
+  color: var(--color-almi-text);
+  line-height: 1.75;
+}
+.learn-prose > * + * { margin-top: 1.1rem; }
+.learn-prose h2 {
+  margin-top: 2.25rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--color-almi-ink);
+}
+.learn-prose h3 {
+  margin-top: 1.75rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-almi-ink);
+}
+.learn-prose strong { color: var(--color-almi-ink); font-weight: 600; }
+.learn-prose a { color: var(--color-almi-coral); text-decoration: underline; }
+.learn-prose ul, .learn-prose ol { padding-left: 1.5rem; }
+.learn-prose ul { list-style: disc; }
+.learn-prose ol { list-style: decimal; }
+.learn-prose li + li { margin-top: 0.35rem; }
+.learn-prose code {
+  border-radius: 0.25rem;
+  background: var(--color-almi-bg-peach);
+  padding: 0.1rem 0.35rem;
+  font-size: 0.9em;
+}
+.learn-prose blockquote {
+  border-left: 3px solid var(--color-almi-coral);
+  padding-left: 1rem;
+  color: var(--color-almi-text-muted);
+  font-style: italic;
+}
+/* Tables must not push the page sideways on a phone — the wrapper scrolls, the page does not. */
+.learn-prose table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.925rem;
+}
+.learn-prose th, .learn-prose td {
+  border: 1px solid var(--color-almi-line);
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+}
+.learn-prose th {
+  background: var(--color-almi-bg-peach);
+  color: var(--color-almi-ink);
+  font-weight: 600;
+}

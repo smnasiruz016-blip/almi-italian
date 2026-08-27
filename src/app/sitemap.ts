@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { ORIGINS, DESCENT } from "@/lib/seo/data";
 import { SITE } from "@/lib/seo/content";
 import { GUIDES } from "@/lib/seo/guides";
+import { learnUrls } from "@/lib/learn/articles";
 
 // HOLDING 2026-08-09 — one keep-set chunk. Previously TOTAL_CHUNKS chunks advertising the whole
 // generated surface (ateneo x origin, ateneo x course x origin, exam-level x origin). Those routes
@@ -18,6 +19,19 @@ const entry = (path: string, priority = 0.5): MetadataRoute.Sitemap[number] => (
   url: `${SITE}${path}`,
   changeFrequency: "weekly",
   priority,
+});
+
+// /learn carries an explicit, CONSTANT lastModified.
+//
+// A build-time `new Date()` would stamp every article as changed on every deploy, which tells
+// Google the whole set is churning when nothing was edited — it costs crawl budget and teaches
+// the crawler to distrust the field. A constant is honest: it moves when someone moves it.
+const LEARN_LAST_MODIFIED = new Date("2026-08-29T00:00:00Z");
+const learnEntry = (path: string, priority: number): MetadataRoute.Sitemap[number] => ({
+  url: `${SITE}${path}`,
+  changeFrequency: "monthly",
+  priority,
+  lastModified: LEARN_LAST_MODIFIED,
 });
 
 export default async function sitemap({ id }: { id: Promise<string> }): Promise<MetadataRoute.Sitemap> {
@@ -37,6 +51,12 @@ export default async function sitemap({ id }: { id: Promise<string> }): Promise<
     entry("/guides", 0.7),
   ];
   for (const g of GUIDES) out.push(entry(`/guides/${g.slug}`, 0.6));
+
+  // /learn — hub + every article, from the SAME directory scan the routes and the hub use
+  // (src/lib/learn/articles.ts). One scan, so the sitemap cannot advertise a page that does not
+  // render, and cannot omit one that does. Prerendered, so none of these can produce an ISR
+  // write — which is what the holding freeze below exists to prevent.
+  for (const url of learnUrls()) out.push(learnEntry(url, url === "/learn" ? 0.7 : 0.6));
   // Families 4–7: per-origin routes — prerendered keep-set.
   for (const o of ORIGINS) {
     out.push(entry(`/citizenship/${o.slug}`, 0.6));

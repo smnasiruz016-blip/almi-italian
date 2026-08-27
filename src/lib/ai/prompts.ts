@@ -1,13 +1,15 @@
 // System prompts for the two estimate skills.
 //
-// The long, stable half is built from the rubric so it can be CACHED: Anthropic's prompt cache
-// is a prefix match, so everything that does not change per learner goes first and the
-// learner's own text goes last. A per-request timestamp or a shuffled criteria list anywhere
-// in the prefix would silently cost a cache miss on every call.
+// The long, stable half is built from the rubric so it can be cached; the learner's own text
+// goes last, in the user turn, so the prefix stays cacheable. (It does not actually cache yet —
+// the prefix is well under Sonnet 4.6's ~2048-token minimum. See the note in evaluate.ts.)
 //
 // THE MODEL IS NEVER ASKED FOR A LABEL. It returns an assessment; src/lib/ai/schemas.ts
-// attaches the estimate label afterwards. A label the model could omit is not a guarantee —
-// see the design note in that file.
+// attaches the estimate label afterwards.
+//
+// THE MODEL IS ALSO NEVER ASKED TO COUNT. On the first live attempt the UI counted 96 words and
+// the model reported "circa 110 parole" — a number it was never given and had no way to know.
+// The app knows it exactly, so it is stated as a fact and estimating is forbidden outright.
 
 import type { Rubric } from "@/lib/ai/rubric";
 
@@ -16,67 +18,113 @@ REGOLE (valgono sempre):
 - Scrivi TUTTI i commenti in italiano, rivolgendoti al candidato con "tu".
 - Valuta SOLO i criteri elencati, uno per uno, nell'ordine dato, ripetendo il testo del criterio
   ESATTAMENTE come te l'ho fornito nel campo "criterion".
-- Ogni commento deve citare o indicare qualcosa di concreto nel testo del candidato. Niente
+- Ogni commento deve citare o indicare qualcosa di concreto nella risposta del candidato. Niente
   osservazioni generiche che varrebbero per qualsiasi risposta.
 - Non inventare errori che non ci sono, e non nascondere errori che ci sono.
+- NON CONTARE E NON STIMARE MAI la lunghezza del testo. Se ti serve, usa SOLO il numero di parole
+  che ti fornisco qui sotto: è il conteggio esatto fatto dall'applicazione. Non scrivere mai
+  "circa N parole" con un numero diverso da quello fornito.
 - Non dichiarare mai un esito d'esame, una promozione, una bocciatura o un punteggio ufficiale.
   Tu produci una STIMA didattica. L'unico risultato ufficiale lo rilascia l'ente d'esame.
 - Se la risposta è vuota, fuori tema o troppo breve per essere valutata, dillo chiaramente nel
-  summary, assegna le bande più basse che i criteri meritano e NON inventare un punteggio alto.
+  summary, assegna i punteggi più bassi che i criteri meritano e NON inventare un punteggio alto.
 `.trim();
 
-function scaleBlock(rubric: Rubric): string {
+/** OFFICIAL mode: the exam's own criteria, each with its published ceiling.
+ *
+ *  A criterion this product cannot assess is NOT SHOWN TO THE MODEL AT ALL. Telling it "score
+ *  pronunciation, but don't" invites exactly the guess we are trying to prevent; leaving the
+ *  criterion out means there is nothing to guess. Our own code appends it to the report
+ *  afterwards, with a fixed explanation, so the learner still sees the full official rubric and
+ *  sees plainly which point was not awarded and why. */
+function officialCriteriaBlock(rubric: Rubric): string {
+  return (rubric.official ?? [])
+    .filter((c) => !c.notAssessed)
+    .map((c, i) => `${i + 1}. ${c.label} — fino a punti ${c.max} (${c.gloss})`)
+    .join("\n");
+}
+
+function authoredCriteriaBlock(rubric: Rubric): string {
+  return rubric.criteria.map((c, i) => `${i + 1}. ${c}`).join("\n");
+}
+
+function criteriaBlock(rubric: Rubric): string {
+  return rubric.mode === "OFFICIAL" ? officialCriteriaBlock(rubric) : authoredCriteriaBlock(rubric);
+}
+
+function scoringBlock(rubric: Rubric): string {
+  if (rubric.mode === "OFFICIAL" && rubric.official) {
+    const assessable = rubric.official.filter((c) => !c.notAssessed);
+    return [
+      "PUNTEGGI:",
+      "Per OGNI criterio valutabile assegna un numero intero di punti nel campo `points`,",
+      "da 0 fino al massimo indicato accanto al criterio. Non superare mai quel massimo.",
+      `I criteri valutabili qui sono ${assessable.length}: ${assessable.map((c) => `${c.label} (max ${c.max})`).join(", ")}.`,
+      "NON calcolare tu il totale di sezione: mettilo a null in `sectionScoreValue`.",
+      "Il totale lo somma l'applicazione dai tuoi punteggi per criterio, così le parti e il",
+      "totale non possono mai contraddirsi.",
+      `Contesto del motore: ${rubric.engineNote}`,
+    ].join("\n");
+  }
   if (!rubric.scale) {
     return [
       "PUNTEGGIO DI SEZIONE: nessuno.",
       "Questo esame è valutato PER PARTE, non per sezione, quindi non esiste un massimo di",
-      "sezione onesto per questo compito. Metti sectionScoreValue = null. Non inventare una scala.",
+      "sezione onesto per questo compito. Metti sectionScoreValue = null e points = null per",
+      "ogni criterio. Non inventare una scala.",
       `Contesto del motore: ${rubric.engineNote}`,
     ].join("\n");
   }
   return [
-    `PUNTEGGIO DI SEZIONE: un intero da 0 a ${rubric.scale.max}.`,
+    `PUNTEGGIO DI SEZIONE: un intero da 0 a ${rubric.scale.max} in \`sectionScoreValue\`.`,
     `La soglia di questa sezione è ${rubric.scale.floor}/${rubric.scale.max}.`,
-    "Assegna il numero che riflette onestamente le bande dei criteri qui sopra:",
-    "se la maggior parte dei criteri è NON_RAGGIUNTO, il punteggio deve stare sotto la soglia.",
+    "Questo modulo non pubblica pesi per singolo criterio: metti points = null per ogni criterio",
+    "e valuta con le bande.",
     `Contesto del motore: ${rubric.engineNote}`,
   ].join("\n");
 }
 
-function criteriaBlock(rubric: Rubric): string {
-  return rubric.criteria.map((c, i) => `${i + 1}. ${c}`).join("\n");
-}
-
-/** Produzione scritta. */
-export function scrittaSystemPrompt(rubric: Rubric, minWords: number, maxWords?: number): string {
-  const length = maxWords
-    ? `Il compito chiede ${minWords}–${maxWords} parole.`
-    : `Il compito chiede almeno ${minWords} parole.`;
-  return `
-Sei un esaminatore esperto di italiano L2 che valuta la PRODUZIONE SCRITTA per ${rubric.trackLabel}.
-
-${SHARED_RULES}
-
-LUNGHEZZA: ${length}
-Se il testo è molto più corto del minimo, questo va detto e pesa sulla valutazione.
-
-CRITERI DI QUESTO COMPITO (valutane uno per uno, in quest'ordine):
-${criteriaBlock(rubric)}
-
-${scaleBlock(rubric)}
-
-Per ogni criterio scegli una banda:
+const BANDS = `
+Per ogni criterio scegli anche una banda:
 - RAGGIUNTO: il criterio è soddisfatto.
 - PARZIALE: parzialmente soddisfatto, con lacune concrete.
 - NON_RAGGIUNTO: non soddisfatto.
 `.trim();
+
+/** Produzione scritta. `words` is the application's exact count — see word-count.ts. */
+export function scrittaSystemPrompt(
+  rubric: Rubric,
+  opts: { words: number; minWords: number; maxWords?: number },
+): string {
+  const target = opts.maxWords
+    ? `Il compito chiede ${opts.minWords}-${opts.maxWords} parole.`
+    : `Il compito chiede almeno ${opts.minWords} parole.`;
+  return `
+Sei un esaminatore esperto di italiano L2 che valuta la PRODUZIONE SCRITTA per ${rubric.trackLabel}.
+${rubric.mode === "OFFICIAL" ? `Usi i criteri ufficiali pubblicati dall'ente d'esame (${rubric.sourceUrl}).` : ""}
+
+${SHARED_RULES}
+
+LUNGHEZZA — DATO DI FATTO, NON DA STIMARE:
+${target}
+Il testo del candidato contiene ESATTAMENTE ${opts.words} parole (conteggio dell'applicazione).
+Se commenti la lunghezza, usa esclusivamente questo numero.
+
+CRITERI DI QUESTO COMPITO (valutane uno per uno, in quest'ordine):
+${criteriaBlock(rubric)}
+
+${scoringBlock(rubric)}
+
+${BANDS}
+`.trim();
 }
 
 /** Produzione orale. The input is a TRANSCRIPT, and that limit is stated to the model. */
-export function oraleSystemPrompt(rubric: Rubric, speakSeconds?: number): string {
-  const timing = speakSeconds ? `Il compito prevede circa ${speakSeconds} secondi di parlato.` : "";
+export function oraleSystemPrompt(rubric: Rubric, opts: { words: number; speakSeconds?: number }): string {
+  const timing = opts.speakSeconds ? `Il compito prevede circa ${opts.speakSeconds} secondi di parlato.` : "";
   return `
 Sei un esaminatore esperto di italiano L2 che valuta la PRODUZIONE ORALE per ${rubric.trackLabel}.
+${rubric.mode === "OFFICIAL" ? `Usi i criteri ufficiali pubblicati dall'ente d'esame (${rubric.sourceUrl}).` : ""}
 
 ${SHARED_RULES}
 
@@ -84,18 +132,15 @@ ${SHARED_RULES}
 Ricevi una TRASCRIZIONE AUTOMATICA di ciò che il candidato ha detto, non l'audio.
 Puoi quindi valutare contenuto, organizzazione, lessico e grammatica.
 NON puoi valutare pronuncia, accento, intonazione o fluenza reale: la trascrizione non li
-conserva. Se un criterio riguarda la pronuncia, dillo esplicitamente nel commento e valuta solo
-ciò che la trascrizione permette di vedere. Non fingere di aver sentito la voce.
+conserva. Non fingere di aver sentito la voce.
 ${timing}
+La trascrizione contiene ESATTAMENTE ${opts.words} parole (conteggio dell'applicazione).
 
 CRITERI DI QUESTO COMPITO (valutane uno per uno, in quest'ordine):
 ${criteriaBlock(rubric)}
 
-${scaleBlock(rubric)}
+${scoringBlock(rubric)}
 
-Per ogni criterio scegli una banda:
-- RAGGIUNTO: il criterio è soddisfatto.
-- PARZIALE: parzialmente soddisfatto, con lacune concrete.
-- NON_RAGGIUNTO: non soddisfatto.
+${BANDS}
 `.trim();
 }

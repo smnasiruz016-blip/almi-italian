@@ -40,7 +40,7 @@ const ok = (m: string) => console.log(`  ✓ ${m}`);
 console.log("Honesty gate — no AI score without its estimate label\n");
 
 const SAMPLE: ModelAssessment = {
-  criteria: [{ criterion: "Richiesta chiara del certificato", band: "PARZIALE", comment: "La richiesta c'è ma non dice quale certificato." }],
+  criteria: [{ criterion: "Efficacia comunicativa", band: "PARZIALE", points: 2, pointsMax: 3, comment: "La richiesta c'è ma non dice quale certificato." }],
   sectionScoreValue: 7,
   strengths: ["Apertura e chiusura corrette."],
   improvements: ["Specifica il tipo di certificato."],

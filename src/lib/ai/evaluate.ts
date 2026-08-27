@@ -21,6 +21,7 @@ import { getAnthropicClient, recordCost } from "@/lib/ai/anthropic-client";
 import { MODELS } from "@/lib/ai/models";
 import { refuseUnlessEntitled } from "@/lib/ai/entitlement";
 import { rubricFor, scoreFrom, type Rubric } from "@/lib/ai/rubric";
+import { wordCount, contradictingWordCounts } from "@/lib/text/word-count";
 import { scrittaSystemPrompt, oraleSystemPrompt } from "@/lib/ai/prompts";
 import {
   ModelAssessmentSchema,
@@ -52,10 +53,15 @@ export type EvaluateInput = {
   speakSeconds?: number;
 };
 
-function systemFor(input: EvaluateInput, rubric: Rubric): string {
+function systemFor(input: EvaluateInput, rubric: Rubric, words: number): string {
   return input.skill === "SCRITTA"
-    ? scrittaSystemPrompt(rubric, input.minWords ?? 0, input.maxWords)
-    : oraleSystemPrompt(rubric, input.speakSeconds);
+    ? scrittaSystemPrompt(rubric, { words, minWords: input.minWords ?? 0, maxWords: input.maxWords })
+    : oraleSystemPrompt(rubric, { words, speakSeconds: input.speakSeconds });
+}
+
+/** Every string the model wrote, so a fabricated number cannot hide in one of them. */
+function allProse(a: { criteria: { comment: string }[]; strengths: string[]; improvements: string[]; summary: string }): string {
+  return [...a.criteria.map((c) => c.comment), ...a.strengths, ...a.improvements, a.summary].join("\n");
 }
 
 export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
@@ -68,7 +74,7 @@ export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
   // Scale and criteria from the engine and the item. Throws rather than guessing a scale.
   let rubric: Rubric;
   try {
-    rubric = rubricFor({ exam: input.exam, level: input.level, criteria: input.criteria });
+    rubric = rubricFor({ exam: input.exam, level: input.level, section: input.skill, criteria: input.criteria });
   } catch (e) {
     return { ok: false, error: (e as Error).message, status: 400, latencyMs: Date.now() - startedAt };
   }
@@ -86,7 +92,9 @@ export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
     };
   }
 
-  const system = systemFor(input, rubric);
+  // The app counts ONCE and tells the model. It is never asked to estimate — see word-count.ts.
+  const words = wordCount(input.response);
+  const system = systemFor(input, rubric, words);
   const userTurn = [
     `COMPITO ASSEGNATO:\n${input.task}`,
     input.skill === "ORALE"
@@ -118,12 +126,22 @@ export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
     let response = await callOnce(null);
     let parsed: ModelAssessment | null = response.parsed_output ?? null;
 
-    if (!parsed) {
+    /** A response is unusable if it does not parse OR if it invented a word count. The task's
+     *  own bounds are allowed — the model may properly say "il compito chiede 80-120 parole". */
+    const inventedCounts = (a: ModelAssessment | null) =>
+      a ? contradictingWordCounts(allProse(a), words, [input.minWords ?? 0, input.maxWords ?? 0].filter(Boolean)) : [];
+
+    let bad = !parsed ? "schema" : inventedCounts(parsed).length ? "word-count" : null;
+
+    if (bad) {
       // One retry, with a stricter instruction. Two failures is a real failure.
       response = await callOnce(
-        "IMPORTANTE: la risposta precedente non era conforme allo schema richiesto. Restituisci SOLO l'oggetto JSON previsto, senza prosa e senza blocchi di codice.",
+        bad === "schema"
+          ? "IMPORTANTE: la risposta precedente non era conforme allo schema richiesto. Restituisci SOLO l'oggetto JSON previsto, senza prosa e senza blocchi di codice."
+          : `IMPORTANTE: nella risposta precedente hai indicato un numero di parole che non ti è stato fornito. Il testo contiene ESATTAMENTE ${words} parole. Non scrivere nessun altro numero seguito da "parole" tranne questo o i limiti del compito.`,
       );
       parsed = response.parsed_output ?? null;
+      bad = !parsed ? "schema" : inventedCounts(parsed).length ? "word-count" : null;
     }
 
     const usage = {
@@ -135,8 +153,14 @@ export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
     const feature = input.skill === "SCRITTA" ? "scritta.evaluate" : "orale.evaluate";
     const latencyMs = Date.now() - startedAt;
 
-    if (!parsed) {
-      await recordCost({ userId: input.userId, feature, model: MODEL, usage, success: false, errorMessage: "schema mismatch after retry" });
+    if (bad || !parsed) {
+      // FAIL CLOSED, including for the invented count. Showing the learner a second, wrong
+      // number about their own text is exactly the defect this check exists to stop, and
+      // editing the model's prose to remove it would be us fabricating instead.
+      const why = bad === "word-count"
+        ? `model asserted word count(s) ${inventedCounts(parsed).join(", ")} against an actual ${words}`
+        : "schema mismatch after retry";
+      await recordCost({ userId: input.userId, feature, model: MODEL, usage, success: false, errorMessage: why });
       return {
         ok: false,
         error: "The evaluator returned something unusable. Nothing was scored — please try again in a moment.",
@@ -147,8 +171,33 @@ export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
 
     const costCents = await recordCost({ userId: input.userId, feature, model: MODEL, usage, success: true });
 
+    // Append any criterion this product cannot assess. The model was never shown it, so this
+    // is the only way it reaches the report — with OUR fixed wording, no points, and no band.
+    // The learner still sees the whole official rubric and sees exactly which point was
+    // withheld and why.
+    const ceiling = (label: string) =>
+      (rubric.official ?? []).find((c) => c.label.toLowerCase() === label.toLowerCase())?.max ?? null;
+
+    const withNotAssessed: ModelAssessment = {
+      ...parsed,
+      criteria: [
+        // Stamp each criterion with its OFFICIAL ceiling. The model is never asked for it, so
+        // it cannot inflate its own denominator.
+        ...parsed.criteria.map((c) => ({ ...c, pointsMax: ceiling(c.criterion) })),
+        ...(rubric.official ?? [])
+          .filter((c) => c.notAssessed)
+          .map((c) => ({
+            criterion: c.label,
+            band: null,
+            points: null,
+            pointsMax: c.max,
+            comment: c.notAssessedReason ?? "Non valutabile con questa fonte.",
+          })),
+      ],
+    };
+
     // THE ONLY PLACE AN AI RESULT BECOMES SOMETHING A LEARNER CAN SEE.
-    const estimate = labelEstimate(parsed, scoreFrom(rubric, parsed.sectionScoreValue), rubric.engineNote);
+    const estimate = labelEstimate(withNotAssessed, scoreFrom(rubric, withNotAssessed), rubric.engineNote);
     return { ok: true, estimate, costCents, latencyMs };
   } catch (err) {
     const latencyMs = Date.now() - startedAt;

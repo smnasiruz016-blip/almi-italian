@@ -18,6 +18,7 @@
 // client bundle, so the key shipped on every practice page regardless of what the props said.
 
 import { useRef, useState } from "react";
+import { RevealAfterSubmit } from "@/components/RevealAfterSubmit";
 import {
   ATOM,
   isMcq,
@@ -180,16 +181,13 @@ export function PracticeRunner({
             {"audioScript" in p && p.audioScript && (
               <div className="mt-3">
                 <AudioPlay url={it.audioUrl} title={it.title} />
-                {/* The transcript is REVIEW material, not attempt material. Shown only after
-                    submission: an exam does not hand you the script while you are listening,
-                    and a two-play limit beside an always-open transcript would be decorative.
-                    (It used to be toggleable at any time.) */}
-                {submitted && (
-                  <details className="mt-2 rounded-lg bg-almi-bg-peach/30 p-3 text-sm">
-                    <summary className="cursor-pointer text-xs font-medium text-almi-coral">Show transcript</summary>
-                    <p className="mt-2 whitespace-pre-line text-almi-text">{p.audioScript}</p>
-                  </details>
-                )}
+                {/* REVIEW material, not attempt material — an exam does not hand you the script
+                    while you are listening. Routed through RevealAfterSubmit so the rule lives in
+                    ONE place and is checked by scripts/gates/reveal-gate.mts, rather than
+                    depending on every future edit remembering the guard. */}
+                <RevealAfterSubmit submitted={submitted} label="Show transcript">
+                  {p.audioScript}
+                </RevealAfterSubmit>
               </div>
             )}
             {"passage" in p && p.passage && <p className="mt-3 whitespace-pre-line rounded-lg bg-almi-bg-peach/30 p-3 text-sm text-almi-text">{p.passage}</p>}
@@ -306,7 +304,11 @@ export function PracticeRunner({
               </div>
             )}
 
-            {submitted && it.guidanceNote && <p className="mt-3 text-xs text-almi-text-muted">Coach: {it.guidanceNote}</p>}
+            {it.guidanceNote && (
+              <RevealAfterSubmit submitted={submitted} label="Coach">
+                {it.guidanceNote}
+              </RevealAfterSubmit>
+            )}
           </div>
         );
       })}

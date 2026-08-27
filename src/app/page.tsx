@@ -87,7 +87,7 @@ export default function HomePage() {
                   </div>
                 );
               })}
-              <p className="text-[10px] text-almi-text-muted">Tick = the {CILS_B1C_FLOOR}/{CILS_B1C_SECTION_MAX} floor every section must clear.</p>
+              <p className="text-[10px] text-almi-text-muted">Tick = the {CILS_B1C_FLOOR}/{CILS_B1C_SECTION_MAX} floor — our practice benchmark, not a Siena-published pass mark.</p>
             </div>
 
             {/* Totals strip — pass tint */}
@@ -139,7 +139,7 @@ export default function HomePage() {
             <div className="rounded-2xl border-2 border-almi-coral bg-almi-paper p-6">
               <p className="text-xs font-semibold uppercase tracking-wide text-almi-coral">Flagship · {B1C.examLabel}</p>
               <h3 className="mt-1 font-semibold text-almi-ink">All-or-nothing (citizenship)</h3>
-              <p className="mt-2 text-sm text-almi-text">≥7/12 in every section AND ≥28/48 total. NO banking — miss either and the whole exam is retaken.</p>
+              <p className="mt-2 text-sm text-almi-text">NO banking — miss one section and the whole exam is retaken. We train you to ≥7/12 per section and ≥28/48 overall: Siena publishes the 48-point total but not a pass mark for this module, so that floor is our benchmark, derived from the standard CILS B1 rule of 11/20 per skill.</p>
               <ul className="mt-3 space-y-1 text-sm">
                 {B1C.sections.map((s) => (
                   <li key={s.section} className="flex justify-between">

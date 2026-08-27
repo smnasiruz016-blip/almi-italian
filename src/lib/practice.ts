@@ -62,7 +62,7 @@ export const TRACKS: Track[] = [
     flag: true,
     scale: { max: CILS_B1C_SECTION_MAX, floor: CILS_B1C_FLOOR },
     honesty: B1C_HONESTY,
-    modelNote: `All-or-nothing: you must clear ≥${CILS_B1C_FLOOR}/${CILS_B1C_SECTION_MAX} in EVERY section AND reach ≥${CILS_B1C_TOTAL_FLOOR}/${CILS_B1C_TOTAL_MAX} overall on one sitting. Nothing banks.`,
+    modelNote: `All-or-nothing: nothing banks — miss one section and the whole exam is retaken. Siena publishes the ${CILS_B1C_TOTAL_MAX}-point total for this module but NOT a pass mark, so the ≥${CILS_B1C_FLOOR}/${CILS_B1C_SECTION_MAX} per section and ≥${CILS_B1C_TOTAL_FLOOR}/${CILS_B1C_TOTAL_MAX} overall shown here are OUR practice benchmark, taken from the standard CILS B1 rule of 11/20 per skill.`,
     sections: [
       S("ascolto", "ASCOLTO", "Ascolto (Listening)", "objective"),
       S("lettura", "LETTURA", "Lettura + strutture (Reading)", "objective"),

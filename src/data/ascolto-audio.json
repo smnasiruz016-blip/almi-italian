@@ -34,11 +34,14 @@
   },
   "0a9daba1a9d6374e": {
     "url": "/audio/ascolto/0a9daba1a9d6374e.mp3",
-    "bytes": 101952,
-    "durationSec": 17,
-    "segments": 1,
+    "bytes": 93744,
+    "durationSec": 16,
+    "segments": 4,
     "voices": [
-      "it-IT-DiegoNeural"
+      "it-IT-DiegoNeural",
+      "it-IT-ElsaNeural",
+      "it-IT-GiuseppeMultilingualNeural",
+      "it-IT-IsabellaNeural"
     ],
     "title": "Conversazione al bar: le ordinazioni"
   },

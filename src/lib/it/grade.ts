@@ -23,9 +23,39 @@ import { isMcq, isMatching, isOrdering, isCloze, type BankItem } from "@/lib/ite
 import { TRACKS, type SectionMeta } from "@/lib/practice";
 import { ATOM, type AtomMark, type SubmitResult } from "@/lib/runner-items";
 
-/** Free-text cloze normalisation: case-insensitive, trimmed, inner whitespace collapsed.
- *  Identical to the rule the client used to apply, moved here with it. */
-const norm = (s: string) => s.trim().toLowerCase().replace(/\s+/g, " ");
+/**
+ * Free-text cloze normalisation: case-insensitive, trimmed, inner whitespace collapsed, and
+ * DIACRITIC-FOLDED.
+ *
+ * ── WHY THE FOLD WAS ADDED ──────────────────────────────────────────────────
+ * Without it a learner on a non-Italian keyboard who typed "e stato scritto" for the key
+ * "è stato scritto" was marked WRONG — not for their Italian, but for not having an accented
+ * keyboard. Four of the bank's 21 free-text keys carry accents, and the audience for this
+ * product is precisely people typing Italian on whatever device they own.
+ *
+ * ── WHY IT IS SAFE HERE, AND WHY THAT HAD TO BE CHECKED ─────────────────────
+ * Folding is NOT free in Italian: it collapses real minimal pairs — e/è, papa/papà, pero/però,
+ * te/tè, si/sì — so in the wrong bank it would make a wrong answer newly correct.
+ * scripts/gates/marking-gate.mts sweeps every free-text key on every build and fails if any
+ * folds onto a different valid word, or if two distinct keys collide. Today: 4 keys change,
+ * none is a whole-key minimal pair, no collisions.
+ *
+ * Only free-text blanks use this. Option-backed blanks (103 of the 124) compare the chosen
+ * option exactly and are untouched.
+ *
+ * The NFD-strip technique is the network's own (see countrySlug in the sibling repos), applied
+ * here to marking for the first time.
+ *
+ * ⚠️ AlmiGoethe has the identical gap for German umlauts in
+ * src/lib/goethe/tasks/objective.ts — reported, not fixed from here.
+ */
+const norm = (s: string) =>
+  s
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{Mn}/gu, "")
+    .replace(/\s+/g, " ");
 
 /**
  * Everything a client is allowed to say. Note what is ABSENT: no answer key, no score, no

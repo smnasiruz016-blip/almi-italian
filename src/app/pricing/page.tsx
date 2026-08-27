@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 const INCLUDED = [
   "CILS and CELI practice — each on its own real scale, never mixed",
-  "CILS B1 Cittadinanza flagship: all-or-nothing readout (≥7 each section AND ≥28/48)",
+  "CILS B1 Cittadinanza flagship: all-or-nothing readout against our ≥7/12 practice benchmark (Siena publishes no pass mark for this module)",
   "CILS standard capitalization: the sections you'd bank today vs retake",
   "CELI two-part readout with A–E grade-band estimate (labelled estimate)",
   "100% original material — flat monthly price, cancel in one click",

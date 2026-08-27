@@ -43,6 +43,31 @@ export type SpeakerRun = { label: string | null; voice: string; text: string };
  *
  * Returns null when the script is not a dash dialogue, so the caller can fall through.
  */
+/**
+ * Per-item gender pinning for dash-split dialogues.
+ *
+ * The dash splitter normally picks a female/male pair from an id-derived offset, which is fine
+ * when the turns are anonymous. It is NOT fine when the SCRIPT names who is speaking: in
+ * "Conversazione al bar" the third speaker asks "E tu, Giulia?" and the fourth turn is Giulia's
+ * reply. A male voice answering that breaks the item — the learner identifies Giulia by being
+ * addressed, and the prompts ask them to match her.
+ *
+ * NAME_GENDER cannot help here: it keys on a "Label:" prefix and these turns have none. So the
+ * genders are pinned per item, per turn, explicitly and reviewably.
+ *
+ * Keyed by stableItemId (sha256 of {exam, level, section, title}), with the title in the
+ * comment so a human can check the mapping without computing a hash.
+ */
+const PINNED_TURN_GENDERS: Record<string, ("F" | "M")[]> = {
+  // CILS_STANDARD/UNO · ASCOLTO · "Conversazione al bar: le ordinazioni"
+  // Four people order in sequence; turn 4 is Giulia, addressed by name at the end of turn 3.
+  // ONLY Giulia's gender is fixed by the script — the first three are positional ("Prima
+  // persona"…) and unnamed. So they alternate, which is what gives four DISTINCT voices:
+  // edge-tts offers exactly two Italian voices per gender, so pinning three of one gender
+  // would force two speakers onto one voice and undo the whole point of the split.
+  "0a9daba1a9d6374e": ["M", "F", "M", "F"],
+};
+
 function splitByDash(script: string, itemId: string): SpeakerRun[] | null {
   // Em dash (U+2014) and en dash (U+2013) both appear as dialogue markers in Italian text.
   const parts = script
@@ -50,6 +75,36 @@ function splitByDash(script: string, itemId: string): SpeakerRun[] | null {
     .map((s) => s.trim())
     .filter(Boolean);
   if (parts.length < 2) return null;
+
+  const pinned = PINNED_TURN_GENDERS[itemId];
+  if (pinned) {
+    // Explicitly cast. Distinct voices within each gender, in order, so two speakers of the same
+    // gender never share a voice.
+    if (pinned.length !== parts.length) {
+      throw new Error(
+        `item ${itemId}: ${pinned.length} pinned turn gender(s) but the script splits into ${parts.length} turns — re-pin or re-check the dashes`,
+      );
+    }
+    let f = 0;
+    let m = 0;
+    const runs = parts.map((text, i) => {
+      const g = pinned[i];
+      const pool = g === "F" ? IT_VOICES.FEMALE : IT_VOICES.MALE;
+      const idx = g === "F" ? f++ : m++;
+      if (idx >= pool.length) {
+        // Loud, not silent. Wrapping would put two different speakers on one voice, which is
+        // the exact defect the dash split exists to fix.
+        throw new Error(
+          `item ${itemId}: pinned genders need ${idx + 1} ${g === "F" ? "female" : "male"} voices but edge-tts offers ${pool.length} for it-IT — re-balance the pin`,
+        );
+      }
+      return { label: null, voice: pool[idx], text };
+    });
+    if (new Set(runs.map((r) => r.voice)).size !== runs.length) {
+      throw new Error(`item ${itemId}: pinned turns collapsed onto fewer voices than turns`);
+    }
+    return runs;
+  }
 
   const off = offsetFor(itemId, 2);
   const pair = off === 0
@@ -190,7 +245,12 @@ export function splitByLabels(
   const marks: { label: string; at: number }[] = [];
   let m: RegExpExecArray | null;
   while ((m = re.exec(script)) !== null) marks.push({ label: m[1], at: m.index });
-  if (marks.length < 2) return narrated();
+  // No usable labels. FALL THROUGH TO THE DASH SPLIT rather than straight to one narrator:
+  // an item can declare prompts and still mark its turns with the dialogue dash. That is
+  // exactly "Conversazione al bar", whose four prompts are positional ("Prima persona"…) and
+  // appear nowhere in the script — it was being read in a single voice, which made the turn
+  // boundaries inaudible and the item close to unanswerable from audio alone.
+  if (marks.length < 2) return splitByDash(script, itemId) ?? narrated();
 
   const order = marks.map((k) => k.label);
   const voices = voiceForSpeakers(itemId, order);

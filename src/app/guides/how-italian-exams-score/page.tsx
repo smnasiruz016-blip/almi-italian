@@ -22,7 +22,7 @@ export default function Page() {
         </div>
         <div className="rounded-2xl border-2 border-almi-coral bg-almi-paper p-5">
           <p className="font-semibold text-almi-ink">CILS B1 Cittadinanza — all-or-nothing</p>
-          <p className="mt-1 text-sm text-almi-text">4 sections, <strong className="text-almi-ink">{CILS_B1C_FLOOR}</strong> in every one <em>and</em> <strong className="text-almi-ink">{CILS_B1C_TOTAL_FLOOR}/{CILS_B1C_TOTAL_MAX}</strong> overall, on one sitting. <strong className="text-almi-ink">No banking.</strong> <Link href="/guides/cils-b1-cittadinanza" className="text-almi-coral hover:underline">Full guide →</Link></p>
+          <p className="mt-1 text-sm text-almi-text">4 sections, <strong className="text-almi-ink">{CILS_B1C_FLOOR}</strong> in every one <em>and</em> <strong className="text-almi-ink">{CILS_B1C_TOTAL_FLOOR}/{CILS_B1C_TOTAL_MAX}</strong> overall, on one sitting. <strong className="text-almi-ink">No banking.</strong> Those two floors are <em>our</em> benchmark — Siena publishes the {CILS_B1C_TOTAL_MAX}-point total for this module but no pass mark. <Link href="/guides/cils-b1-cittadinanza" className="text-almi-coral hover:underline">Full guide →</Link></p>
         </div>
         <div className="rounded-2xl border border-almi-line bg-almi-paper p-5">
           <p className="font-semibold text-almi-ink">CELI — two parts + band</p>

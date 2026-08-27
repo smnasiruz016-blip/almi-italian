@@ -45,7 +45,7 @@ export default function NotFound() {
         <Link href="/practice" className="inline-flex rounded-full bg-almi-coral px-6 py-2.5 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">
           All practice tracks
         </Link>
-        <Link href="/guides" className="inline-flex rounded-full border border-almi-line px-6 py-2.5 font-medium text-almi-ink hover:border-almi-coral">
+        <Link href="/learn" className="inline-flex rounded-full border border-almi-line px-6 py-2.5 font-medium text-almi-ink hover:border-almi-coral">
           Read the guides
         </Link>
       </div>

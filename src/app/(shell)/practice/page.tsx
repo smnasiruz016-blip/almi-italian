@@ -70,7 +70,11 @@ export default async function Page() {
 
       <p className="mt-8 text-sm text-almi-text-muted">
         New here? Not sure which exam or level you need? Remember: the long-term permit is A2, citizenship is B1 —{" "}
-        <Link href="/guides/a2-or-b1" className="text-almi-coral hover:underline">read the honest guide</Link>.
+        {/* Was /guides/a2-or-b1. The 301 sends that URL to /learn/a2-or-b1, which does not
+            exist until the content drop lands — so this internal link points at the HUB, which
+            always resolves, rather than shipping a known 404 into the picker. The content-drop
+            PR should restore the deep link once the article is there. */}
+        <Link href="/learn" className="text-almi-coral hover:underline">read the honest guide</Link>.
       </p>
     </main>
   );

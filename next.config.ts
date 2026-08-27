@@ -74,12 +74,45 @@ const SECURITY_HEADERS = [
   { key: "Permissions-Policy", value: "camera=(), microphone=(self), geolocation=(), payment=(), usb=(), interest-cohort=()" },
 ];
 
+// ── /guides -> /learn, PERMANENT ────────────────────────────────────────────
+// The nine core guides become /learn articles. Slugs are unchanged 1:1, which is deliberate:
+// the URLs have been live and indexed, and a rename would spend link equity for nothing.
+//
+// Listed one by one rather than as `/guides/:slug`. A wildcard would launder every typo and
+// every dead URL under /guides into a /learn URL that then 404s, turning "this page never
+// existed" into "this page moved and is now missing" — worse for a crawler and worse for a
+// reader. An unlisted /guides/* stays a 404, which is the truth.
+//
+// statusCode: 301, NOT `permanent: true`.
+//
+// `permanent: true` emits **308**, not 301 — measured, not assumed: every one of these ten came
+// back 308 on the first run. 308 and 301 are equivalent to Google, so nothing was broken, but the
+// brief asks for 301 and a redirect table is exactly the kind of thing someone later verifies
+// against a spec with curl. The only behavioural difference is that 308 preserves the request
+// method on POST and 301 permits it to become GET; these are content URLs that are only ever
+// GET, so the distinction costs nothing here.
+const GUIDE_REDIRECTS: { from: string; to: string }[] = [
+  { from: "/guides", to: "/learn" },
+  { from: "/guides/cils-b1-cittadinanza", to: "/learn/cils-b1-cittadinanza" },
+  { from: "/guides/a2-or-b1", to: "/learn/a2-or-b1" },
+  { from: "/guides/how-italian-exams-score", to: "/learn/how-italian-exams-score" },
+  { from: "/guides/capitalizzazione", to: "/learn/capitalizzazione" },
+  { from: "/guides/2025-citizenship-reform", to: "/learn/2025-citizenship-reform" },
+  { from: "/guides/reacquire-citizenship-2027", to: "/learn/reacquire-citizenship-2027" },
+  { from: "/guides/celi-results-timeline", to: "/learn/celi-results-timeline" },
+  { from: "/guides/cils-vs-celi", to: "/learn/cils-vs-celi" },
+  { from: "/guides/exam-dates", to: "/learn/exam-dates" },
+];
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [{ protocol: "https", hostname: "almiworld.com" }],
   },
   async headers() {
     return [{ source: "/:path*", headers: SECURITY_HEADERS }];
+  },
+  async redirects() {
+    return GUIDE_REDIRECTS.map((r) => ({ source: r.from, destination: r.to, statusCode: 301 as const }));
   },
 };
 

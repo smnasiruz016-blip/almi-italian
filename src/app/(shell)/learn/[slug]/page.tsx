@@ -13,7 +13,7 @@ import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getAllArticles, getArticle, LEARN_BASE } from "@/lib/learn/articles";
-import { canonical } from "@/lib/site";
+import { canonical, SHAMOOL_LINE } from "@/lib/site";
 
 export function generateStaticParams() {
   return getAllArticles().map((a) => ({ slug: a.slug }));
@@ -121,6 +121,12 @@ export default async function LearnArticle({ params }: { params: Promise<{ slug:
           </ul>
         </section>
       )}
+
+      {/* Carried over from GuideShell in the /guides -> /learn migration. Every /guides page
+          printed this line, and so does every other pSEO surface in the repo (citizenship,
+          exams-in, italian-descent, study-in-italy, university, residence-permit). Dropping it
+          here would have quietly removed it from 52 pages while the migration looked complete. */}
+      <p className="mt-8 rounded-xl bg-almi-bg-peach/40 p-4 text-sm text-almi-text">{SHAMOOL_LINE}</p>
     </main>
   );
 }

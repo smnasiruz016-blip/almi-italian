@@ -26,6 +26,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import matter from "gray-matter";
 import { z } from "zod";
+import { renderTokens } from "./tokens";
 
 export const LEARN_BASE = "/learn";
 export const CONTENT_DIR = join(process.cwd(), "content", "learn");
@@ -95,9 +96,20 @@ function parseOne(file: string): Article {
       .join("; ");
     throw new Error(`content/learn/${file}: invalid frontmatter — ${issues}`);
   }
-  const body = content.trim();
+  // Engine numbers resolve HERE, in the loader, not in the page — so the routes, the hub, the
+  // sitemap, the content gate and the token gate all read the same resolved text and none of them
+  // can disagree about what a page says. renderTokens THROWS on an unknown token: a build that
+  // stops beats a public page reading "{{CILS_B1C_FLOR}}".
+  //
+  // title and description are tokenised too, not just the body: /guides/cils-b1-cittadinanza
+  // renders CILS_B1C_SECTION_MAX and CILS_B1C_TOTAL_MAX inside its meta DESCRIPTION today, and a
+  // body-only mechanism would have silently dropped that in the migration.
+  const where = `content/learn/${file}`;
+  const body = renderTokens(content.trim(), where);
   return {
     ...parsed.data,
+    title: renderTokens(parsed.data.title, where),
+    description: renderTokens(parsed.data.description, where),
     slug,
     body,
     wordCount: body.split(/\s+/).filter(Boolean).length,

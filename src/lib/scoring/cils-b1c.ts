@@ -32,6 +32,18 @@ export const CILS_B1C_TOTAL_MAX = 48; //    official (12 × 4)
 export const CILS_B1C_FLOOR = 7; //         OURS, derived (see above)
 export const CILS_B1C_TOTAL_FLOOR = 28; //  OURS, derived (4 × 7)
 
+// OFFICIAL — the Produzione scritta task length for this module, "Prova a tema (80 - 120 parole)"
+// in the same Unistrasi criteria PDF as the 12-point scale above.
+//
+// It lived only inside item payloads until now: all 15 CILS_B1C SCRITTA items carry
+// minWords 80 / maxWords 120, and nothing checked that they agreed with each other or with the
+// number the prose quotes. #38 corrected this window from 40-80 after a live test, in the DATA —
+// so the corrected value had no constant to be correct against. It does now, and
+// scripts/gates/token-gate.mts asserts every B1C scritta item still matches, which is what stops
+// this from being a constant that merely decorates a token.
+export const CILS_B1C_SCRITTA_MIN_WORDS = 80; // official
+export const CILS_B1C_SCRITTA_MAX_WORDS = 120; // official
+
 /** Whether each number above comes from the awarding body. Same idea as celi.ts's `verified`,
  *  so the two engines answer "is this official?" the same way. */
 export const CILS_B1C_SOURCING = {

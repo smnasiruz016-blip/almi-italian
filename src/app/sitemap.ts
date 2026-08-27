@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { ORIGINS, DESCENT } from "@/lib/seo/data";
 import { SITE } from "@/lib/seo/content";
-import { GUIDES } from "@/lib/seo/guides";
 import { learnUrls } from "@/lib/learn/articles";
 
 // HOLDING 2026-08-09 — one keep-set chunk. Previously TOTAL_CHUNKS chunks advertising the whole
@@ -47,10 +46,11 @@ export default async function sitemap({ id }: { id: Promise<string> }): Promise<
     entry("/login", 0.3),
     entry("/about", 0.5),
     entry("/italian-descent", 0.7),
-      // Core guides (Phase 4)
-    entry("/guides", 0.7),
+    // The /guides hub and its nine pages used to be listed here. They are now /learn articles;
+    // next.config.ts 301s every old URL. They are NOT listed as /learn URLs here either --
+    // learnUrls() below derives those from the content directory, so an article appears in the
+    // sitemap when it exists and not a moment before.
   ];
-  for (const g of GUIDES) out.push(entry(`/guides/${g.slug}`, 0.6));
 
   // /learn — hub + every article, from the SAME directory scan the routes and the hub use
   // (src/lib/learn/articles.ts). One scan, so the sitemap cannot advertise a page that does not

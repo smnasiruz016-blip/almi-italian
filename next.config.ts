@@ -54,8 +54,24 @@ const SECURITY_HEADERS = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   // Redundant with frame-ancestors for modern browsers, kept for the ones that only read this.
   { key: "X-Frame-Options", value: "DENY" },
-  // This product asks for none of these. Denying them is free and makes that explicit.
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()" },
+  // Denying what this product does not use is free and makes that explicit.
+  //
+  // ⚠️ microphone=(self) IS LOAD-BEARING — do not "tidy" it back to microphone=().
+  // Produzione orale records the learner through MediaRecorder/getUserMedia. This header used to
+  // read microphone=(), which switches the microphone off at the BROWSER level: the recorder
+  // shipped in #36 could not work in production no matter what the code did, and the failure is
+  // silent from the app's side. The header predates the feature — it was written when "this
+  // product asks for none of these" was true, and stayed after it stopped being true.
+  //
+  // (self) is the narrowest form that works: our own origin may ask for the microphone, and a
+  // cross-origin iframe still may not.
+  //
+  // AlmiPTE solves the same problem by OMITTING microphone from its header entirely, which is
+  // equivalent — the default allowlist for microphone is already `self`. It is written
+  // explicitly here on purpose: an omitted directive is exactly what invited a hygiene sweep to
+  // "complete" the list with microphone=() in the first place. Stated, it can be gated;
+  // scripts/items/security-gate.mts now fails the build if it is removed or narrowed.
+  { key: "Permissions-Policy", value: "camera=(), microphone=(self), geolocation=(), payment=(), usb=(), interest-cohort=()" },
 ];
 
 const nextConfig: NextConfig = {

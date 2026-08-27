@@ -15,6 +15,8 @@ import { __redactMessage, clientHash } from "../../src/lib/observability";
 
 let failed = false;
 const fail = (m: string) => { console.error(`  ✗ ${m}`); failed = true; };
+import { readFileSync } from "node:fs";
+
 const ok = (m: string) => console.log(`  ✓ ${m}`);
 
 console.log("Security gate — rate limit + log redaction\n");
@@ -114,6 +116,63 @@ console.log("\nC9 — client identification:");
   const unknown = clientHash(new Request("https://example.test/"));
   if (!unknown) fail("a request with no forwarding header produced no id at all");
   else ok("a caller with no IP header still gets an id (all such callers bucket together)");
+}
+
+
+// ── C10. THE MICROPHONE IS PERMITTED, AND NOTHING ELSE IS ───────────────────
+// Produzione orale records the learner. The Permissions-Policy header used to read
+// `microphone=()`, which switches the microphone off at the BROWSER level: the recorder shipped
+// in #36 could not work in production no matter what the code did, and nothing in the app could
+// tell. The header predates the feature.
+//
+// So it is pinned here, in both directions:
+//   • microphone MUST be permitted for self — a future hygiene sweep that "completes the list"
+//     with microphone=() breaks a shipped feature silently, and that is exactly how it happened.
+//   • every OTHER directive MUST stay denied — this check must never become the reason someone
+//     loosened the camera.
+//
+// Read from next.config.ts as TEXT rather than imported: the config is a module with a default
+// export Next consumes, and a gate that re-implemented its shape could drift from what is
+// actually served. The header string is what ships, so the header string is what is asserted.
+console.log("\nC10 — Permissions-Policy:");
+{
+  const cfg = readFileSync("next.config.ts", "utf8");
+  const m = cfg.match(/"Permissions-Policy",\s*value:\s*"([^"]+)"/);
+  if (!m) {
+    fail("could not find the Permissions-Policy header in next.config.ts — has it moved?");
+  } else {
+    const header = m[1];
+    const directives = new Map(
+      header.split(",").map((d) => {
+        const [k, ...rest] = d.split("=");
+        return [k.trim(), rest.join("=").trim()];
+      }),
+    );
+
+    const mic = directives.get("microphone");
+    if (mic === undefined) {
+      fail("`microphone` is absent from Permissions-Policy — it defaults to self so the recorder would work, but an unstated directive is what invited `microphone=()` last time. State it explicitly.");
+    } else if (mic === "()") {
+      fail("microphone=() — the microphone is switched OFF at the browser level and Produzione orale CANNOT record. This is the exact regression this check exists to stop.");
+    } else if (mic !== "(self)") {
+      fail(`microphone=${mic} — expected (self). Wider than self would let a cross-origin frame ask for the microphone on our behalf.`);
+    } else {
+      ok("microphone=(self) — our own origin may record, a cross-origin frame may not");
+    }
+
+    // The other side of the pin: this check must not become cover for loosening anything else.
+    const MUST_STAY_DENIED = ["camera", "geolocation", "payment", "usb", "interest-cohort"];
+    const loosened = MUST_STAY_DENIED.filter((d) => directives.get(d) !== "()");
+    if (loosened.length) {
+      fail(`these must stay fully denied and are not: ${loosened.map((d) => `${d}=${directives.get(d)}`).join(", ")}`);
+    } else {
+      ok(`${MUST_STAY_DENIED.length} unused capabilit(ies) still denied outright`);
+    }
+
+    const missing = MUST_STAY_DENIED.filter((d) => !directives.has(d));
+    if (missing.length) fail(`directive(s) dropped from the header entirely: ${missing.join(", ")}`);
+    else ok(`all ${directives.size} directives present`);
+  }
 }
 
 console.log("");

@@ -56,7 +56,7 @@ Answers go on the answer sheet in black pen only. Siena's exam-conduct page says
 
 ## Where our thresholds come from
 
-Our practice tool marks a listening set out of {{CILS_B1C_SECTION_MAX}} and flags anything under 7 as a weak result. Siena does not publish a pass mark or a per-section minimum for the Cittadinanza module: the {{CILS_B1C_FLOOR}}/{{CILS_B1C_SECTION_MAX}} floor and the {{CILS_B1C_TOTAL_FLOOR}}/{{CILS_B1C_TOTAL_MAX}} total we show are **ours**, derived from the published rule for the standard CILS UNO-B1 exam ({{CILS_STANDARD_TOTAL_MAX}} points, 55 to pass, {{CILS_STANDARD_FLOOR}} minimum per skill). Treat them as a practice target, never as the official line.
+Our practice tool marks a listening set out of {{CILS_B1C_SECTION_MAX}} and flags anything under {{CILS_B1C_FLOOR}} as a weak result. Siena does not publish a pass mark or a per-section minimum for the Cittadinanza module: the {{CILS_B1C_FLOOR}}/{{CILS_B1C_SECTION_MAX}} floor and the {{CILS_B1C_TOTAL_FLOOR}}/{{CILS_B1C_TOTAL_MAX}} total we show are **ours**, derived from the published rule for the standard CILS UNO-B1 exam ({{CILS_STANDARD_TOTAL_MAX}} points, 55 to pass, {{CILS_STANDARD_FLOOR}} minimum per skill). Treat them as a practice target, never as the official line.
 
 ## Official material to practise on
 

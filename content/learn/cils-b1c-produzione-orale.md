@@ -58,7 +58,7 @@ Recording yourself has a second benefit that no marking scheme captures: the one
 
 ## Our thresholds, again, are ours
 
-Our practice output scores the spoken task out of {{CILS_B1C_SECTION_MAX}} and marks below 7 as weak, with {{CILS_B1C_TOTAL_FLOOR}}/{{CILS_B1C_TOTAL_MAX}} as an overall target. Siena publishes no pass mark and no per-section minimum for the Cittadinanza module: those figures are **our own**, derived from the published standard CILS UNO-B1 rule of {{CILS_STANDARD_TOTAL_MAX}} points, 55 to pass and {{CILS_STANDARD_FLOOR}} minimum per skill. And when the tool has assessed a transcript, its score covers at most eleven of the twelve criteria points.
+Our practice output scores the spoken task out of {{CILS_B1C_SECTION_MAX}} and marks below {{CILS_B1C_FLOOR}} as weak, with {{CILS_B1C_TOTAL_FLOOR}}/{{CILS_B1C_TOTAL_MAX}} as an overall target. Siena publishes no pass mark and no per-section minimum for the Cittadinanza module: those figures are **our own**, derived from the published standard CILS UNO-B1 rule of {{CILS_STANDARD_TOTAL_MAX}} points, 55 to pass and {{CILS_STANDARD_FLOOR}} minimum per skill. And when the tool has assessed a transcript, its score covers at most eleven of the twelve criteria points.
 
 ## Questions readers ask
 

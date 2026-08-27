@@ -58,7 +58,7 @@ An Italian government information sheet comparing the two B1 exams shows how muc
 
 ## Our marking threshold is ours
 
-Our practice sets score this section out of {{CILS_B1C_SECTION_MAX}} and treat anything below 7 as weak. Siena publishes no pass mark and no per-section minimum for the Cittadinanza module: the {{CILS_B1C_FLOOR}}/{{CILS_B1C_SECTION_MAX}} floor and the {{CILS_B1C_TOTAL_FLOOR}}/{{CILS_B1C_TOTAL_MAX}} overall figure we display are **our own**, derived from the published standard CILS UNO-B1 rule of {{CILS_STANDARD_TOTAL_MAX}} points, 55 to pass and {{CILS_STANDARD_FLOOR}} minimum per skill. They are a preparation target, not an official threshold.
+Our practice sets score this section out of {{CILS_B1C_SECTION_MAX}} and treat anything below {{CILS_B1C_FLOOR}} as weak. Siena publishes no pass mark and no per-section minimum for the Cittadinanza module: the {{CILS_B1C_FLOOR}}/{{CILS_B1C_SECTION_MAX}} floor and the {{CILS_B1C_TOTAL_FLOOR}}/{{CILS_B1C_TOTAL_MAX}} overall figure we display are **our own**, derived from the published standard CILS UNO-B1 rule of {{CILS_STANDARD_TOTAL_MAX}} points, 55 to pass and {{CILS_STANDARD_FLOOR}} minimum per skill. They are a preparation target, not an official threshold.
 
 ## Questions readers ask
 

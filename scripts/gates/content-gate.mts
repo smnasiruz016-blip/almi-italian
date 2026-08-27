@@ -25,10 +25,10 @@
 // 404 while rejecting one pointing at a real page. The targets are read from the app directory
 // at runtime instead, so the allowed set is whatever actually renders today.
 
-import { readdirSync, existsSync, statSync } from "node:fs";
+import { readdirSync, existsSync, statSync, readFileSync } from "node:fs";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { getAllArticles, getSections, learnUrls, SECTION_ORDER, LEARN_BASE } from "../../src/lib/learn/articles";
+import { getAllArticles, getSections, learnUrls, SECTION_ORDER, LEARN_BASE, CONTENT_DIR } from "../../src/lib/learn/articles";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const APP = join(ROOT, "src", "app");
@@ -199,5 +199,103 @@ if (full) {
 }
 
 console.log("");
+// -- H. THE HONESTY INVARIANTS ---------------------------------------------
+// This corpus refuses to overclaim, and that refusal has to survive edits by people who were
+// never in this conversation. Each check is a property of the RENDERED page -- what a reader
+// actually receives -- not of the markdown source: after the token conversion the source no
+// longer contains the digits a reader sees.
+console.log("\nH. THE HONESTY INVARIANTS");
+
+/** Lowercased word set, so "ours" cannot be satisfied by "hours" or "yours". */
+function wordsOf(text: string): Set<string> {
+  return new Set(text.toLowerCase().match(/[a-z]+/g) ?? []);
+}
+
+// H1. Our derived thresholds are never stated without the admission that they are ours.
+// Siena publishes NO pass mark and NO per-skill minimum for the Cittadinanza module; 7/12 and
+// 28/48 are OUR derivation from the standard UNO-B1 rule. A page printing them as bare fact
+// tells a citizenship applicant an official threshold exists. The COUNT is asserted too, so a
+// page that gains the number without the admission moves the count and goes red.
+{
+  const THRESHOLDS = ["7/12", "7 out of 12", "28/48", "28 out of 48"];
+  const OURS = ["our own", "our numbers", "our figures", "our thresholds", "we derived", "our derived"];
+  const DERIVED = ["derived", "derivation", "publishes no", "has not published", "not published", "not siena"];
+  const EXPECTED_THRESHOLD_PAGES = 18;
+  const stating = articles.filter((a) => THRESHOLDS.some((t) => a.body.includes(t)));
+  let bad = 0;
+  for (const a of stating) {
+    const lower = a.body.toLowerCase();
+    const ours = wordsOf(a.body).has("ours") || OURS.some((p) => lower.includes(p));
+    const derived = DERIVED.some((p) => lower.includes(p));
+    if (!ours || !derived) {
+      bad++;
+      fail(`${a.slug}: states a derived threshold (7/12 or 28/48) without admitting it is ours and derived - a reader would take it as an official Siena minimum`);
+    }
+  }
+  if (!bad) ok(`${stating.length} page(s) state a derived threshold, and every one admits it is ours and derived`);
+  check(stating.length === EXPECTED_THRESHOLD_PAGES,
+    `${stating.length} page(s) carry the derived thresholds, as expected`,
+    `${stating.length} page(s) carry the derived thresholds, expected ${EXPECTED_THRESHOLD_PAGES} - a page gained or lost the figures; re-read it and update this count deliberately`);
+}
+
+// H2. The 40-80 word limit never returns. This product told learners the CILS B1 Cittadinanza
+// email was 40-80 words until PR #38. The real window is 80-120. That was a defect in the
+// SCORER; content is the other way it could come back, and content is not covered by the
+// scorer own tests.
+{
+  const BANNED = ["40-80", "40–80"];
+  let bad = 0;
+  for (const a of articles) {
+    for (const b of BANNED) {
+      if (a.body.includes(b) || a.title.includes(b) || a.description.includes(b)) {
+        bad++;
+        fail(`${a.slug}: contains "${b}" - the word limit corrected in PR #38; the real window is 80-120`);
+      }
+    }
+  }
+  if (!bad) ok("no article states the 40-80 word limit that PR #38 corrected");
+}
+
+// H3. No agent-tooling footer reaches the corpus. Two research briefs arrived with an agent
+// footer appended by the tooling that produced them; the writers treated it as data. Checked
+// against the RAW file, because that is where such a footer would be pasted.
+{
+  const BANNED = ["agentId", "SendMessage", "subagent_tokens"];
+  let bad = 0;
+  for (const file of readdirSync(CONTENT_DIR).filter((f) => f.endsWith(".md"))) {
+    const raw = readFileSync(join(CONTENT_DIR, file), "utf8");
+    for (const b of BANNED) {
+      if (raw.includes(b)) { bad++; fail(`content/learn/${file}: contains agent-tooling string "${b}"`); }
+    }
+  }
+  if (!bad) ok(`no file carries an agent-tooling footer (${BANNED.join(", ")})`);
+}
+
+// H4. The editorial trailers never reach a reader. Every delivered file ends with
+// `FACTS I WANTED:` and `UNSURE OF:`. src/lib/learn/articles.ts strips them at import. This
+// asserts the strip happened on the rendered body AND that the raw files still carry them, so
+// the strip is proven to do the work rather than the corpus having lost its provenance notes.
+{
+  const MARKERS = ["FACTS I WANTED", "UNSURE OF"];
+  let leaked = 0;
+  for (const a of articles) {
+    for (const m of MARKERS) {
+      if (a.body.includes(m) || a.title.includes(m) || a.description.includes(m)) {
+        leaked++;
+        fail(`${a.slug}: editorial trailer "${m}" reached the rendered page - a reader would see it`);
+      }
+    }
+  }
+  if (!leaked) ok(`no rendered page contains an editorial trailer (${MARKERS.join(", ")})`);
+  const rawFiles = readdirSync(CONTENT_DIR).filter((f) => f.endsWith(".md"));
+  const carrying = rawFiles.filter((f) => {
+    const raw = readFileSync(join(CONTENT_DIR, f), "utf8");
+    return MARKERS.every((m) => raw.includes(m));
+  });
+  check(carrying.length === rawFiles.length,
+    `all ${rawFiles.length} source file(s) still carry their trailers - the strip is doing the work`,
+    `${carrying.length}/${rawFiles.length} source file(s) carry both trailers - if they were deleted from source, this check no longer proves the strip works`);
+}
+
 if (failed) { console.error("Content gate FAILED\n"); process.exit(1); }
 console.log("Content gate passed\n");

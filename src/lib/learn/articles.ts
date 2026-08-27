@@ -81,6 +81,34 @@ export type Article = Frontmatter & {
   path: string;
 };
 
+/**
+ * EDITORIAL TRAILERS ARE NOT PAGE CONTENT.
+ *
+ * Every delivered article ends with two lines, `FACTS I WANTED:` and `UNSURE OF:`. They are the
+ * writers' record of what they could not source from an official document — deliberately kept
+ * with the corpus so a later editor can see where the gaps are, and deliberately never shown.
+ *
+ * A reader who meets "UNSURE OF:" at the bottom of a page about their citizenship application
+ * learns that we are unsure and nothing about what to do — the worst possible reading of an
+ * honest note. So they are stripped HERE, in the loader, which is the one place every consumer
+ * goes through: the route, the hub, the sitemap, the content gate and the token gate all read
+ * the stripped body and none of them can disagree about what a page says.
+ *
+ * Stripped at import rather than edited out of the files on purpose: the corpus on disk stays
+ * byte-identical to what was handed over, so the trailers remain reviewable in git and the
+ * delivery can be re-diffed against the source at any time.
+ *
+ * Anchored to the line start so a sentence that happens to quote the phrase mid-paragraph is
+ * untouched; everything from the marker to the end of that line goes, and the check in
+ * scripts/gates/content-gate.mts asserts no rendered body contains either string.
+ */
+export function stripEditorialTrailers(raw: string): string {
+  return raw
+    .split(/\r?\n/)
+    .filter((line) => !/^\s*(FACTS I WANTED|UNSURE OF):/.test(line))
+    .join("\n");
+}
+
 function parseOne(file: string): Article {
   const slug = file.replace(/\.md$/, "");
   if (!slugPattern.test(slug)) {
@@ -105,7 +133,7 @@ function parseOne(file: string): Article {
   // renders CILS_B1C_SECTION_MAX and CILS_B1C_TOTAL_MAX inside its meta DESCRIPTION today, and a
   // body-only mechanism would have silently dropped that in the migration.
   const where = `content/learn/${file}`;
-  const body = renderTokens(content.trim(), where);
+  const body = renderTokens(stripEditorialTrailers(content).trim(), where);
   return {
     ...parsed.data,
     title: renderTokens(parsed.data.title, where),

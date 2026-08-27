@@ -297,5 +297,34 @@ function wordsOf(text: string): Set<string> {
     `${carrying.length}/${rawFiles.length} source file(s) carry both trailers - if they were deleted from source, this check no longer proves the strip works`);
 }
 
+// -- I. EVERY /guides REDIRECT LANDS ON A PAGE THAT EXISTS ------------------
+// #43 shipped ten 301s from the retired /guides URLs. Nine pointed at /learn slugs derived by
+// find-and-replace from the OLD names; the corpus uses different ones. Eight of them therefore
+// 301d straight to a 404 in production -- indexed URLs, redirected to nothing.
+//
+// A redirect table is a claim about pages that exist, so it is checked against the pages that
+// exist. Parsed out of next.config.ts rather than duplicated here: a copy would drift from the
+// real table and bless a mapping the app does not use.
+console.log("\nI. THE /guides REDIRECTS LAND SOMEWHERE REAL");
+{
+  const cfg = readFileSync(join(ROOT, "next.config.ts"), "utf8");
+  const pairs = [...cfg.matchAll(/[{] from: "([^"]+)", to: "([^"]+)" [}]/g)].map((m) => ({ from: m[1], to: m[2] }));
+  check(pairs.length > 0, `${pairs.length} redirect(s) parsed out of next.config.ts`,
+    "no redirects parsed from next.config.ts -- the shape changed and this check is now blind");
+
+  const slugs = new Set(articles.map((a) => a.slug));
+  let bad = 0;
+  for (const { from, to } of pairs) {
+    const ok2 = to === LEARN_BASE ? ROUTES.has(LEARN_BASE)
+      : to.startsWith(LEARN_BASE + "/") ? slugs.has(to.slice(LEARN_BASE.length + 1))
+      : ROUTES.has(to);
+    if (!ok2) {
+      bad++;
+      fail(`${from} redirects to ${to}, which does not exist -- an indexed URL 301ing to a 404`);
+    }
+  }
+  if (!bad) ok(`all ${pairs.length} redirect destination(s) resolve to a real page`);
+}
+
 if (failed) { console.error("Content gate FAILED\n"); process.exit(1); }
 console.log("Content gate passed\n");

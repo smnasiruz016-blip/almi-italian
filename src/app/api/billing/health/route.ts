@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { canAccessAdmin } from "@/lib/access";
 import { limitByClient, tooManyRequests } from "@/lib/rate-limit";
 import { logRefusal } from "@/lib/observability";
+import { isBillingHealthAuthorized } from "@/lib/billing/health-auth";
 
 // Read-only billing self-check. Exposes NO secret values — only key MODE
 // (live/test), boolean validity, and price IDs. Any value that is not a clean
@@ -49,10 +50,11 @@ export async function GET(req: Request) {
 
   // 2. Either door. Fail-closed: an unset ADMIN_API_SECRET authorises nobody.
   const secret = process.env.ADMIN_API_SECRET;
-  const bySecret = Boolean(secret) && req.headers.get("x-admin-secret") === secret;
-  if (!bySecret) {
+  const headerSecret = req.headers.get("x-admin-secret");
+  // The header door first, so the browser door costs no session lookup for machine callers.
+  if (!isBillingHealthAuthorized(secret, headerSecret, false)) {
     const user = await getCurrentUser();
-    if (!canAccessAdmin(user?.email)) {
+    if (!isBillingHealthAuthorized(secret, headerSecret, canAccessAdmin(user?.email))) {
       logRefusal({
         route: "/api/billing/health",
         status: 401,

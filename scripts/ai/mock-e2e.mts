@@ -110,10 +110,24 @@ for (const section of SKILLS) {
       const oc = (rubric.official ?? []).find((x) => x.label === c);
       return !oc?.notAssessed;
     }).every((c) => sys.includes(c)));
+    // An unassessable criterion is NAMED to the model but never made scoreable.
+    //
+    // This used to assert the opposite — that the label never appeared in the prompt at all.
+    // Hiding it prevented a guessed score, but it also left the model unable to know a twelfth
+    // point existed, so when it wanted to hedge it had nothing true to hedge with: a learner on
+    // full marks was told they had not fully reached B1. The criterion is now stated, together
+    // with the instruction not to score it.
+    //
+    // The original protection is kept, not dropped: the assertions below still require the
+    // prompt to rule the criterion out of scoring and out of the criteria list. Deleting this
+    // check rather than rewriting it would have removed the guard against the guess.
     if (rubric.mode === "OFFICIAL") {
       const na = (rubric.official ?? []).filter((c) => c.notAssessed);
       for (const c of na) {
-        check(`${label}: "${c.label}" is NOT shown to the model`, !sys.includes(c.label));
+        check(`${label}: "${c.label}" is named to the model`, sys.includes(c.label));
+        check(`${label}: "${c.label}" is ruled out of scoring`, /NON dargli un punteggio/.test(sys));
+        check(`${label}: "${c.label}" is ruled out of the criteria list`, /non inserirlo nell'elenco/i.test(sys));
+        check(`${label}: it is NOT in the numbered scoreable list`, !new RegExp(`\\d+\\.\\s*${c.label}`).test(sys));
       }
     }
 

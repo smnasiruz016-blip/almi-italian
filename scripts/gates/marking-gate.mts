@@ -22,6 +22,7 @@ import { isCloze } from "../../src/lib/items";
 let failed = false;
 const fail = (m: string) => { console.error(`  ✗ ${m}`); failed = true; };
 const ok = (m: string) => console.log(`  ✓ ${m}`);
+const check = (c: boolean, good: string, bad?: string) => (c ? ok(good) : fail(bad ?? good));
 
 console.log("Marking gate — free-text answers, accents, and minimal pairs\n");
 
@@ -118,6 +119,55 @@ console.log("\nE. the gate's rule matches the product's:");
     else fail(`the product did NOT accept ${JSON.stringify(plain)} for key ${JSON.stringify(key)} — the gate and the marker disagree`);
   }
   if (agreed === probe.length) ok(`the real marker accepts the folded form of all ${probe.length} probe key(s)`);
+}
+
+// -- F. THE OTHER DIRECTION, AND A CONTROL THAT MUST STILL FAIL -------------
+// D proves an ACCENTED key accepts UNACCENTED typing. The reverse matters too: a learner who
+// over-accents ("era" typed as "era" with a grave) must also be marked correct, or the fix is
+// half a fix. It holds by construction -- norm() is applied to BOTH sides of the comparison --
+// but "by construction" is the kind of claim that stops being true after someone edits one
+// side, so it is asserted against the real marker rather than reasoned about.
+//
+// The control is the other half: folding must not have turned the marker into something that
+// accepts anything. An unaccented key must still REFUSE a genuinely different word.
+console.log("\nF. the reverse direction, and a control that must still be refused:");
+{
+  const { markItem } = await import("../../src/lib/it/grade");
+  const { ATOM } = await import("../../src/lib/runner-items");
+  const mark = (key: string, typed: string) => {
+    const item = { exam: "CILS_B1C", level: "B1C", section: "ANALISI", taskType: "CLOZE", difficulty: "FOUNDATION", title: "probe", payload: { text: "___", blanks: [{ answer: key }] } } as never;
+    return Boolean(markItem("probe", item, { [ATOM.cloze(0)]: typed })[0]?.correct);
+  };
+
+  // Reverse: unaccented KEY, accented INPUT.
+  const reverse: [string, string][] = [
+    ["era", "erà"],
+    ["sia", "sià"],
+    ["faccio", "facciò"],
+  ];
+  let revOk = 0;
+  for (const [key, typed] of reverse) {
+    if (mark(key, typed)) revOk++;
+    else fail(`unaccented key ${JSON.stringify(key)} did NOT accept accented typing ${JSON.stringify(typed)} - folding is one-directional`);
+  }
+  if (revOk === reverse.length) ok(`${reverse.length} unaccented key(s) accept accented typing - the fold works both ways`);
+
+  // Control: a real, unaccented key still marks correctly...
+  const control = "guardiamo";
+  const inBank = freeText.some((k) => k.answer === control);
+  check(inBank, `the control key ${JSON.stringify(control)} is still in the bank`,
+    `${JSON.stringify(control)} is no longer a free-text key - pick another control rather than deleting this`);
+  check(mark(control, control), `the unaccented control ${JSON.stringify(control)} still marks correct`,
+    `the unaccented control ${JSON.stringify(control)} no longer marks correct - folding broke ordinary marking`);
+  check(mark(control, "  GUARDIAMO  "), "the control still tolerates case and surrounding space",
+    "case/space handling regressed alongside the fold");
+
+  // ...and still REFUSES a different word. Without this, a marker that accepted everything
+  // would satisfy every other check in this file.
+  check(!mark(control, "guardiamoci"), `the control refuses a different word ("guardiamoci")`,
+    "the marker accepted a DIFFERENT word - folding has made marking permissive, not tolerant");
+  check(!mark(control, ""), "the control refuses an empty answer",
+    "an empty answer was marked correct");
 }
 
 console.log("");

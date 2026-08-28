@@ -63,6 +63,26 @@ export default function PrivacyPage() {
           <li>Which items you attempted, the answers you gave, and the practice read-out we produced.</li>
           <li>When each attempt happened.</li>
         </ul>
+        <p>When you record a speaking answer:</p>
+        <ul className="list-disc space-y-1 pl-5">
+          <li>
+            The audio clip itself. It is uploaded to our file storage so you can play your own
+            attempt back, and it is <strong>deleted after 30 days</strong>.
+          </li>
+          <li>
+            A text transcript of what you said. Producing it means sending the clip to a
+            third-party speech-to-text service. The transcript is kept with your attempt after
+            the clip is gone, because the transcript is what the feedback refers to.
+          </li>
+          <li>
+            The written feedback we generate from that transcript. It is an estimate produced by
+            a language model, not an official mark.
+          </li>
+        </ul>
+        <p>
+          Listening clips you hear during practice are the same shared exam files for everyone.
+          They are not recordings of you and nothing about them is stored against your account.
+        </p>
         <p>If you subscribe:</p>
         <ul className="list-disc space-y-1 pl-5">
           <li>Your Stripe customer and subscription identifiers, your subscription status, and when the current period ends.</li>

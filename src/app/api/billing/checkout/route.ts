@@ -1,10 +1,18 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { logRefusal } from "@/lib/observability";
+import { limitByClient, tooManyRequests } from "@/lib/rate-limit";
 import { isBillingEnabled } from "@/lib/access";
 import { createCheckoutSession } from "@/lib/stripe";
 
 export async function POST(req: Request) {
+  // Two live Stripe calls follow (customer resolve + session create). Limit before either.
+  const limited = limitByClient("billingAction", req);
+  if (!limited.ok) {
+    logRefusal({ route: "/api/billing/checkout", status: 429, reason: "rate-limited", req });
+    return tooManyRequests(limited.retryAfterSeconds);
+  }
+
   const user = await getCurrentUser();
   if (!user) {
     logRefusal({ route: "/api/billing/checkout", status: 401, reason: "no-session", req });

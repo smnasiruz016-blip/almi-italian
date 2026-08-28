@@ -20,7 +20,21 @@ function buildItems(isAdmin: boolean): Item[] {
   const items: Item[] = [
     { key: "home", href: "/", icon: "🏠", label: "Home", match: "/" },
     { key: "practice", href: "/practice", icon: "✏️", label: "Choose a Test", match: "/practice" },
-    { key: "progress", href: "/account", icon: "📊", label: "My Progress", match: "/account" },
+    // "My Progress" (📊, href "/account") used to sit here. It was REMOVED, not repointed.
+    //
+    // It shared its href and its match with Account, which produced all three reported
+    // symptoms at once: clicking My Progress showed the Account page, the highlight went to
+    // My Progress because activeKey broke the tie by array order, and clicking Account then
+    // did nothing because the URL was already /account.
+    //
+    // There is NO progress page in this repo. /progress and /my-progress both 404 on
+    // production, and src/app/(app)/account/page.tsx contains no attempt history, no streak
+    // and no score summary — only name, plan, review CTA and log out.
+    //
+    // So there was nowhere honest to point it. Sending it to /practice or to the account page
+    // under a truthful-sounding label would have removed the symptom and kept the lie: a nav
+    // item promising something the product does not have. The item is gone until a progress
+    // page exists; putting it back is then one line, next to a route that answers for it.
     { key: "account", href: "/account", icon: "👤", label: "Account", match: "/account" },
   ];
   if (isAdmin) {
@@ -32,8 +46,12 @@ function buildItems(isAdmin: boolean): Item[] {
   return items;
 }
 
-// Longest matching prefix wins; ties keep the first item (so "My Progress"
-// owns /account and "Account" stays unhighlighted rather than both lighting).
+// Longest matching prefix wins, so /admin/reviews lights Reviews rather than Admin.
+//
+// This used to add "ties keep the first item (so My Progress owns /account and Account stays
+// unhighlighted rather than both lighting)". That tie-break was not a rule — it was the
+// duplicate destination being made to look tidy. Two items sharing a route is now a build
+// failure (scripts/gates/sidebar-gate.mts), so no tie can reach this function.
 function activeKey(pathname: string, items: Item[]): string | null {
   let best: string | null = null;
   let bestLen = -1;

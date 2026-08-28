@@ -66,8 +66,8 @@ model User {
   subscriptionCurrentPeriodEnd DateTime?
   compProUntil                 DateTime? // admin-granted comp Pro window (bypasses billing)
   compGrantedAt                DateTime? // when the comp was granted
-  compGrantedBy                String? // admin email that granted it
-  compReason                   String? // free-text note (e.g. "Beta tester batch 1")
+  compGrantedBy                String?   // admin email that granted it
+  compReason                   String?   // free-text note (e.g. "Beta tester batch 1")
   // The 3-day no-card window on the OBJECTIVE sections. NULL = never started; the clock is
   // set by the first graded submission, never by signup, and never restarted (see
   // src/lib/free-window.ts). Network standard, ported from AlmiCELPIP.
@@ -79,8 +79,8 @@ model User {
   sessions      ItalianSession[]
   aiCosts       AICostLedger[]
   aiEvaluations AiEvaluation[]
-  authSessions  AuthSession[]
-  reviews       Review[]
+  authSessions AuthSession[]
+  reviews      Review[]
 }
 
 // Server-side auth sessions (canonical AlmiWorld pattern: hashed token in a cookie).
@@ -143,16 +143,16 @@ model ItalianAttempt {
 }
 
 model ItalianSession {
-  id                String      @id @default(cuid())
+  id                String          @id @default(cuid())
   userId            String
   mode              SessionMode
   exam              ItalianExam
   level             String
   section           String? //  set for PRACTICE_SET, null for MOCK (all sections)
-  currentDifficulty Difficulty  @default(CORE)
+  currentDifficulty Difficulty      @default(CORE)
   result            Json? // aggregate practice result for a MOCK, per the relevant engine
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   attempts ItalianAttempt[]
@@ -188,18 +188,18 @@ enum AiSkill {
 /// amounts store exactly without Decimal overhead — AlmiPTE's unit, kept identical so the
 /// network's ledgers stay comparable.
 model AICostLedger {
-  id               String   @id @default(cuid())
-  userId           String?
-  feature          String //  e.g. "scritta.evaluate", "orale.transcribe"
-  model            String
-  inputTokens      Int      @default(0)
-  outputTokens     Int      @default(0)
-  cacheReadTokens  Int      @default(0)
-  cacheWriteTokens Int      @default(0)
-  costCents        Int      @default(0) // 1/100 cents
-  success          Boolean  @default(true)
-  errorMessage     String?
-  createdAt        DateTime @default(now())
+  id              String   @id @default(cuid())
+  userId          String?
+  feature         String //  e.g. "scritta.evaluate", "orale.transcribe"
+  model           String
+  inputTokens     Int      @default(0)
+  outputTokens    Int      @default(0)
+  cacheReadTokens Int      @default(0)
+  cacheWriteTokens Int     @default(0)
+  costCents       Int      @default(0) // 1/100 cents
+  success         Boolean  @default(true)
+  errorMessage    String?
+  createdAt       DateTime @default(now())
 
   user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 
@@ -213,28 +213,28 @@ model AICostLedger {
 /// foreign key: the item bank lives in src/data/items-batch1.json and ItalianItem is an empty
 /// Phase-2 seed target, so an FK here would reference nothing.
 model AiEvaluation {
-  id                   String      @id @default(cuid())
-  userId               String
-  skill                AiSkill
-  stableItemId         String
-  exam                 ItalianExam
-  level                String
-  section              String
+  id            String   @id @default(cuid())
+  userId        String
+  skill         AiSkill
+  stableItemId  String
+  exam          ItalianExam
+  level         String
+  section       String
   /// The learner's text, or the Whisper transcript for ORALE.
-  response             String
+  response      String
   /// ORALE only: the stored clip and how confident the transcription was.
-  audioUrl             String?
+  audioUrl      String?
   transcriptConfidence Float?
   /// Low-confidence transcriptions are flagged rather than silently scored.
-  needsReview          Boolean     @default(false)
+  needsReview   Boolean  @default(false)
   /// The labelled estimate. Shape is validated by Zod before it is written.
-  evaluation           Json
+  evaluation    Json
   /// Carried on the row as well as inside `evaluation` so the honesty gate can assert it
   /// without parsing JSON, and so a row can never exist without saying what it is.
-  labelKind            String //  always "ESTIMATE"
-  model                String
-  costCents            Int         @default(0)
-  createdAt            DateTime    @default(now())
+  labelKind     String //  always "ESTIMATE"
+  model         String
+  costCents     Int      @default(0)
+  createdAt     DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

@@ -135,6 +135,50 @@ console.log("\nE. THE RULE AND THE CHECK ARE BOTH WIRED");
     "the check runs after the response is already accepted");
 }
 
+// ── F. ALL FOUR GUARDS SURVIVE, IN ALL THREE PLACES ─────────────────────────
+// Found while rebasing this branch onto #49 and #50. Each guard is a branch in the `bad`
+// ternary, a retry instruction, and a `why` case — three separate places. A conflict on that
+// ternary is resolved by taking one side, and taking either side keeps the code compiling and
+// the whole chain green while a guard silently stops running.
+//
+// Sabotaging the guards proved three of them red. The fourth, "schema", had NOTHING watching
+// it: changing `? "schema"` to `? null` — so an unparseable model response is accepted instead
+// of refused — compiled cleanly and passed all 25 gates. That gap is what this section closes.
+//
+// Asserted by NAME rather than by count, so adding a fifth guard fails here until it is wired
+// into all three places, and removing one names the guard that went.
+console.log("\nF. EVERY GUARD IS WIRED IN ALL THREE PLACES");
+{
+  const GUARDS = ["schema", "word-count", "duration", "summary-contradiction"] as const;
+
+  // 1. a branch in BOTH ternaries that decide `bad` — the first pass and the post-retry recheck.
+  //
+  // Counted, not merely found. An earlier version of this check used `.test()`, and a sabotage
+  // that removed the branch from the first ternary alone still passed because the recheck kept
+  // it. A guard that runs only on the retry is half a guard, and half is exactly what a
+  // one-sided merge resolution produces.
+  const TERNARIES = 2;
+  for (const g of GUARDS) {
+    const n = (evalSrc.match(new RegExp(`\\?\\s*"${g}"`, "g")) ?? []).length;
+    check(n >= TERNARIES, `"${g}" branches in both the first pass and the recheck (${n})`,
+      `"${g}" appears in ${n} of ${TERNARIES} bad-ternaries — a guard missing from one of them runs only sometimes, which is how a one-sided merge resolution hides`);
+  }
+
+  // 2. its own retry instruction. "schema" is the first branch and reads `bad === "schema"`;
+  //    the others follow the same shape.
+  for (const g of GUARDS) {
+    check(new RegExp(`bad === "${g}"`).test(evalSrc), `"${g}" has its own retry/why branch`,
+      `nothing branches on bad === "${g}" — a response failing that guard gets the wrong retry text and the wrong reason recorded`);
+  }
+
+  // 3. the fail-closed path is still the destination
+  check(/if \(bad \|\| !parsed\)/.test(evalSrc),
+    "a response marked bad still fails closed",
+    "the fail-closed branch is gone — a guard can mark a response bad and it is shown anyway");
+  check(/status: 502/.test(evalSrc), "the learner gets a refusal, not a wrong estimate",
+    "the failure path no longer returns a refusal");
+}
+
 console.log("");
 if (failed) {
   console.error("Summary consistency gate FAILED\n");

@@ -109,7 +109,11 @@ console.log("\nC. \"MY PROGRESS\" LANDS ON A PAGE THAT SHOWS PROGRESS");
       `no page file found for ${path} — this check cannot see what it renders`);
     if (file) {
       const dest = readFileSync(file, "utf8");
-      check(/ProgressSection/.test(dest),
+      // Anchored to the JSX ELEMENT, not the bare name. A sabotage renaming the tag to
+      // <ProgressSectionX> passed an earlier `/ProgressSection/` check, because the string is a
+      // prefix of the renamed one — the same substring trap that once let a check assert
+      // `generateStaticParams` existed after the symbol was renamed `..._GONE`.
+      check(/<ProgressSection[\s/>]/.test(dest),
         `${path} renders progress sections`,
         `${path} renders no progress sections — "My Progress" would land on a page with nothing about the learner's attempts, which is the defect this PR exists to fix`);
       check(/recentAttempts\(/.test(dest),
@@ -128,7 +132,13 @@ console.log("\nD. THE SCORES ON THAT PAGE STAY LABELLED AS ESTIMATES");
   check(existsSync(comp), "the progress section component exists",
     "ProgressSection.tsx is missing — section C is asserting a component that is not there");
   if (existsSync(comp)) {
-    const c = readFileSync(comp, "utf8");
+    // Comments stripped. The header of ProgressSection.tsx explains WHY the estimate label
+    // matters, using the word itself, so an unstripped scan finds "stima" in the very file
+    // that no longer prints it — a sabotage removing the rendered wording passed this check
+    // until the strip was added.
+    const c = readFileSync(comp, "utf8")
+      .replace(/\/\*[\s\S]*?\*\//g, " ")
+      .replace(/(^|[^:])\/\/[^\r\n]*/g, "$1 ");
     check(/stima/.test(c), "the list tells the learner these are estimates",
       "the progress list prints scores with no estimate wording — a learner would read them as official results");
     check(/isEstimate/.test(c) || /ESTIMATE_LABEL/.test(c),

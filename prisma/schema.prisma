@@ -241,3 +241,24 @@ model AiEvaluation {
   @@index([userId, createdAt])
   @@index([stableItemId])
 }
+
+/// A Stripe event this product has already acted on.
+///
+/// WHY THIS EXISTS. almi-billing-router forwards one Stripe event with THREE attempts on any
+/// non-2xx (`BACKOFF_MS = [300, 900, 2700]` in src/lib/forward.ts), and its own comment states
+/// the assumption it makes of every product: "products are idempotent on the same event id".
+/// This product was not. A forwarded `customer.subscription.created` that failed to ack — a
+/// timeout, a cold start, a 500 — arrived again and sent the learner a second and third
+/// subscription confirmation email.
+///
+/// `id` IS the Stripe event id, so the primary key does the enforcing: the claim is the INSERT,
+/// not a preceding read. See the note in src/app/api/webhooks/stripe/route.ts for why the
+/// read-then-write shape used elsewhere in the network is not sufficient here.
+model ProcessedWebhook {
+  /// The Stripe event id (evt_...). Primary key: one row per event, enforced by the database.
+  id          String   @id
+  eventType   String
+  processedAt DateTime @default(now())
+
+  @@index([processedAt])
+}

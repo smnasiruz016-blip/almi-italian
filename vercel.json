@@ -1,4 +1,10 @@
 {
   "framework": "nextjs",
-  "ignoreCommand": "bash scripts/vercel-skip.sh"
+  "ignoreCommand": "bash scripts/vercel-skip.sh",
+  "crons": [
+    {
+      "path": "/api/cron/cleanup-audio",
+      "schedule": "0 3 * * *"
+    }
+  ]
 }

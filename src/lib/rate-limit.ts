@@ -95,6 +95,13 @@ export const LIMITS = {
   // limit first and a security one second: an operator checks it a handful of times, never
   // in a loop. Applied BEFORE the auth check so it also costs something to guess the secret.
   billingHealth: { limit: 6, windowMs: 60_000 },
+  // Checkout and the customer portal each make LIVE Stripe calls -- createCheckoutSession
+  // resolves or creates a customer and then creates a session, so one click is two API calls.
+  // Authentication was the only control on them: an entitled user could hold the button and
+  // spend our Stripe quota, and leave a trail of abandoned sessions behind. Generous enough
+  // that nobody legitimately reaches it -- opening checkout ten times in an hour is already
+  // a stuck user, not a shopper.
+  billingAction: { limit: 10, windowMs: 60 * 60_000 },
 } as const;
 
 /** Convenience: limit by hashed client, straight from the Request. */

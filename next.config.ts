@@ -91,17 +91,21 @@ const SECURITY_HEADERS = [
 // against a spec with curl. The only behavioural difference is that 308 preserves the request
 // method on POST and 301 permits it to become GET; these are content URLs that are only ever
 // GET, so the distinction costs nothing here.
+// Every destination below is checked against the real article set by scripts/gates/
+// content-gate.mts (section I). The nine article redirects shipped in #43 pointed at slugs
+// the corpus does not use -- eight of them 301d to a 404 in production -- so the mapping is
+// no longer allowed to be a hand-maintained guess.
 const GUIDE_REDIRECTS: { from: string; to: string }[] = [
   { from: "/guides", to: "/learn" },
-  { from: "/guides/cils-b1-cittadinanza", to: "/learn/cils-b1-cittadinanza" },
-  { from: "/guides/a2-or-b1", to: "/learn/a2-or-b1" },
-  { from: "/guides/how-italian-exams-score", to: "/learn/how-italian-exams-score" },
-  { from: "/guides/capitalizzazione", to: "/learn/capitalizzazione" },
-  { from: "/guides/2025-citizenship-reform", to: "/learn/2025-citizenship-reform" },
-  { from: "/guides/reacquire-citizenship-2027", to: "/learn/reacquire-citizenship-2027" },
+  { from: "/guides/cils-b1-cittadinanza", to: "/learn/cils-b1-cittadinanza-overview" },
+  { from: "/guides/a2-or-b1", to: "/learn/which-italian-exam-do-i-need" },
+  { from: "/guides/how-italian-exams-score", to: "/learn/how-italian-exams-are-scored" },
+  { from: "/guides/capitalizzazione", to: "/learn/cils-capitalizzazione-explained" },
+  { from: "/guides/2025-citizenship-reform", to: "/learn/the-2025-citizenship-reform" },
+  { from: "/guides/reacquire-citizenship-2027", to: "/learn/reacquiring-citizenship" },
   { from: "/guides/celi-results-timeline", to: "/learn/celi-results-timeline" },
-  { from: "/guides/cils-vs-celi", to: "/learn/cils-vs-celi" },
-  { from: "/guides/exam-dates", to: "/learn/exam-dates" },
+  { from: "/guides/cils-vs-celi", to: "/learn/cils-or-celi" },
+  { from: "/guides/exam-dates", to: "/learn/exam-dates-and-deadlines" },
 ];
 
 const nextConfig: NextConfig = {

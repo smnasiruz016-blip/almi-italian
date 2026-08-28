@@ -22,6 +22,7 @@ import { MODELS } from "@/lib/ai/models";
 import { refuseUnlessEntitled } from "@/lib/ai/entitlement";
 import { rubricFor, scoreFrom, type Rubric } from "@/lib/ai/rubric";
 import { wordCount, contradictingWordCounts, contradictingDurations } from "@/lib/text/word-count";
+import { contradictsFullMarks, allAssessableAtMax } from "@/lib/ai/summary-consistency";
 import { scrittaSystemPrompt, oraleSystemPrompt } from "@/lib/ai/prompts";
 import {
   ModelAssessmentSchema,
@@ -136,6 +137,17 @@ export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
      *  minutes is unsourced by construction. See contradictingDurations. */
     const inventedDurations = (a: ModelAssessment | null) =>
       a && input.skill === "ORALE" ? contradictingDurations(allProse(a)) : [];
+    /** The summary may not deny a level the scores just awarded in full. Ceilings come from the
+     *  rubric, never from the model, so it cannot widen its own denominator to escape this. */
+    const ceilingFor = (label: string) =>
+      (rubric.official ?? []).find((c) => c.label.toLowerCase() === label.toLowerCase())?.max ?? null;
+    const contradictsScores = (a: ModelAssessment | null) =>
+      a
+        ? contradictsFullMarks(
+            a.summary,
+            allAssessableAtMax(a.criteria.map((c) => ({ points: c.points, pointsMax: ceilingFor(c.criterion) }))),
+          )
+        : [];
 
     let bad = !parsed
       ? "schema"
@@ -143,7 +155,9 @@ export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
         ? "word-count"
         : inventedDurations(parsed).length
           ? "duration"
-          : null;
+          : contradictsScores(parsed).length
+            ? "summary-contradiction"
+            : null;
 
     if (bad) {
       // One retry, with a stricter instruction. Two failures is a real failure.
@@ -152,6 +166,8 @@ export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
           ? "IMPORTANTE: la risposta precedente non era conforme allo schema richiesto. Restituisci SOLO l'oggetto JSON previsto, senza prosa e senza blocchi di codice."
           : bad === "duration"
           ? "IMPORTANTE: nella risposta precedente hai indicato una DURATA (secondi o minuti) che non ti è stata fornita e che nessun documento ufficiale pubblica per questo compito. Non scrivere nessuna durata e non dire che la risposta è troppo breve o troppo lunga nel tempo. Valuta soltanto ciò che la trascrizione contiene."
+          : bad === "summary-contradiction"
+          ? "IMPORTANTE: nella risposta precedente hai assegnato il MASSIMO a ogni criterio valutabile e poi hai scritto nel summary che il livello non è pienamente raggiunto. Le due cose non possono essere entrambe vere. Se i punteggi restano al massimo, il summary NON deve dire che il livello non è raggiunto. Puoi però dire che questa stima non valuta la pronuncia e l'intonazione, perché è vero."
           : `IMPORTANTE: nella risposta precedente hai indicato un numero di parole che non ti è stato fornito. Il testo contiene ESATTAMENTE ${words} parole. Non scrivere nessun altro numero seguito da "parole" tranne questo o i limiti del compito.`,
       );
       parsed = response.parsed_output ?? null;
@@ -161,7 +177,9 @@ export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
           ? "word-count"
           : inventedDurations(parsed).length
             ? "duration"
-            : null;
+            : contradictsScores(parsed).length
+              ? "summary-contradiction"
+              : null;
     }
 
     const usage = {
@@ -181,6 +199,8 @@ export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
         ? `model asserted word count(s) ${inventedCounts(parsed).join(", ")} against an actual ${words}`
         : bad === "duration"
           ? `model asserted duration(s) ${inventedDurations(parsed).join(", ")}, which it was never given and which no official source publishes`
+        : bad === "summary-contradiction"
+          ? `summary denies a level scored in full: ${JSON.stringify(contradictsScores(parsed).slice(0, 2))}`
           : "schema mismatch after retry";
       await recordCost({ userId: input.userId, feature, model: MODEL, usage, success: false, errorMessage: why });
       return {

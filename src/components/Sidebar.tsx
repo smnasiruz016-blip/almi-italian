@@ -35,6 +35,15 @@ function buildItems(isAdmin: boolean): Item[] {
     // under a truthful-sounding label would have removed the symptom and kept the lie: a nav
     // item promising something the product does not have. The item is gone until a progress
     // page exists; putting it back is then one line, next to a route that answers for it.
+    // "My Progress" and "Account" share /account. That is the NETWORK PATTERN, shipped by all
+    // nineteen products (AlmiPrep, AlmiPTE, AlmiTOEFL and every language sibling), not an
+    // Italian defect. activeKey breaks the tie by array order so only one lights.
+    //
+    // It was briefly removed on the reading that a shared href meant one label was lying. What
+    // was actually wrong was the DESTINATION: /account showed a plan and a log-out button and
+    // nothing about the learner's work. The sections added alongside this fix that, so the
+    // label now answers for where it goes.
+    { key: "progress", href: "/account", icon: "📊", label: "My Progress", match: "/account" },
     { key: "account", href: "/account", icon: "👤", label: "Account", match: "/account" },
   ];
   if (isAdmin) {
@@ -48,10 +57,15 @@ function buildItems(isAdmin: boolean): Item[] {
 
 // Longest matching prefix wins, so /admin/reviews lights Reviews rather than Admin.
 //
-// This used to add "ties keep the first item (so My Progress owns /account and Account stays
-// unhighlighted rather than both lighting)". That tie-break was not a rule — it was the
-// duplicate destination being made to look tidy. Two items sharing a route is now a build
-// failure (scripts/gates/sidebar-gate.mts), so no tie can reach this function.
+// TIES KEEP THE FIRST ITEM, and that is load-bearing: "My Progress" and "Account" both match
+// /account, so this is what stops both lighting at once. My Progress is declared first and owns
+// the highlight.
+//
+// An earlier change removed the duplicate and left a comment here saying two items sharing a
+// route was now a build failure. Both were wrong: all nineteen products in the network ship
+// this exact pair, and the gate no longer fails on it (scripts/gates/sidebar-gate.mts checks
+// that the destination shows progress, not that destinations are unique). The tie reaches this
+// function on every /account render.
 function activeKey(pathname: string, items: Item[]): string | null {
   let best: string | null = null;
   let bestLen = -1;

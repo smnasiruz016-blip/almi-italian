@@ -1,27 +1,34 @@
-// Sidebar gate — every nav item goes somewhere that exists, and no two go to the same place.
+// Sidebar gate — every nav item goes somewhere that exists, and "My Progress" goes somewhere
+// that actually shows progress.
 //
 //   npm run gate:sidebar        (wired into `build`, so it blocks)
 //
 // Offline. Parses the item table out of the component and enumerates routes from the app
 // directory; no browser, no request.
 //
-// ── WHY ─────────────────────────────────────────────────────────────────────
-// "My Progress" and "Account" both carried href "/account". One defect produced three
-// symptoms that looked like three bugs:
+// ── WHAT THIS GATE USED TO ASSERT, AND WHY THAT WAS WRONG ───────────────────
+// An earlier version of this file (PR #51, superseded) failed the build when two items shared
+// a destination, on the reasoning that "My Progress" and "Account" both pointing at /account
+// meant one of them was lying about where it went.
 //
-//   · clicking My Progress showed the Account page — same href;
-//   · the sidebar highlighted MY PROGRESS while Account content was on screen — activeKey
-//     broke the tie by array order, and progress came first;
-//   · clicking Account did nothing — the URL was already /account, so there was no navigation.
+// That reasoning did not survive contact with the network. All NINETEEN products point
+// "My Progress" at /account — AlmiPrep, AlmiPTE, AlmiTOEFL, every language sibling. It is the
+// shipped pattern, not an Italian defect, and a gate that fails a pattern every sibling ships
+// is a gate that will be deleted the first time it blocks someone.
 //
-// The highlight is what makes this worth a gate rather than a one-line fix. It was not a
-// rendering accident: activeKey carried a comment explaining that ties keep the first item "so
-// My Progress owns /account". The duplication had been noticed and tidied instead of removed,
-// which is how it survived. A check makes the tidying impossible.
+// DROPPED, deliberately:
+//   · "no two items resolve to the same route" — AlmiPrep's own sidebar violates it.
+//   · "no two items share a match prefix"      — same reason; the tie-break in activeKey is
+//     the intended behaviour for this pair, not an accident.
 //
-// The routes are ENUMERATED from src/app rather than listed here. A hardcoded list is wrong in
-// both directions — it misses a route added next month and keeps one deleted last month — so
-// the allowed set is whatever actually renders today.
+// KEPT, because it is still true and still catches a real defect:
+//   · every href resolves to a route that renders (section B).
+//
+// ADDED, because it is the thing that was ACTUALLY broken:
+//   · "My Progress" must point at a page that renders progress content (section C). The
+//     complaint was never the shared URL — it was that /account showed a plan and a log-out
+//     button and nothing about the learner's work. A link is only honest if its destination
+//     answers for its label.
 
 import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
 import { join, resolve, dirname } from "node:path";
@@ -38,7 +45,7 @@ const fail = (m: string) => {
 const ok = (m: string) => console.log(`  ✓ ${m}`);
 const check = (c: boolean, good: string, bad?: string) => (c ? ok(good) : fail(bad ?? good));
 
-console.log("Sidebar gate — every item goes somewhere, and somewhere different\n");
+console.log("Sidebar gate — every item goes somewhere, and My Progress shows progress\n");
 
 /** Concrete routes, as URL paths. Route groups like (app) are transparent in the URL. */
 function enumerateRoutes(dir: string, prefix = ""): string[] {
@@ -60,8 +67,8 @@ function enumerateRoutes(dir: string, prefix = ""): string[] {
 const ROUTES = new Set(["/", ...enumerateRoutes(APP)]);
 
 const src = readFileSync(join(ROOT, "src", "components", "Sidebar.tsx"), "utf8");
-// Only the live table: everything after a `//` is ignored, so the comment recording the removed
-// My Progress item cannot be read back as a live item.
+// Comments stripped: the notes above the item table mention hrefs, and a scan that reads a
+// comment as a live item produces a false positive.
 const live = src.replace(/(^|[^:])\/\/[^\r\n]*/g, "$1 ");
 const items = [...live.matchAll(/\{\s*key:\s*"([^"]+)",\s*href:\s*"([^"]+)"[^}]*label:\s*"([^"]+)"[^}]*\}/g)]
   .map((m) => ({ key: m[1], href: m[2], label: m[3] }));
@@ -85,46 +92,58 @@ console.log("\nB. EVERY ITEM GOES SOMEWHERE THAT EXISTS");
   if (!bad) ok(`all ${items.length} item(s) point at a route that renders`);
 }
 
-console.log("\nC. NO TWO ITEMS GO TO THE SAME PLACE");
-// The defect this gate was written for. Two labels on one destination means at least one of
-// them is lying about where it goes, and the highlight cannot be right for both.
+console.log("\nC. \"MY PROGRESS\" LANDS ON A PAGE THAT SHOWS PROGRESS");
+// The real defect. Sharing /account with Account is fine — every sibling does it. What is not
+// fine is a link labelled "My Progress" whose destination says nothing about the learner's work.
 {
-  const byHref = new Map<string, string[]>();
-  for (const it of items) byHref.set(it.href, [...(byHref.get(it.href) ?? []), it.label]);
-  const dupes = [...byHref.entries()].filter(([, labels]) => labels.length > 1);
-  check(dupes.length === 0,
-    `all ${items.length} item(s) have a distinct destination`,
-    dupes.map(([href, labels]) => `${labels.map((l) => `"${l}"`).join(" and ")} both point at ${href} — one of them is mislabelled, and the active highlight can only be right for one`).join("; "));
+  const progress = items.find((it) => /progress/i.test(it.label));
+  check(Boolean(progress), "a My Progress item is present",
+    "there is no My Progress item — removing it was the superseded fix; the network ships it");
+  if (progress) {
+    const path = progress.href.replace(/\/$/, "") || "/";
+    const segs = path.split("/").filter(Boolean);
+    const pageFile = join(APP, "(app)", ...segs, "page.tsx");
+    const alt = join(APP, ...segs, "page.tsx");
+    const file = existsSync(pageFile) ? pageFile : existsSync(alt) ? alt : null;
+    check(Boolean(file), `its destination ${path} has a page file`,
+      `no page file found for ${path} — this check cannot see what it renders`);
+    if (file) {
+      const dest = readFileSync(file, "utf8");
+      // Anchored to the JSX ELEMENT, not the bare name. A sabotage renaming the tag to
+      // <ProgressSectionX> passed an earlier `/ProgressSection/` check, because the string is a
+      // prefix of the renamed one — the same substring trap that once let a check assert
+      // `generateStaticParams` existed after the symbol was renamed `..._GONE`.
+      check(/<ProgressSection[\s/>]/.test(dest),
+        `${path} renders progress sections`,
+        `${path} renders no progress sections — "My Progress" would land on a page with nothing about the learner's attempts, which is the defect this PR exists to fix`);
+      check(/recentAttempts\(/.test(dest),
+        `${path} reads the learner's attempts`,
+        `${path} renders progress sections but never reads any attempts — the sections would be empty for everyone`);
+    }
+  }
 }
 
-console.log("\nD. NO TWO ITEMS CLAIM THE SAME ACTIVE RANGE");
-// Distinct hrefs are not enough: two items can differ in href and still share a `match`, which
-// puts the highlight back on array order.
+console.log("\nD. THE SCORES ON THAT PAGE STAY LABELLED AS ESTIMATES");
+// A progress list is where the estimate label is easiest to lose: the rows are terse and the
+// disclaimer reads as clutter next to a small number. The full report cannot drop it —
+// EstimateReport always prints it — but this list is new code with its own render path.
 {
-  const matches = [...live.matchAll(/\{\s*key:\s*"([^"]+)"[^}]*match:\s*"([^"]+)"\s*\}/g)]
-    .map((m) => ({ key: m[1], match: m[2] }));
-  const byMatch = new Map<string, string[]>();
-  for (const m of matches) byMatch.set(m.match, [...(byMatch.get(m.match) ?? []), m.key]);
-  const dupes = [...byMatch.entries()].filter(([, keys]) => keys.length > 1);
-  check(matches.length >= 3, `${matches.length} match prefix(es) parsed`,
-    "match prefixes did not parse — section D is blind");
-  check(dupes.length === 0,
-    "no two items share an active-match prefix",
-    dupes.map(([m, keys]) => `${keys.join(" and ")} both match ${m} — the highlight would fall back to array order`).join("; "));
-}
-
-console.log("\nE. THE REMOVED ITEM HAS NOT COME BACK POINTING AT A LIE");
-// "My Progress" may return the day a progress page exists. It may not return pointing at
-// /account, which is what it did before.
-{
-  const progressItem = items.find((it) => /progress/i.test(it.label) || /progress/i.test(it.key));
-  if (!progressItem) {
-    ok("no progress item is present, and no progress route exists — consistent");
-  } else {
-    const path = progressItem.href.replace(/\/$/, "") || "/";
-    check(/progress/i.test(path),
-      `"${progressItem.label}" points at ${progressItem.href}, a route of its own`,
-      `"${progressItem.label}" is back but points at ${progressItem.href} — a progress link must go to a progress page, not to whatever renders`);
+  const comp = join(ROOT, "src", "components", "ProgressSection.tsx");
+  check(existsSync(comp), "the progress section component exists",
+    "ProgressSection.tsx is missing — section C is asserting a component that is not there");
+  if (existsSync(comp)) {
+    // Comments stripped. The header of ProgressSection.tsx explains WHY the estimate label
+    // matters, using the word itself, so an unstripped scan finds "stima" in the very file
+    // that no longer prints it — a sabotage removing the rendered wording passed this check
+    // until the strip was added.
+    const c = readFileSync(comp, "utf8")
+      .replace(/\/\*[\s\S]*?\*\//g, " ")
+      .replace(/(^|[^:])\/\/[^\r\n]*/g, "$1 ");
+    check(/stima/.test(c), "the list tells the learner these are estimates",
+      "the progress list prints scores with no estimate wording — a learner would read them as official results");
+    check(/isEstimate/.test(c) || /ESTIMATE_LABEL/.test(c),
+      "the estimate label travels with the row, not just the page",
+      "nothing ties the label to the individual rows");
   }
 }
 

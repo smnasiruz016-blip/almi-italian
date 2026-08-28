@@ -42,3 +42,34 @@ export function contradictingWordCounts(text: string, actual: number, allowed: n
   }
   return out;
 }
+
+/**
+ * Durations the model asserted that it was never given.
+ *
+ * The sibling of contradictingWordCounts, and it exists for the same reason one step further on.
+ * That guard stopped the model inventing "circa 110 parole" when the app already knew the count.
+ * This one stops a duration reaching the learner at all, because for the spoken task there is no
+ * count to check against: no official document publishes an expected length in seconds, so ANY
+ * number the model states is unsourced by construction.
+ *
+ * `allowed` therefore defaults to empty and is expected to stay empty. It is a parameter rather
+ * than a hardcoded rule so that the day an awarding body does publish a duration, the value can
+ * be passed in from the same place it is sourced — not written into this function.
+ *
+ * Matches "90 secondi", "circa 90 secondi", "~90 secondi", "2 minuti", "90 seconds". Ordinary
+ * clock references a learner might legitimately be told, like "alle 15:10", carry no unit word
+ * and are not matched.
+ */
+export function contradictingDurations(text: string, allowed: number[] = []): string[] {
+  const ok = new Set<number>(allowed);
+  const out: string[] = [];
+  const re = /(\d{1,4})\s*(secondi|secondo|minuti|minuto|seconds|minutes)\b/gi;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    const n = Number(m[1]);
+    const unit = m[2].toLowerCase();
+    const seconds = unit.startsWith("min") ? n * 60 : n;
+    if (!ok.has(seconds) && !ok.has(n)) out.push(`${n} ${unit}`);
+  }
+  return out;
+}

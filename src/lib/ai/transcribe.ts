@@ -17,8 +17,25 @@ import { TRANSCRIPTION_MODELS } from "@/lib/ai/models";
 const ENDPOINT = "https://api.openai.com/v1/audio/transcriptions";
 const MODEL = TRANSCRIPTION_MODELS.WHISPER;
 
-/** Below this, the attempt is flagged for review rather than trusted. */
-export const CONFIDENCE_REVIEW_THRESHOLD = 0.7;
+/**
+ * Below this, the attempt is flagged for review rather than trusted.
+ *
+ * ── WHY IT IS 0.38 AND NOT 0.7 ──────────────────────────────────────────────
+ * deriveConfidence returns exp(avg_logprob), and avg_logprob is Whisper's MEAN LOG-PROBABILITY
+ * PER TOKEN. It is not a calibrated 0–1 confidence, and reading it as one is what made this
+ * warning fire on good audio.
+ *
+ * The old 0.7 implies avg_logprob >= ln(0.7) = -0.357. Whisper's own reference decoder treats a
+ * segment as low quality at avg_logprob < -1.0, i.e. exp = 0.368. The threshold was therefore
+ * about three times stricter than the model's own bar for "this went badly", and ordinary
+ * Italian speech — short clips, non-English, a learner speaking carefully — sits comfortably
+ * between the two. A real attempt that scored 11/11 was told its transcription was unreliable.
+ *
+ * 0.38 aligns us with the model's own heuristic (just above exp(-1.0)) so the flag means what it
+ * says. This is a warning a learner must be able to believe: one that fires on good audio is
+ * noise, and noise teaches people to ignore it before the day it is true.
+ */
+export const CONFIDENCE_REVIEW_THRESHOLD = 0.38;
 
 function getOpenAIKey(): string {
   const key = process.env.OPENAI_API_KEY;
@@ -34,7 +51,7 @@ export function isTranscriptionConfigured(): boolean {
 }
 
 export type TranscriptionResult =
-  | { ok: true; text: string; confidence: number; model: string; durationSeconds: number }
+  | { ok: true; text: string; confidence: number; confidenceKnown: boolean; model: string; durationSeconds: number }
   | { ok: false; error: string };
 
 type WhisperSegment = { avg_logprob?: number; no_speech_prob?: number };
@@ -94,6 +111,10 @@ export async function transcribeAudio(input: {
       ok: true,
       text,
       confidence: deriveConfidence(data.segments),
+      // Whether we MEASURED the confidence or fell back to a neutral value. Without this the
+      // "unknown" case is only safe by arithmetic accident -- 0.5 happens to sit above the
+      // threshold today, and would silently start flagging every attempt if the threshold moved.
+      confidenceKnown: Boolean(data.segments && data.segments.length > 0),
       model: MODEL,
       durationSeconds: Math.max(0, Math.round(data.duration ?? 0)),
     };

@@ -21,7 +21,7 @@ import { getAnthropicClient, recordCost } from "@/lib/ai/anthropic-client";
 import { MODELS } from "@/lib/ai/models";
 import { refuseUnlessEntitled } from "@/lib/ai/entitlement";
 import { rubricFor, scoreFrom, type Rubric } from "@/lib/ai/rubric";
-import { wordCount, contradictingWordCounts } from "@/lib/text/word-count";
+import { wordCount, contradictingWordCounts, contradictingDurations } from "@/lib/text/word-count";
 import { scrittaSystemPrompt, oraleSystemPrompt } from "@/lib/ai/prompts";
 import {
   ModelAssessmentSchema,
@@ -131,17 +131,37 @@ export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
     const inventedCounts = (a: ModelAssessment | null) =>
       a ? contradictingWordCounts(allProse(a), words, [input.minWords ?? 0, input.maxWords ?? 0].filter(Boolean)) : [];
 
-    let bad = !parsed ? "schema" : inventedCounts(parsed).length ? "word-count" : null;
+    /** Durations are checked against an EMPTY allow-list: the model is given no duration, and no
+     *  official document publishes one for the spoken task, so any number it states in seconds or
+     *  minutes is unsourced by construction. See contradictingDurations. */
+    const inventedDurations = (a: ModelAssessment | null) =>
+      a && input.skill === "ORALE" ? contradictingDurations(allProse(a)) : [];
+
+    let bad = !parsed
+      ? "schema"
+      : inventedCounts(parsed).length
+        ? "word-count"
+        : inventedDurations(parsed).length
+          ? "duration"
+          : null;
 
     if (bad) {
       // One retry, with a stricter instruction. Two failures is a real failure.
       response = await callOnce(
         bad === "schema"
           ? "IMPORTANTE: la risposta precedente non era conforme allo schema richiesto. Restituisci SOLO l'oggetto JSON previsto, senza prosa e senza blocchi di codice."
+          : bad === "duration"
+          ? "IMPORTANTE: nella risposta precedente hai indicato una DURATA (secondi o minuti) che non ti è stata fornita e che nessun documento ufficiale pubblica per questo compito. Non scrivere nessuna durata e non dire che la risposta è troppo breve o troppo lunga nel tempo. Valuta soltanto ciò che la trascrizione contiene."
           : `IMPORTANTE: nella risposta precedente hai indicato un numero di parole che non ti è stato fornito. Il testo contiene ESATTAMENTE ${words} parole. Non scrivere nessun altro numero seguito da "parole" tranne questo o i limiti del compito.`,
       );
       parsed = response.parsed_output ?? null;
-      bad = !parsed ? "schema" : inventedCounts(parsed).length ? "word-count" : null;
+      bad = !parsed
+        ? "schema"
+        : inventedCounts(parsed).length
+          ? "word-count"
+          : inventedDurations(parsed).length
+            ? "duration"
+            : null;
     }
 
     const usage = {
@@ -159,7 +179,9 @@ export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
       // editing the model's prose to remove it would be us fabricating instead.
       const why = bad === "word-count"
         ? `model asserted word count(s) ${inventedCounts(parsed).join(", ")} against an actual ${words}`
-        : "schema mismatch after retry";
+        : bad === "duration"
+          ? `model asserted duration(s) ${inventedDurations(parsed).join(", ")}, which it was never given and which no official source publishes`
+          : "schema mismatch after retry";
       await recordCost({ userId: input.userId, feature, model: MODEL, usage, success: false, errorMessage: why });
       return {
         ok: false,

@@ -28,20 +28,46 @@ REGOLE (valgono sempre):
   Tu produci una STIMA didattica. L'unico risultato ufficiale lo rilascia l'ente d'esame.
 - Se la risposta è vuota, fuori tema o troppo breve per essere valutata, dillo chiaramente nel
   summary, assegna i punteggi più bassi che i criteri meritano e NON inventare un punteggio alto.
+- IL SUMMARY NON PUÒ CONTRADDIRE I TUOI PUNTEGGI. Se assegni il MASSIMO a ogni criterio
+  valutabile, il summary NON deve dire che il livello non è raggiunto o non è "pienamente"
+  raggiunto: sarebbe falso rispetto ai punteggi che hai appena dato. Puoi comunque suggerire su
+  cosa lavorare, e puoi dire che questa stima non valuta un criterio ufficiale che non ti è stato
+  affidato — quello è vero e resta permesso.
 `.trim();
 
 /** OFFICIAL mode: the exam's own criteria, each with its published ceiling.
  *
- *  A criterion this product cannot assess is NOT SHOWN TO THE MODEL AT ALL. Telling it "score
- *  pronunciation, but don't" invites exactly the guess we are trying to prevent; leaving the
- *  criterion out means there is nothing to guess. Our own code appends it to the report
- *  afterwards, with a fixed explanation, so the learner still sees the full official rubric and
- *  sees plainly which point was not awarded and why. */
+ *  Only assessable criteria are NUMBERED and scoreable. That part is unchanged, and for the
+ *  original reason: telling the model "score pronunciation, but don't" invites exactly the guess
+ *  we are trying to prevent.
+ *
+ *  What changed is that hiding the criterion ENTIRELY had a cost we only saw in production. A
+ *  learner scored full marks on every assessable criterion and was still told, in the summary,
+ *  that they had not fully reached B1. The hedge was ungrounded because the model had nothing to
+ *  ground it in: it could not know a twelfth point existed, so it could not say the one true
+ *  thing — that this estimate cannot speak to pronunciation.
+ *
+ *  So the criterion is now NAMED but kept out of the scoreable list, in its own block that says
+ *  plainly it is not assessed and must not be scored. Existence without a slot to fill. */
 function officialCriteriaBlock(rubric: Rubric): string {
   return (rubric.official ?? [])
     .filter((c) => !c.notAssessed)
     .map((c, i) => `${i + 1}. ${c.label} — fino a punti ${c.max} (${c.gloss})`)
     .join("\n");
+}
+
+/** The criteria the exam publishes that this product cannot judge from a transcript. */
+function notAssessedBlock(rubric: Rubric): string {
+  const hidden = (rubric.official ?? []).filter((c) => c.notAssessed);
+  if (!hidden.length) return "";
+  return [
+    "",
+    "CRITERIO UFFICIALE NON VALUTABILE QUI (non assegnarlo, non inserirlo fra i criteri):",
+    ...hidden.map((c) => `- ${c.label} (${c.max} punto/i nella griglia ufficiale) — ${c.notAssessedReason ?? "non valutabile da una trascrizione."}`),
+    "Questo criterio ESISTE nella griglia ufficiale ma NON fa parte della tua valutazione.",
+    "NON dargli un punteggio e NON inserirlo nell'elenco `criteria`.",
+    "Puoi però dire, ed è vero, che questa stima non può pronunciarsi su di esso.",
+  ].join("\n");
 }
 
 function authoredCriteriaBlock(rubric: Rubric): string {
@@ -111,7 +137,7 @@ Il testo del candidato contiene ESATTAMENTE ${opts.words} parole (conteggio dell
 Se commenti la lunghezza, usa esclusivamente questo numero.
 
 CRITERI DI QUESTO COMPITO (valutane uno per uno, in quest'ordine):
-${criteriaBlock(rubric)}
+${criteriaBlock(rubric)}${notAssessedBlock(rubric)}
 
 ${scoringBlock(rubric)}
 
@@ -162,7 +188,7 @@ risposta è troppo breve o troppo lunga in secondi o minuti, e non indicare ness
 La trascrizione contiene ESATTAMENTE ${opts.words} parole (conteggio dell'applicazione).
 
 CRITERI DI QUESTO COMPITO (valutane uno per uno, in quest'ordine):
-${criteriaBlock(rubric)}
+${criteriaBlock(rubric)}${notAssessedBlock(rubric)}
 
 ${scoringBlock(rubric)}
 

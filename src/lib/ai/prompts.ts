@@ -120,8 +120,31 @@ ${BANDS}
 }
 
 /** Produzione orale. The input is a TRANSCRIPT, and that limit is stated to the model. */
+/**
+ * THE DURATION IS DELIBERATELY NOT PASSED TO THE MODEL.
+ *
+ * `speakSeconds` on an item (90, 120, 150 or 180 across the 60 ORALE items) is OUR practice
+ * target. It carries no sourcing metadata, no comment and no research-brief citation, unlike the
+ * scoring constants which all sit in CILS_B1C_SOURCING with a `verified` flag and a source. The
+ * fact-gated /learn corpus states only what the syllabus gives — a spoken test of about ten
+ * minutes, a presentation of roughly a minute, a dialogue of two to three — and asserts no
+ * per-task second count anywhere.
+ *
+ * This function used to inject "Il compito prevede circa ${speakSeconds} secondi di parlato."
+ * A real learner then received, as the ONLY criticism on an otherwise full-marks attempt, that
+ * they were "ben al di sotto dei circa 90 secondi di parlato atteso". The model did not invent
+ * that number — we handed it over, labelled as what the task expects, and it marked the learner
+ * against it. An unsourced number is worse inside the prompt than outside it: from there it
+ * reaches the learner in the voice of an examiner.
+ *
+ * The target still drives our own UI (the "Speak ~90s" hint and the recorder cap), which is
+ * honest: that is us suggesting how long to practise, not the exam stating a requirement.
+ *
+ * `opts.speakSeconds` is kept in the signature on purpose. Deleting it would let a future edit
+ * quietly reintroduce the injection with no sign anything had been decided here.
+ */
 export function oraleSystemPrompt(rubric: Rubric, opts: { words: number; speakSeconds?: number }): string {
-  const timing = opts.speakSeconds ? `Il compito prevede circa ${opts.speakSeconds} secondi di parlato.` : "";
+  void opts.speakSeconds;
   return `
 Sei un esaminatore esperto di italiano L2 che valuta la PRODUZIONE ORALE per ${rubric.trackLabel}.
 ${rubric.mode === "OFFICIAL" ? `Usi i criteri ufficiali pubblicati dall'ente d'esame (${rubric.sourceUrl}).` : ""}
@@ -133,7 +156,9 @@ Ricevi una TRASCRIZIONE AUTOMATICA di ciò che il candidato ha detto, non l'audi
 Puoi quindi valutare contenuto, organizzazione, lessico e grammatica.
 NON puoi valutare pronuncia, accento, intonazione o fluenza reale: la trascrizione non li
 conserva. Non fingere di aver sentito la voce.
-${timing}
+NON conosci la DURATA della registrazione e non ti viene fornita. Non scrivere mai che la
+risposta è troppo breve o troppo lunga in secondi o minuti, e non indicare nessuna durata
+"attesa": nessun documento ufficiale ne pubblica una per questo compito.
 La trascrizione contiene ESATTAMENTE ${opts.words} parole (conteggio dell'applicazione).
 
 CRITERI DI QUESTO COMPITO (valutane uno per uno, in quest'ordine):

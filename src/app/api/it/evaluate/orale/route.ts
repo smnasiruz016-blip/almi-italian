@@ -138,7 +138,9 @@ export async function POST(req: Request): Promise<NextResponse> {
 
   // A shaky transcript is FLAGGED, not silently scored: confident feedback about words the
   // learner never said is worse than no feedback.
-  const needsReview = transcription.confidence < CONFIDENCE_REVIEW_THRESHOLD;
+  // Flag ONLY on a measurement we actually have. An unmeasured transcript is not a bad one, and
+  // warning on it would put the notice on every attempt -- which is how a warning stops being read.
+  const needsReview = transcription.confidenceKnown && transcription.confidence < CONFIDENCE_REVIEW_THRESHOLD;
 
   const stored = LabelledEstimateSchema.parse(result.estimate);
   await prisma.aiEvaluation.create({

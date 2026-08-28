@@ -3,12 +3,20 @@ import { requireUser } from "@/lib/auth";
 import { hasPaidAccess, isBillingEnabled, isOwner } from "@/lib/access";
 import { BillingButtons } from "@/components/BillingButtons";
 import { ReviewCard } from "@/components/reviews/ReviewCard";
+import { ProgressSection } from "@/components/ProgressSection";
+import { recentAttempts } from "@/lib/progress";
 
 export const metadata: Metadata = { title: "Your account", robots: { index: false } };
 
 export default async function Page({ searchParams }: { searchParams: Promise<{ welcome?: string }> }) {
   const sp = await searchParams;
   const user = await requireUser();
+  // Both lists are scoped to this user in the query. Fetched together rather than in sequence:
+  // the page already waits on the session, and two short indexed reads should not stack.
+  const [scritta, orale] = await Promise.all([
+    recentAttempts(user.id, "SCRITTA"),
+    recentAttempts(user.id, "ORALE"),
+  ]);
   const paid = hasPaidAccess(user);
   const billingOn = isBillingEnabled();
 
@@ -48,6 +56,21 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ w
         )}
       </div>
 
+      <ProgressSection
+        title="Produzione scritta"
+        practiseHref="/practice"
+        practiseLabel="Esercitati nello scritto"
+        emptyLine="Nessuna prova valutata per ora. Quando completi una Produzione scritta, la stima compare qui."
+        attempts={scritta}
+      />
+
+      <ProgressSection
+        title="Produzione orale"
+        practiseHref="/practice"
+        practiseLabel="Esercitati nel parlato"
+        emptyLine="Nessuna prova valutata per ora. Quando registri una Produzione orale, la stima compare qui."
+        attempts={orale}
+      />
       <div className="mt-8">
         <ReviewCard />
       </div>

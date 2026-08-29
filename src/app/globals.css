@@ -9,6 +9,14 @@
   --color-almi-teal: #0d9488; /*         checkmarks / "clear" */
   --color-almi-ink: #14110d; /*          H1/H2 near-black */
   --color-almi-text: #3b352d; /*         body text */
+  /* Body/prose LINK colour. Its own token, not an alias of --color-almi-text, so a link can
+     be restyled without touching body copy and so scripts/gates/link-contrast-gate.mts has an
+     unambiguous token to measure. It was --color-almi-coral: #ff7a6b on #fffaf3 is 2.45:1,
+     against the 4.5:1 AA needs. Every one of these links is 12-16px at normal weight, so the
+     large-text exemption (3:1) does not apply. #3b352d on #fffaf3 is 11.67:1.
+     The underline stays, but it is for IDENTIFICATION: WCAG requires the text colour itself to
+     meet contrast, and an underline does not substitute for that. */
+  --color-almi-link: #3b352d;
   --color-almi-text-muted: #6b6156;
   --color-almi-bg: #fffaf3; /*           soft cream page bg */
   --color-almi-bg-peach: #ffe9d8; /*     peach accent panels */
@@ -55,7 +63,7 @@ html {
   color: var(--color-almi-ink);
 }
 .learn-prose strong { color: var(--color-almi-ink); font-weight: 600; }
-.learn-prose a { color: var(--color-almi-coral); text-decoration: underline; }
+.learn-prose a { color: var(--color-almi-link); text-decoration: underline; }
 .learn-prose ul, .learn-prose ol { padding-left: 1.5rem; }
 .learn-prose ul { list-style: disc; }
 .learn-prose ol { list-style: decimal; }

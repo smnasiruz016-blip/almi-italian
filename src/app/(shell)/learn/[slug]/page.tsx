@@ -88,7 +88,7 @@ export default async function LearnArticle({ params }: { params: Promise<{ slug:
             {related.map((r, i) => (
               <li key={i}>
                 {r.resolved ? (
-                  <Link href={r.resolved.path} className="text-almi-coral hover:underline">
+                  <Link href={r.resolved.path} className="text-almi-link underline">
                     {r.label}
                   </Link>
                 ) : (
@@ -112,7 +112,7 @@ export default async function LearnArticle({ params }: { params: Promise<{ slug:
                   href={s.url}
                   rel="nofollow noopener"
                   target="_blank"
-                  className="text-almi-coral hover:underline"
+                  className="text-almi-link underline"
                 >
                   {s.label}
                 </a>

@@ -36,9 +36,9 @@ export default async function Page({ params }: { params: Promise<{ origin: strin
       <h2 className="mt-8 text-xl font-semibold text-almi-ink">The B1 language step</h2>
       <p className="mt-2 text-almi-text">
         Citizenship by naturalisation asks for Italian at <strong className="text-almi-ink">B1</strong>. The dedicated exam is
-        {" "}<Link href={`/exam/cils-b1-cittadinanza/from/${o.slug}`} className="text-almi-coral hover:underline">CILS B1 Cittadinanza</Link>{" "}
+        {" "}<Link href={`/exam/cils-b1-cittadinanza/from/${o.slug}`} className="text-almi-link underline">CILS B1 Cittadinanza</Link>{" "}
         — 4 sections, and you must clear a floor in every one <em>and</em> the overall total; it is all-or-nothing with no banking.
-        {" "}<Link href={`/exam/celi-2-b1/from/${o.slug}`} className="text-almi-coral hover:underline">CELI 2 (B1)</Link> is another accepted certificate, on its own separate scale.
+        {" "}<Link href={`/exam/celi-2-b1/from/${o.slug}`} className="text-almi-link underline">CELI 2 (B1)</Link> is another accepted certificate, on its own separate scale.
       </p>
 
       <p className="mt-3 text-sm text-almi-text-muted">{CITIZENSHIP_ACCEPTED_HEDGE}</p>
@@ -54,7 +54,7 @@ export default async function Page({ params }: { params: Promise<{ origin: strin
       {tier1 && (
         <p className="mt-4 text-almi-text">
           {o.name} is also one of the seven countries named in the November 2025 descent decree — see the{" "}
-          <Link href={`/italian-descent/${o.slug}`} className="text-almi-coral hover:underline">{o.name} descent corridor</Link> for the out-of-quota work route.
+          <Link href={`/italian-descent/${o.slug}`} className="text-almi-link underline">{o.name} descent corridor</Link> for the out-of-quota work route.
         </p>
       )}
 

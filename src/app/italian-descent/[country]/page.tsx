@@ -46,8 +46,8 @@ export default async function Page({ params }: { params: Promise<{ country: stri
       <p className="mt-2 text-almi-text">{DESCENT_LANGUAGE_LINE}</p>
       <p className="mt-3 text-almi-text">
         If your route is one of those, the two exams are{" "}
-        <Link href={`/exam/cils-b1-cittadinanza/from/${t.slug}`} className="text-almi-coral hover:underline">CILS B1 Cittadinanza</Link> and{" "}
-        <Link href={`/exam/celi-2-b1/from/${t.slug}`} className="text-almi-coral hover:underline">CELI 2 (B1)</Link>, each on its own scale.
+        <Link href={`/exam/cils-b1-cittadinanza/from/${t.slug}`} className="text-almi-link underline">CILS B1 Cittadinanza</Link> and{" "}
+        <Link href={`/exam/celi-2-b1/from/${t.slug}`} className="text-almi-link underline">CELI 2 (B1)</Link>, each on its own scale.
         This page is about the decree's out-of-quota <strong className="text-almi-ink">work entry</strong>, which is a separate matter from both.
       </p>
       <p className="mt-3 text-sm text-almi-text-muted">{CONFIRM_WITH_OFFICE}</p>
@@ -57,7 +57,7 @@ export default async function Page({ params }: { params: Promise<{ country: stri
         {t.celiCenters > 0
           ? <>The official CVCL list records <strong className="text-almi-ink">{t.celiCenters}</strong> CELI centre{t.celiCenters === 1 ? "" : "s"} in {t.country}.</>
           : <><strong className="text-almi-ink">No CELI centre</strong> is recorded in {t.country}{t.slug === "canada" ? " — candidates typically sit at the nearest United States centre (and CILS once its list is confirmed)" : ""}.</>}{" "}
-        <Link href={`/exams-in/${t.slug}`} className="text-almi-coral hover:underline">Exam centres in {t.country} →</Link>
+        <Link href={`/exams-in/${t.slug}`} className="text-almi-link underline">Exam centres in {t.country} →</Link>
       </p>
 
       <p className="mt-6 rounded-xl bg-almi-bg-peach/40 p-4 text-sm text-almi-text">{TEST_NOT_CITIZENSHIP}</p>

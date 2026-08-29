@@ -74,7 +74,7 @@ export default async function Page() {
             exist until the content drop lands — so this internal link points at the HUB, which
             always resolves, rather than shipping a known 404 into the picker. The content-drop
             PR should restore the deep link once the article is there. */}
-        <Link href="/learn" className="text-almi-coral hover:underline">read the honest guide</Link>.
+        <Link href="/learn" className="text-almi-link underline">read the honest guide</Link>.
       </p>
     </main>
   );

@@ -12,6 +12,7 @@
 // scripts/gates/honesty-gate.mts fails the build if this file stops importing it.
 
 import { ESTIMATE_DISCLAIMER, type LabelledEstimate } from "@/lib/ai/schemas";
+import { SECTION_STATUS_LABEL_EN } from "@/lib/scoring/section-status";
 
 const BAND_LABEL: Record<string, { text: string; cls: string }> = {
   RAGGIUNTO: { text: "Raggiunto", cls: "bg-almi-teal/15 text-almi-teal" },
@@ -35,7 +36,7 @@ export function EstimateReport({ estimate, transcript, needsReview }: {
       {s ? (
         <div className="mt-4 flex flex-wrap items-baseline gap-3">
           <span className="text-3xl font-bold text-almi-ink">{s.value}<span className="text-lg text-almi-text-muted">/{s.max}</span></span>
-          <span className="text-sm text-almi-text-muted">soglia {s.floor}/{s.officialMax ?? s.max}</span>
+          <span className="text-sm text-almi-text-muted">threshold {s.floor}/{s.officialMax ?? s.max}</span>
           {s.officialMax && s.officialMax !== s.max && (
             <span className="text-xs text-almi-text-muted">(l&apos;esame assegna {s.officialMax} punti; qui se ne valutano {s.max})</span>
           )}
@@ -44,12 +45,24 @@ export function EstimateReport({ estimate, transcript, needsReview }: {
               : s.status === "BORDERLINE" ? "bg-almi-bg-peach text-almi-ink"
                 : "bg-almi-coral/15 text-almi-coral-deep"
           }`}>
-            {s.status === "CLEAR" ? "Sopra la soglia (stima)" : s.status === "BORDERLINE" ? "Al limite (stima)" : "Sotto la soglia (stima)"}
+            {/* The band comes from SECTION_STATUS_LABEL_EN so this screen and the practice
+                runner cannot drift into two vocabularies. English, deliberately: the owner has
+                to be able to read what the product tells a learner about passing an exam.
+                "(estimate)" is kept because this whole component is an estimate. */}
+            {SECTION_STATUS_LABEL_EN[s.status]} (estimate)
           </span>
         </div>
       ) : (
         <p className="mt-4 text-sm text-almi-text">
           Nessun punteggio di sezione per questo esame — è valutato per parte.
+        </p>
+      )}
+
+      {s?.status === "BORDERLINE" && (
+        <p className="mt-3 text-xs text-almi-text-muted">
+          The ≥{s.floor}/{s.officialMax ?? s.max} threshold is the exam board&apos;s; the
+          &quot;{SECTION_STATUS_LABEL_EN.BORDERLINE}&quot; band just below it is our own practice cue,
+          not part of any published mark scheme.
         </p>
       )}
 

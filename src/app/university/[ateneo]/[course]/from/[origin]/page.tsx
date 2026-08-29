@@ -35,7 +35,7 @@ export default async function Page({ params }: { params: Promise<{ ateneo: strin
       <h1 className="mt-3 text-3xl font-bold text-almi-ink">{c.nomeCorso}</h1>
       <p className="mt-1 text-sm text-almi-text-muted">{c.classeDes} · {a.name} · {a.region}</p>
       <p className="mt-2 text-sm">
-        <Link href={`/university/${a.slug}/from/${o.slug}`} className="text-almi-coral hover:underline">← all of {a.nameShort}&apos;s courses</Link>
+        <Link href={`/university/${a.slug}/from/${o.slug}`} className="text-almi-link underline">← all of {a.nameShort}&apos;s courses</Link>
       </p>
 
       <dl className="mt-6 grid grid-cols-2 gap-3 rounded-2xl border border-almi-line bg-almi-paper p-5 text-sm sm:grid-cols-3">

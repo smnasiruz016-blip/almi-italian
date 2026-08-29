@@ -18,6 +18,7 @@
 //             them, and let the model give a whole-section number as before.
 
 import { TRACKS } from "@/lib/practice";
+import { sectionStatus, sectionStatusWithUnassessed } from "@/lib/scoring/section-status";
 import { CELI_CONFIG, type CeliLevel } from "@/lib/scoring";
 import type { EstimatedScore, ModelAssessment } from "@/lib/ai/schemas";
 import {
@@ -121,8 +122,8 @@ export function scoreFrom(rubric: Rubric, assessment: ModelAssessment): Estimate
     // than BELOW. Rounding that to "BELOW" would tell a learner they failed a section they may
     // well have passed.
     const gap = aMax < oMax ? oMax - aMax : 0;
-    const status: EstimatedScore["status"] =
-      value >= floor ? "CLEAR" : value + gap >= floor ? "BORDERLINE" : "BELOW";
+    // Banding, including the unassessed-criterion softening, is decided in one place.
+    const status: EstimatedScore["status"] = sectionStatusWithUnassessed(value, gap, floor, oMax);
 
     return {
       value,
@@ -142,9 +143,7 @@ export function scoreFrom(rubric: Rubric, assessment: ModelAssessment): Estimate
   if (raw === null) return null;
   const { max } = rubric.scale;
   const value = Math.max(0, Math.min(max, Math.round(raw)));
-  // Borderline width follows the engine: /20 sections use 2, /12 sections use 1.
-  const borderlineWidth = max >= 20 ? 2 : 1;
-  const status: EstimatedScore["status"] =
-    value >= floor ? "CLEAR" : value >= floor - borderlineWidth ? "BORDERLINE" : "BELOW";
+  // Band width is no longer decided here: ./scoring/section-status owns it for every scale.
+  const status: EstimatedScore["status"] = sectionStatus(value, floor, max);
   return { value, max, floor, status };
 }

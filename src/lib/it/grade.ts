@@ -21,6 +21,7 @@
 import { getItemByStableId } from "@/lib/item-id";
 import { isMcq, isMatching, isOrdering, isCloze, type BankItem } from "@/lib/items";
 import { TRACKS, type SectionMeta } from "@/lib/practice";
+import { sectionStatus } from "@/lib/scoring/section-status";
 import { ATOM, type AtomMark, type SubmitResult } from "@/lib/runner-items";
 
 /**
@@ -213,8 +214,9 @@ export function gradeAttempt(body: AttemptBody): GradeOutcome {
   const scaled = scale
     ? (() => {
         const score = Math.round((correct / total) * scale.max);
-        const status: "CLEAR" | "BORDERLINE" | "BELOW" =
-          score >= scale.floor ? "CLEAR" : score === scale.floor - 1 ? "BORDERLINE" : "BELOW";
+        // Was `score === scale.floor - 1`: a one-wide band on EVERY scale, so on a /20
+        // section 9 was BELOW here while the engine called it BORDERLINE. One function now.
+        const status = sectionStatus(score, scale.floor, scale.max);
         return { score, max: scale.max, floor: scale.floor, status };
       })()
     : null;

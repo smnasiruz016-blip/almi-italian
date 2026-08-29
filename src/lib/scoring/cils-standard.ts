@@ -6,6 +6,7 @@
 export type CilsStandardLevel = "A1" | "A2" | "UNO" | "DUE" | "TRE" | "QUATTRO";
 export type CilsStandardSection = "ASCOLTO" | "LETTURA" | "ANALISI" | "SCRITTA" | "ORALE";
 import type { SectionStatus } from "./status";
+import { sectionStatus } from "./section-status";
 
 export const CILS_STANDARD_SECTION_MAX = 20;
 export const CILS_STANDARD_FLOOR = 11; // ≥11/20 required in EVERY section
@@ -57,10 +58,10 @@ export interface CilsStandardResult {
   honestyLine: string;
 }
 
+// Banding lives in ./section-status - the only implementation. This engine supplies its own
+// floor and scale; it does not re-decide the rule.
 function statusFor(score: number): SectionStatus {
-  if (score >= CILS_STANDARD_FLOOR) return "CLEAR";
-  if (score >= CILS_STANDARD_FLOOR - 2) return "BORDERLINE"; // 9–10: within striking distance of the floor
-  return "BELOW";
+  return sectionStatus(score, CILS_STANDARD_FLOOR, CILS_STANDARD_SECTION_MAX);
 }
 
 export function scoreCilsStandard(level: CilsStandardLevel, inputs: CilsStandardInput[]): CilsStandardResult {

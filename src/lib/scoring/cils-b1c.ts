@@ -5,6 +5,7 @@
 
 export type CilsB1cSection = "ASCOLTO" | "LETTURA" | "SCRITTA" | "ORALE";
 import type { SectionStatus } from "./status";
+import { sectionStatus } from "./section-status";
 
 // ── WHAT IS OFFICIAL HERE, AND WHAT IS OURS ─────────────────────────────────
 // Mirrors celi.ts's `verified` convention: a number is either read from the awarding body's own
@@ -97,10 +98,10 @@ export interface CilsB1cResult {
   honestyLine: string;
 }
 
+// Banding lives in ./section-status - the only implementation. This engine supplies its own
+// floor and scale; it does not re-decide the rule.
 function statusFor(score: number): SectionStatus {
-  if (score >= CILS_B1C_FLOOR) return "CLEAR";
-  if (score >= CILS_B1C_FLOOR - 1) return "BORDERLINE"; // 6: one point from the floor
-  return "BELOW";
+  return sectionStatus(score, CILS_B1C_FLOOR, CILS_B1C_SECTION_MAX);
 }
 
 export function scoreCilsB1c(inputs: CilsB1cInput[]): CilsB1cResult {

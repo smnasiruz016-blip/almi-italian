@@ -12,6 +12,7 @@ const TABS = [
   { href: "/admin/accounts", label: "Accounts" },
   { href: "/admin/comp-accounts", label: "Comp Accounts" },
   { href: "/admin/reviews", label: "Reviews" },
+  { href: "/admin/costs", label: "AI Usage" },
 ] as const;
 
 export function AdminNav() {

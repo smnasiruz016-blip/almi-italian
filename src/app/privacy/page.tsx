@@ -87,7 +87,8 @@ export default function PrivacyPage() {
         <ul className="list-disc space-y-1 pl-5">
           <li>Your Stripe customer and subscription identifiers, your subscription status, and when the current period ends.</li>
           <li>
-            <strong className="text-almi-ink">Not your card.</strong> Payment happens on Stripe&rsquo;s own
+            <strong className="text-almi-ink">Not your card.</strong>{" "}
+            Payment happens on Stripe&rsquo;s own
             checkout page. Card numbers never reach our servers, so we could not store them if we wanted to.
           </li>
         </ul>

@@ -2,8 +2,8 @@
 
 // Sub-nav shown at the top of every /admin page (via (app)/admin/layout.tsx)
 // so the founder can move between admin sections. Add a tab here when a new
-// admin page lands. (Ported from AlmiPrep; the trio ships the two schema-
-// compatible tabs — Accounts + Comp Accounts.)
+// admin page lands. (Ported from AlmiPrep; it shipped with the two schema-
+// compatible tabs, Accounts + Comp Accounts; Reviews and AI Usage followed.)
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";

@@ -1,5 +1,5 @@
 // Shared shell for all /admin pages: an ADMIN_EMAILS gate + the AdminNav
-// sub-nav so every admin page (Accounts, Comp Accounts) can reach the others.
+// sub-nav so every admin page (Accounts, Comp Accounts, Reviews, AI Usage) can reach the others.
 // Individual pages keep their own gate too — this is the common chrome, not
 // the only guard.
 

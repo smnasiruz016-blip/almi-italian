@@ -1,13 +1,18 @@
 // /admin — the door.
 //
-// Every real admin page (Accounts, Comp Accounts, Reviews) is gated correctly and reachable
-// only if you already know its URL. Typing the bare /admin — the obvious thing to try, and what
-// works on the sibling products — returned a 404, which reads as "this product has no admin
-// panel" even though the whole panel is present one segment deeper. That is what Nasir hit.
+// Every real admin page (Accounts, Comp Accounts, Reviews, AI Usage) is gated correctly and
+// reachable only if you already know its URL. Typing the bare /admin — the obvious thing to try,
+// and what works on the sibling products — returned a 404, which reads as "this product has no
+// admin panel" even though the whole panel is present one segment deeper. That is what Nasir hit.
 //
 // AlmiPrep's /admin redirects to /admin/costs, because it has one obvious landing page. This
-// product has three surfaces of equal standing and no cost ledger view yet, so an index that
-// LISTS them is more useful than picking a winner.
+// product has four surfaces of equal standing, so an index that LISTS them is more useful than
+// picking a winner.
+//
+// ⚠️ THIS LIST IS A SECOND COPY OF AdminNav's TABS. It went stale once already: #62 added
+// /admin/costs and its nav tab, and this index kept saying "three surfaces … and no cost ledger
+// view yet" while the page it denied existed and was linked from the nav directly above it.
+// When a tab is added, both files change.
 //
 // The gate: (app)/admin/layout.tsx already runs requireUser() + canAccessAdmin() and wraps this
 // route, so a non-admin never reaches this component. The explicit check below is kept anyway,
@@ -43,6 +48,11 @@ const SURFACES = [
     href: "/admin/reviews",
     title: "Reviews",
     blurb: "Read, approve or reject the testimonials learners have submitted.",
+  },
+  {
+    href: "/admin/costs",
+    title: "AI Usage",
+    blurb: "What the model calls cost — by feature, by model, by learner, straight from AICostLedger.",
   },
 ] as const;
 

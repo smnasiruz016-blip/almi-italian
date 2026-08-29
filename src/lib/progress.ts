@@ -23,6 +23,7 @@
 // per row and the caller has to render it; the type does not let a score arrive without one.
 
 import { prisma } from "@/lib/prisma";
+import { sectionStatusWithUnassessed } from "@/lib/scoring/section-status";
 import type { AiSkill } from "@prisma/client";
 
 export type ProgressAttempt = {
@@ -41,7 +42,7 @@ export type ProgressAttempt = {
 
 /** The stored `evaluation` JSON, narrowed to the only part this list reads. */
 type StoredEvaluation = {
-  score?: { value?: number; max?: number; status?: string } | null;
+  score?: { value?: number; max?: number; floor?: number; officialMax?: number; status?: string } | null;
 };
 
 const STATUSES = ["CLEAR", "BORDERLINE", "BELOW"] as const;
@@ -50,9 +51,31 @@ function readScore(evaluation: unknown): ProgressAttempt["score"] {
   const ev = evaluation as StoredEvaluation | null;
   const s = ev?.score;
   if (!s || typeof s.value !== "number" || typeof s.max !== "number") return null;
-  // A status we do not recognise is dropped rather than rendered. An old row written before a
-  // status was added, or by a future version, must not print an unknown word next to a score.
-  const status = STATUSES.find((x) => x === s.status);
+
+  // DERIVED, NOT REPLAYED.
+  // This list used to print the status word stored on the row. That made the product do two
+  // different things at once: #60 derives a criterion band at render, while this replayed a
+  // section verdict frozen at the moment it was written. A row saved before #56 collapsed the
+  // five banding implementations can carry a word the engine no longer produces for that
+  // score — on a /20 section, 9 was BELOW on the submit path and BORDERLINE in the engine.
+  // A learner opening their history would read the older answer.
+  //
+  // The scale travels with the row, so nothing has to be guessed: `floor` and, where the
+  // module could not assess every criterion, `officialMax`. The gap between the official max
+  // and what we could assess is exactly what rubric.ts hands to sectionStatusWithUnassessed,
+  // so history is re-banded by the same call that produced it in the first place — Orale
+  // keeps the softening its unassessable pronunciation point earns, Scritta has no gap and
+  // gets none.
+  const scaleMax = typeof s.officialMax === "number" ? s.officialMax : s.max;
+  const gap = Math.max(0, scaleMax - s.max);
+  const derived =
+    typeof s.floor === "number" ? sectionStatusWithUnassessed(s.value, gap, s.floor, scaleMax) : null;
+
+  // A row with no floor predates the field and cannot be re-banded; its stored word is all
+  // there is. A status we do not recognise is dropped rather than rendered — an old row
+  // written before a status existed, or by a future version, must not print an unknown word
+  // next to a score.
+  const status = derived ?? STATUSES.find((x) => x === s.status);
   if (!status) return null;
   return { value: s.value, max: s.max, status };
 }

@@ -662,10 +662,10 @@ export const CILS_DUE_ITEMS: RawItem[] = [
     title: "Testo argomentativo: ambiente e sviluppo", topicTag: "ambiente", guidanceNote: est(),
     prompt: "Scrivi un testo argomentativo complesso.",
     payload: {
-      task: "«Proteggere l'ambiente e far crescere l'economia sono obiettivi in conflitto.» Sei d'accordo? Scrivi un testo argomentativo in cui sostieni la tua posizione con dati, esempi e possibili obiezioni.",
+      task: "«Proteggere l'ambiente e far crescere l'economia sono obiettivi in conflitto.» Sei d'accordo? Scrivi un testo argomentativo in cui sostieni la tua posizione con argomenti, esempi concreti e possibili obiezioni.",
       context: "Testo argomentativo avanzato.",
       minWords: 180, maxWords: 250,
-      criteria: ["Tesi chiara e ben sostenuta", "Argomenti articolati e controargomenti", "Ricchezza lessicale e connettivi complessi", "Correttezza avanzata"],
+      criteria: ["Tesi chiara e ben sostenuta", "Argomenti articolati e controargomenti", "Ricchezza lessicale e connettivi complessi", "Correttezza avanzata", "Non sostiene la tesi con dati o percentuali inventate"],
     },
   },
 

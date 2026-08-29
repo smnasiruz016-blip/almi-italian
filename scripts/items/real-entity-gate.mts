@@ -166,6 +166,12 @@ if (violations.length > 0) {
   process.exit(1);
 }
 
+// State the ceiling, not a guarantee we cannot make. This gate matches a CLOSED LIST: it
+// cannot see a brand nobody added. Planting "Esselunga" turns it red; planting "Microsoft"
+// does not, because Microsoft is not on the list. "No real company named" read as a promise
+// about real companies; it is a promise about these names only.
 console.log(
-  `✅ real-entity-gate: ${scanned} strings across ${items.length} items — no real company named.`,
+  `✅ real-entity-gate: ${scanned} strings across ${items.length} items — none matched the ` +
+    `${BRANDS.length} known brands, ${AMBIGUOUS.length} ambiguous names or ${CORPORATE_MARKERS.length} ` +
+    `corporate markers this gate knows. A brand absent from those lists is NOT detected.`,
 );

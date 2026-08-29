@@ -21,11 +21,11 @@
 // for a mailbox nobody asked them to confirm — a bug AlmiPTE's gate caught, recorded, and
 // this port keeps caught (see the comp case in scripts/gates/ai-cost-gate.mts).
 //
-// ── WHY THE 3-DAY WINDOW DOES NOT APPLY ─────────────────────────────────────
-// SCRITTA and ORALE are `kind: "estimate"` — the two skills the free window deliberately
-// excludes, because they are the ones that cost money to serve (PR #34). So this asks
-// hasPaidAccess and never isFreeWindowActive: an in-window free user is not entitled here,
-// and that is the whole point of where the line was drawn.
+// ── THERE IS ONLY hasPaidAccess NOW ─────────────────────────────────────────
+// SCRITTA and ORALE were always paid-only: they cost money to serve, so the 3-day no-card
+// window deliberately excluded them (PR #34). That window was withdrawn network-wide on
+// 2026-08-31, which changes nothing HERE — this file already asked hasPaidAccess and nothing
+// else. It is the rest of the product that moved to meet it.
 
 import type { User } from "@prisma/client";
 import { prisma } from "@/lib/prisma";

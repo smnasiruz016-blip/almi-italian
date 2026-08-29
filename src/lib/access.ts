@@ -36,23 +36,29 @@ function hasActiveSubscription(
   return false;
 }
 
-// NETWORK STANDARD, confirmed by the founder 2026-07-08 and REVISED 2026-08-28.
+// NETWORK STANDARD — founder 2026-07-08, revised 2026-08-28, REVISED AGAIN 2026-08-31.
 //
-// Two independent doors, and they are not the same thing:
-//   • The 7-day TRIAL is STRIPE's own `trialing` status — card saved at checkout, not
-//     charged. It is not an app-side timer.
-//   • The 3-day WINDOW is an app-side, no-card grant on the OBJECTIVE sections only.
+// ── ONE DOOR ────────────────────────────────────────────────────────────────
+// Founder decision, network-wide, 2026-08-31: "3 din wali free khirrki band ker dain, sirf
+// 7 day free trial after entring card will stay, throughout the network."
 //
-// The window is NOT the app-side trial this file used to describe and that was removed:
-// that one opened EVERY skill for 7 days from createdAt. This one covers only sections the
-// engine marks itself, and its clock starts on FIRST USE, not at signup. The line is COST,
-// not generosity — Produzione scritta/orale are `kind: "estimate"`, have no answer key, and
-// are the skills a paid model would have to read.
+// So there is exactly one way into practice now:
+//   $12/month · 7-day free trial · CARD COLLECTED AT CHECKOUT · cancel anytime.
+// The trial is STRIPE's own `trialing` status, not an app-side timer, and the card is taken
+// up front — see src/lib/stripe.ts, where payment_method_collection is now pinned explicitly
+// rather than left to a Stripe default that could move under us.
 //
-// Free vs paid is a SKILL split taken from the ENGINE (src/lib/practice.ts), never from a
-// hardcoded list of section codes here:
-//   • kind "objective" (ASCOLTO / LETTURA / ANALISI) → paid, or inside the 3-day window.
-//   • kind "estimate"  (SCRITTA / ORALE)             → always requires hasPaidAccess().
+// /learn is untouched and stays completely open. It is the free layer of this product; the
+// paywall below is about PRACTICE, and nothing here reads or gates a /learn route.
+//
+// WHAT WAS REMOVED: the 3-day, no-card window on the objective sections (ASCOLTO / LETTURA /
+// ANALISI). It was added 2026-08-28 and withdrawn three days later. Counted before removing
+// it, on production, 2026-08-31: 2 users, BOTH with freeAccessStartedAt = NULL. Nobody had
+// ever opened a window, so nobody was cut off mid-window by this change.
+//
+// `User.freeAccessStartedAt` IS NOT DROPPED. A destructive migration buys nothing here: the
+// column is now never written and never read for entitlement, and dropping it would be an
+// irreversible change to production data in exchange for tidiness.
 //
 // Paid access requires an active subscription AND a verified email (Goethe parity) — owner
 // and comp bypass both. `needsEmailVerification` distinguishes "paid but unverified" so the UI
@@ -78,77 +84,71 @@ export function needsEmailVerification(user: PaidUser | null): boolean {
   return hasActiveSubscription(user) && user.emailVerifiedAt === null;
 }
 
-// ── THE 3-DAY NO-CARD WINDOW ────────────────────────────────────────────────
-// Ported from AlmiCELPIP (src/lib/billing/plans.ts + free-window.ts), field for field.
-// Founder decision 2026-08-28. See src/lib/free-window.ts for the START path.
+// ── THE THREE PREDICATES STAY SEPARATE. THIS IS THE PART TO READ. ───────────
 //
-// ── THE SCAR TISSUE, PORTED DELIBERATELY ────────────────────────────────────
-// AlmiPrep shipped this on 2026-08-18 and deadlocked production. Its start gate asked
-// "may this user practise right now" instead of "may this user BEGIN", so it refused
-// before the clock existed; the clock is set BY starting, so it was never set; so it
-// refused forever. All 27 users sat at freeAccessStartedAt = NULL and could do nothing,
-// and every gate was green throughout because each asserted what a state was CALLED.
+// THE SCAR TISSUE, KEPT DELIBERATELY — and it is NOT about the window.
+// AlmiPrep shipped the window on 2026-08-18 and deadlocked production. Its start gate asked
+// "may this user practise right now" instead of "may this user BEGIN", so it refused before
+// the clock existed; the clock is set BY starting, so it was never set; so it refused
+// forever. All 27 users sat at freeAccessStartedAt = NULL and could do nothing, and every
+// gate was green throughout because each asserted what a state was CALLED rather than what a
+// user in that state could DO.
 //
-// "NEVER STARTED" IS NOT A REFUSAL. Three predicates, three different questions, and
-// they must never be interchanged:
+// Withdrawing the window on 2026-08-31 removes ONE of the reasons these three were kept
+// apart. It does not remove the lesson, and it does not turn them into the same question. Two
+// of them now have an EMPTY population, and an empty population is exactly the condition
+// under which someone "tidies" a predicate away and re-derives it wrong under deadline. So
+// they stay, and each one says here why it stays:
 //
-//   hasPaidAccess()           owner ‖ comp ‖ (active subscription AND verified email)
-//   hasObjectiveAccess()      deliberately a SUPERSET of hasPaidAccess — a paying user
-//                             must never be refused something a free user is given
-//   isPracticeStartBlocked()  refuses ONLY a non-paying user whose window has EXPIRED
+//   hasPaidAccess()           owner ‖ comp ‖ (active subscription AND verified email).
+//                             THE door — every section, objective and estimate alike.
+//                             The only one with callers today.
+//
+//   hasObjectiveAccess()      "may an objective section be MARKED right now?" Still a
+//                             SUPERSET of hasPaidAccess BY CONSTRUCTION — a paying user must
+//                             never be refused something a free user is given. The superset
+//                             is EMPTY today, so it returns exactly what hasPaidAccess
+//                             returns. KEPT because the day any objective-only grant comes
+//                             back, this is the one line that widens; a caller collapsed onto
+//                             hasPaidAccess would have to be hunted down again instead.
+//
+//   isPracticeStartBlocked()  "is this a non-payer whose free grant has RUN OUT?" — a third,
+//                             different question. Its population is now empty by
+//                             construction: no grant is issued, so none can expire. It
+//                             returns false for everyone and HAS NO CALLERS.
+//                             ⚠️ NEVER substitute hasPaidAccess() or hasObjectiveAccess()
+//                             for it. "Never started" is not a refusal, and neither is
+//                             "never granted" — collapsing those two ideas into one is
+//                             precisely what produced 18 August.
+//
+// `FreeUserShape` is gone with the window machinery it typed; the three predicates now take
+// PaidUser, which is the only shape entitlement still reads.
 
-const DAY_MS = 24 * 60 * 60 * 1000;
-
-export const FREE_ACCESS_DAYS = 3;
-
-export type FreeUserShape = Pick<User, "freeAccessStartedAt">;
-
-/** A window that has been started and has not yet run out. A never-started user is NOT
- *  "active" — and is not refused either; see isPracticeStartBlocked. */
-export function isFreeWindowActive(user: FreeUserShape): boolean {
-  if (!user.freeAccessStartedAt) return false;
-  return user.freeAccessStartedAt.getTime() + FREE_ACCESS_DAYS * DAY_MS > Date.now();
-}
-
-/** True ONLY when a window was started and has since run out. */
-export function isFreeWindowExpired(user: FreeUserShape): boolean {
-  return Boolean(user.freeAccessStartedAt) && !isFreeWindowActive(user);
-}
-
-/** Whole days left, or null when no window is running. Null covers BOTH "not started" and
- *  "expired" — a caller that must tell those apart reads getAccessLevel(). */
-export function getFreeAccessDaysRemaining(user: FreeUserShape): number | null {
-  if (!isFreeWindowActive(user)) return null;
-  const endsAt = user.freeAccessStartedAt!.getTime() + FREE_ACCESS_DAYS * DAY_MS;
-  return Math.ceil((endsAt - Date.now()) / DAY_MS);
-}
-
-/** May they have an objective section MARKED right now? A superset of hasPaidAccess by
- *  construction. The free path requires a verified email — the same bar as the paid path
- *  (Goethe/CELPIP parity), which is why the UI shows a verify banner, not a paywall. */
-export function hasObjectiveAccess(user: (PaidUser & FreeUserShape) | null): boolean {
+/** May an objective section be MARKED right now? A superset of hasPaidAccess by construction
+ *  — see the note above. The superset is empty while there is no free grant, so today this is
+ *  hasPaidAccess. Do not inline it; the separation is the point. */
+export function hasObjectiveAccess(user: PaidUser | null): boolean {
   if (!user) return false;
   if (hasPaidAccess(user)) return true;
-  return isFreeWindowActive(user) && user.emailVerifiedAt !== null;
+  // No free grant exists to widen this. When one returns, it widens HERE and nowhere else.
+  return false;
 }
 
-/** THE START GATE. Refuses exactly one population: a non-paying user whose window has
- *  EXPIRED. A user with no window yet falls through — starting is how they get one.
- *  Do NOT substitute hasObjectiveAccess() here; that substitution IS the 18 Aug regression. */
-export function isPracticeStartBlocked(user: (PaidUser & FreeUserShape) | null): boolean {
+/** Is this a non-payer whose free grant has run out? Nobody, because no grant is issued.
+ *  Kept, uncalled, on purpose — see the note above. Do NOT wire this in as a paywall. */
+export function isPracticeStartBlocked(user: PaidUser | null): boolean {
   if (!user) return false; //           signed out is a sign-in prompt, not a refusal
   if (hasPaidAccess(user)) return false;
-  return isFreeWindowExpired(user);
+  // There is no window to have expired. A non-payer is refused by the paywall in
+  // src/lib/section-access.ts, which is a different sentence with a different answer.
+  return false;
 }
 
-export type AccessLevel = "NONE" | "FREE_3DAY" | "FREE_EXPIRED" | "PAID";
+/** Two states now, not four: FREE_3DAY and FREE_EXPIRED described a grant that no longer
+ *  exists, and a UI branch for a state nobody can be in is a branch nobody can test. */
+export type AccessLevel = "NONE" | "PAID";
 
-/** Four states, and the one the UI keeps confusing with NONE: a user whose window ran out
- *  is not the same as one who never started, and the upgrade copy differs. */
-export function getAccessLevel(user: (PaidUser & FreeUserShape) | null): AccessLevel {
+export function getAccessLevel(user: PaidUser | null): AccessLevel {
   if (!user) return "NONE";
-  if (hasPaidAccess(user)) return "PAID";
-  if (isFreeWindowActive(user)) return "FREE_3DAY";
-  if (isFreeWindowExpired(user)) return "FREE_EXPIRED";
-  return "NONE";
+  return hasPaidAccess(user) ? "PAID" : "NONE";
 }

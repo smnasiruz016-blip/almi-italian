@@ -59,8 +59,14 @@ export function ProgressSection({
       ) : (
         <>
           <p className="mt-1 text-xs text-almi-text-muted">
-            Ogni punteggio qui è una <strong className="font-semibold">stima</strong> del nostro
-            strumento, non un risultato ufficiale dell&apos;ente d&apos;esame.
+            {/* {" "} is not decoration. Next compiles JSX with SWC, and SWC trims the leading
+                space of a multi-line text node that follows an element — esbuild and Babel keep
+                it. Production served <strong>stima</strong>del nostro, verified in the DOM, while
+                the source read ". </strong> del". This is the sentence that tells a learner the
+                score is not an official result, so the space is made explicit rather than left to
+                a transform. scripts/gates/jsx-space-gate.mts scans the BUILD OUTPUT for the shape. */}
+            Ogni punteggio qui è una <strong className="font-semibold">stima</strong>{" "}
+            del nostro strumento, non un risultato ufficiale dell&apos;ente d&apos;esame.
           </p>
           <ul className="mt-4 space-y-2 text-sm">
             {attempts.map((a) => (

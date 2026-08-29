@@ -7,7 +7,8 @@ export function GlobalFooter() {
     <footer className="mt-16 bg-[#14110D] text-white/75">
       <div className="mx-auto max-w-7xl px-6 py-12 text-sm">
         <p className="max-w-3xl text-white/75">
-          <strong className="text-white">AlmiItalian</strong> — honest CILS &amp; CELI practice.
+          <strong className="text-white">AlmiItalian</strong>{" "}
+          — honest CILS &amp; CELI practice.
           Total-based level estimates, no section floors, Writing labelled an estimate — never a fabricated
           official score. 25% of AlmiWorld&apos;s income supports the{" "}
           <a href="https://shamoolfoundation.com/" className="text-[#D4A24C] hover:underline">

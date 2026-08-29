@@ -37,7 +37,7 @@ export function GlobalHeader() {
         <div className="flex min-w-0 flex-1 flex-col items-end gap-2">
           <nav aria-label="Family navigation" className="flex flex-wrap justify-end gap-x-4 gap-y-1">
             {FAMILY_NAV.map((item) => (
-              <a key={item.href} href={item.href} className="rounded-sm text-base font-semibold text-almi-ink hover:text-almi-coral">
+              <a key={item.href} href={item.href} className="rounded-sm text-base font-semibold text-almi-ink hover:text-almi-coral-text">
                 {item.label}
               </a>
             ))}

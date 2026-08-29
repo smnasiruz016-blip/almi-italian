@@ -12,12 +12,11 @@
 // scripts/gates/honesty-gate.mts fails the build if this file stops importing it.
 
 import { ESTIMATE_DISCLAIMER, type LabelledEstimate } from "@/lib/ai/schemas";
-import { SECTION_STATUS_LABEL_EN } from "@/lib/scoring/section-status";
 
 const BAND_LABEL: Record<string, { text: string; cls: string }> = {
-  RAGGIUNTO: { text: "Raggiunto", cls: "bg-almi-teal/15 text-almi-teal" },
+  RAGGIUNTO: { text: "Raggiunto", cls: "bg-almi-teal/15 text-almi-teal-text" },
   PARZIALE: { text: "Parziale", cls: "bg-almi-bg-peach text-almi-ink" },
-  NON_RAGGIUNTO: { text: "Non raggiunto", cls: "bg-almi-coral/15 text-almi-coral-deep" },
+  NON_RAGGIUNTO: { text: "Non raggiunto", cls: "bg-almi-coral/15 text-almi-coral-text" },
 };
 
 export function EstimateReport({ estimate, transcript, needsReview }: {
@@ -36,33 +35,21 @@ export function EstimateReport({ estimate, transcript, needsReview }: {
       {s ? (
         <div className="mt-4 flex flex-wrap items-baseline gap-3">
           <span className="text-3xl font-bold text-almi-ink">{s.value}<span className="text-lg text-almi-text-muted">/{s.max}</span></span>
-          <span className="text-sm text-almi-text-muted">threshold {s.floor}/{s.officialMax ?? s.max}</span>
+          <span className="text-sm text-almi-text-muted">soglia {s.floor}/{s.officialMax ?? s.max}</span>
           {s.officialMax && s.officialMax !== s.max && (
             <span className="text-xs text-almi-text-muted">(l&apos;esame assegna {s.officialMax} punti; qui se ne valutano {s.max})</span>
           )}
           <span className={`rounded-full px-3 py-1 text-xs font-semibold ${
-            s.status === "CLEAR" ? "bg-almi-teal/15 text-almi-teal"
+            s.status === "CLEAR" ? "bg-almi-teal/15 text-almi-teal-text"
               : s.status === "BORDERLINE" ? "bg-almi-bg-peach text-almi-ink"
-                : "bg-almi-coral/15 text-almi-coral-deep"
+                : "bg-almi-coral/15 text-almi-coral-text"
           }`}>
-            {/* The band comes from SECTION_STATUS_LABEL_EN so this screen and the practice
-                runner cannot drift into two vocabularies. English, deliberately: the owner has
-                to be able to read what the product tells a learner about passing an exam.
-                "(estimate)" is kept because this whole component is an estimate. */}
-            {SECTION_STATUS_LABEL_EN[s.status]} (estimate)
+            {s.status === "CLEAR" ? "Sopra la soglia (stima)" : s.status === "BORDERLINE" ? "Al limite (stima)" : "Sotto la soglia (stima)"}
           </span>
         </div>
       ) : (
         <p className="mt-4 text-sm text-almi-text">
           Nessun punteggio di sezione per questo esame — è valutato per parte.
-        </p>
-      )}
-
-      {s?.status === "BORDERLINE" && (
-        <p className="mt-3 text-xs text-almi-text-muted">
-          The ≥{s.floor}/{s.officialMax ?? s.max} threshold is the exam board&apos;s; the
-          &quot;{SECTION_STATUS_LABEL_EN.BORDERLINE}&quot; band just below it is our own practice cue,
-          not part of any published mark scheme.
         </p>
       )}
 
@@ -75,7 +62,7 @@ export function EstimateReport({ estimate, transcript, needsReview }: {
       <p className="mt-3 text-xs text-almi-text-muted">{estimate.engineNote}</p>
 
       {needsReview && (
-        <p className="mt-3 rounded-lg border border-almi-coral/40 bg-almi-coral/10 px-3 py-2 text-xs text-almi-coral-deep">
+        <p className="mt-3 rounded-lg border border-almi-coral/40 bg-almi-coral/10 px-3 py-2 text-xs text-almi-coral-text">
           La trascrizione automatica di questa registrazione è poco affidabile, quindi questa stima
           potrebbe riferirsi a parole diverse da quelle che hai detto. Riprova in un ambiente più silenzioso.
         </p>
@@ -128,7 +115,7 @@ export function EstimateReport({ estimate, transcript, needsReview }: {
 
       {transcript && (
         <details className="mt-5 rounded-lg bg-almi-bg-peach/30 p-3 text-sm">
-          <summary className="cursor-pointer text-xs font-medium text-almi-coral">Mostra la trascrizione</summary>
+          <summary className="cursor-pointer text-xs font-medium text-almi-coral-text">Mostra la trascrizione</summary>
           <p className="mt-2 whitespace-pre-line text-almi-text">{transcript}</p>
         </details>
       )}

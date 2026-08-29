@@ -28,7 +28,7 @@ const STATUS_COPY: Record<NonNullable<ProgressAttempt["score"]>["status"], strin
 
 const STATUS_CLASS: Record<NonNullable<ProgressAttempt["score"]>["status"], string> = {
   CLEAR: "text-almi-ink",
-  BORDERLINE: "text-almi-coral-deep",
+  BORDERLINE: "text-almi-coral-text",
   BELOW: "text-almi-text-muted",
 };
 

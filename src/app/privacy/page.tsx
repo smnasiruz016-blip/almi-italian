@@ -43,7 +43,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 export default function PrivacyPage() {
   return (
     <main className="mx-auto max-w-2xl px-6 py-12">
-      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">AlmiItalian</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral-text">AlmiItalian</p>
       <h1 className="mt-3 text-3xl font-bold text-almi-ink">Privacy</h1>
       <p className="mt-4 text-almi-text">
         What we store, why we store it, and how to have it removed. If anything here does not

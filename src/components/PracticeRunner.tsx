@@ -324,7 +324,7 @@ export function PracticeRunner({
         <button
           onClick={submit}
           disabled={busy}
-          className="rounded-full bg-almi-coral px-7 py-3 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark disabled:opacity-60"
+          className="rounded-full bg-almi-coral px-7 py-3 font-semibold text-almi-ink hover:bg-almi-coral-deep disabled:opacity-60"
         >
           {busy ? "Marking…" : "Check my answers"}
         </button>
@@ -340,7 +340,7 @@ export function PracticeRunner({
           {result.scaled ? (
             <p className="mt-2 text-almi-text">
               On this section&apos;s scale that is about <strong className="text-almi-ink">{result.scaled.score}/{result.scaled.max}</strong> — you need ≥{result.scaled.floor}/{result.scaled.max} to clear it.{" "}
-              <span className={result.scaled.status === "CLEAR" ? "font-semibold text-almi-teal" : result.scaled.status === "BORDERLINE" ? "font-semibold text-almi-coral" : "font-semibold text-almi-coral-deep"}>{SECTION_STATUS_LABEL_EN[result.scaled.status]}</span>
+              <span className={result.scaled.status === "CLEAR" ? "font-semibold text-almi-teal-text" : result.scaled.status === "BORDERLINE" ? "font-semibold text-almi-coral-text" : "font-semibold text-almi-coral-text"}>{SECTION_STATUS_LABEL_EN[result.scaled.status]}</span>
             </p>
           ) : (
             celiContext && <p className="mt-2 text-almi-text">{celiContext}</p>

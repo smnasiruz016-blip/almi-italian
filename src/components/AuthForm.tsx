@@ -73,11 +73,11 @@ export function AuthForm({ mode }: { mode: "signup" | "login" }) {
           <p className="mt-2 text-xs text-almi-text-muted">At least 8 characters.</p>
         )}
       </div>
-      {error && <p className="text-sm text-almi-coral-deep">{error}</p>}
+      {error && <p className="text-sm text-almi-coral-text">{error}</p>}
       <button
         type="submit"
         disabled={busy}
-        className="inline-flex w-full min-h-[44px] items-center justify-center rounded-full bg-almi-coral px-6 py-3 text-sm font-semibold text-almi-ink transition-colors hover:bg-almi-coral-deep hover:text-almi-on-dark focus:outline-none focus:ring-4 focus:ring-almi-coral/30 disabled:opacity-60"
+        className="inline-flex w-full min-h-[44px] items-center justify-center rounded-full bg-almi-coral px-6 py-3 text-sm font-semibold text-almi-ink transition-colors hover:bg-almi-coral-deep focus:outline-none focus:ring-4 focus:ring-almi-coral/30 disabled:opacity-60"
       >
         {busy ? "Please wait…" : mode === "signup" ? "Create account" : "Log in"}
       </button>

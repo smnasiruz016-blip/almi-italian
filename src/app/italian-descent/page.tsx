@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
-      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">Italian descent</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral-text">Italian descent</p>
       <h1 className="mt-3 text-3xl font-bold text-almi-ink">The 2025 descent decree — 7 countries, honestly</h1>
       <p className="mt-6 text-almi-text">
         A November 2025 interministerial decree names the countries of historic Italian emigration whose citizens, if they are descendants of Italian
@@ -23,7 +23,7 @@ export default function Page() {
       <h2 className="mt-8 text-xl font-semibold text-almi-ink">The 7 decree countries</h2>
       <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
         {DESCENT.tier1.map((t) => (
-          <li key={t.slug}><Link href={`/italian-descent/${t.slug}`} className="text-sm font-medium text-almi-ink hover:text-almi-coral">{t.country}</Link></li>
+          <li key={t.slug}><Link href={`/italian-descent/${t.slug}`} className="text-sm font-medium text-almi-ink hover:text-almi-coral-text">{t.country}</Link></li>
         ))}
       </ul>
 
@@ -31,7 +31,7 @@ export default function Page() {
       <p className="mt-2 text-sm text-almi-text">The CGIE proposed these four; they are <strong className="text-almi-ink">not</strong> in the decree. They carry no descent work-entry right today — an extension is possible only by a future decree.</p>
       <ul className="mt-3 flex flex-wrap gap-3">
         {DESCENT.proposed.map((t) => (
-          <li key={t.slug}><Link href={`/italian-descent/proposed/${t.slug}`} className="text-sm text-almi-text hover:text-almi-coral">{t.country}</Link></li>
+          <li key={t.slug}><Link href={`/italian-descent/proposed/${t.slug}`} className="text-sm text-almi-text hover:text-almi-coral-text">{t.country}</Link></li>
         ))}
       </ul>
 

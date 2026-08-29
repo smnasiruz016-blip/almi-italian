@@ -4,9 +4,24 @@
 @theme {
   --color-almi-coral: #ff7a6b; /*        primary CTA + hero */
   --color-almi-coral-deep: #f2624f; /*   hover/active */
+  /* The coral family when it has to paint TEXT rather than a fill.
+     The two tokens above keep their declared jobs exactly - coral is 'primary CTA + hero',
+     coral-deep is 'hover/active' - and neither value changed. But both were also being used
+     as a text colour, and there they fail WCAG SC 1.4.3: coral-deep #f2624f is 3.05:1 on the
+     cream page background and 2.70:1 on peach; coral #ff7a6b is 2.45:1. Almost every such use
+     is 12-16px, and 'large text' (the 3:1 allowance) starts at 24px, or 18.66px when BOLD -
+     font-semibold is 600 and does not qualify. So error messages, band pills and hover states
+     were all below AA.
+     #a8301c is 6.51:1 on the page background, 6.76:1 on cards, 5.77:1 on peach. */
+  --color-almi-coral-text: #a8301c;
   --color-almi-sun: #f2a65a; /*          sunrise gold accent */
   --color-almi-sun-deep: #dd8f3f;
   --color-almi-teal: #0d9488; /*         checkmarks / "clear" */
+  /* Teal when it has to paint TEXT. #0d9488 keeps its job as a fill and a border, but as
+     text it is 3.61:1 on cream and 3.03:1 on its own /15 tint - under AA both times. That
+     matters more than it looks: teal is the colour of a CLEARED section, so the one word a
+     learner most wants to read was the hardest to read. #115e59 is 7.30:1 and 6.14:1. */
+  --color-almi-teal-text: #115e59;
   --color-almi-ink: #14110d; /*          H1/H2 near-black */
   --color-almi-text: #3b352d; /*         body text */
   /* Body/prose LINK colour. Its own token, not an alias of --color-almi-text, so a link can

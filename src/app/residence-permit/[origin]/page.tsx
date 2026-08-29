@@ -28,7 +28,7 @@ export default async function Page({ params }: { params: Promise<{ origin: strin
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
-      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">Residence permit · {o.name}</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral-text">Residence permit · {o.name}</p>
       <h1 className="mt-3 text-3xl font-bold text-almi-ink">Long-term residence &amp; the A2 exam from {o.name}</h1>
       <p className="mt-6 text-almi-text">{nativeLead(o)}</p>
 
@@ -42,7 +42,7 @@ export default async function Page({ params }: { params: Promise<{ origin: strin
       <p className="mt-4 text-almi-text">{REQ_NOT_GUARANTEE} The permit itself is decided by the questura on the whole file — the exam is one document in it.</p>
 
       <div className="mt-6 flex flex-wrap gap-3 text-sm">
-        <Link href="/practice" className="rounded-full bg-almi-coral px-5 py-2 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">Practise A2</Link>
+        <Link href="/practice" className="rounded-full bg-almi-coral px-5 py-2 font-semibold text-almi-ink hover:bg-almi-coral-deep">Practise A2</Link>
         <Link href={`/citizenship/${o.slug}`} className="rounded-full border border-almi-line px-5 py-2 text-almi-text hover:border-almi-coral">Citizenship (B1) from {o.name}</Link>
       </div>
 

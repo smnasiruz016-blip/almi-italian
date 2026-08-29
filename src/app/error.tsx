@@ -25,7 +25,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-20">
-      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">Something went wrong</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral-text">Something went wrong</p>
       <h1 className="mt-3 text-3xl font-bold text-almi-ink">This page did not load</h1>
       <p className="mt-4 text-almi-text">
         The error is on our side, not yours. Nothing you were working on has been submitted or
@@ -34,7 +34,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
       <div className="mt-8 flex flex-wrap gap-3">
         <button
           onClick={reset}
-          className="rounded-full bg-almi-coral px-6 py-2.5 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark"
+          className="rounded-full bg-almi-coral px-6 py-2.5 font-semibold text-almi-ink hover:bg-almi-coral-deep"
         >
           Try again
         </button>

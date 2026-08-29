@@ -30,7 +30,7 @@ export default async function Page({ params }: { params: Promise<{ origin: strin
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
-      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">Exam centres · {o.name}</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral-text">Exam centres · {o.name}</p>
       <h1 className="mt-3 text-3xl font-bold text-almi-ink">Sitting CILS &amp; CELI in {o.name}</h1>
       <p className="mt-6 text-almi-text">{nativeLead(o)}</p>
 
@@ -49,7 +49,7 @@ export default async function Page({ params }: { params: Promise<{ origin: strin
       <p className="mt-4 rounded-xl bg-almi-bg-peach/40 p-4 text-sm text-almi-text">{TWO_EXAMS_LINE}</p>
 
       <div className="mt-6 flex flex-wrap gap-3 text-sm">
-        <Link href="/practice" className="rounded-full bg-almi-coral px-5 py-2 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">Practise before you sit</Link>
+        <Link href="/practice" className="rounded-full bg-almi-coral px-5 py-2 font-semibold text-almi-ink hover:bg-almi-coral-deep">Practise before you sit</Link>
         <Link href={`/study-in-italy/${o.slug}`} className="rounded-full border border-almi-line px-5 py-2 text-almi-text hover:border-almi-coral">Study in Italy from {o.name}</Link>
       </div>
 

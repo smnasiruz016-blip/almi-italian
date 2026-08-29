@@ -29,7 +29,7 @@ export default async function Page({ params }: { params: Promise<{ country: stri
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
-      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">Italian descent · {t.country}</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral-text">Italian descent · {t.country}</p>
       <h1 className="mt-3 text-3xl font-bold text-almi-ink">{t.country} &amp; the 2025 descent decree</h1>
 
       <p className="mt-6 text-almi-text">

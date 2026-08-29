@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <main className="mx-auto max-w-2xl px-6 py-20">
-      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">404</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral-text">404</p>
       <h1 className="mt-3 text-3xl font-bold text-almi-ink">We could not find that page</h1>
       <p className="mt-4 text-almi-text">
         The link may be out of date, or the exam level may not be one we have built practice for
@@ -32,7 +32,7 @@ export default function NotFound() {
           <li key={t.slug}>
             <Link
               href={`/practice/${t.slug}/${t.sections[0].slug}`}
-              className="text-almi-ink underline decoration-almi-coral underline-offset-4 hover:text-almi-coral-deep"
+              className="text-almi-ink underline decoration-almi-coral underline-offset-4 hover:text-almi-coral-text"
             >
               {t.label}
             </Link>
@@ -42,7 +42,7 @@ export default function NotFound() {
       </ul>
 
       <div className="mt-8 flex flex-wrap gap-3">
-        <Link href="/practice" className="inline-flex rounded-full bg-almi-coral px-6 py-2.5 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">
+        <Link href="/practice" className="inline-flex rounded-full bg-almi-coral px-6 py-2.5 font-semibold text-almi-ink hover:bg-almi-coral-deep">
           All practice tracks
         </Link>
         <Link href="/learn" className="inline-flex rounded-full border border-almi-line px-6 py-2.5 font-medium text-almi-ink hover:border-almi-coral">

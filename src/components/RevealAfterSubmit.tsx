@@ -39,7 +39,7 @@ export function RevealAfterSubmit({
   if (!submitted) return null;
   return (
     <details className="mt-2 rounded-lg bg-almi-bg-peach/30 p-3 text-sm">
-      <summary className="cursor-pointer text-xs font-medium text-almi-coral">{label}</summary>
+      <summary className="cursor-pointer text-xs font-medium text-almi-coral-text">{label}</summary>
       <div className="mt-2 whitespace-pre-line text-almi-text">{children}</div>
     </details>
   );

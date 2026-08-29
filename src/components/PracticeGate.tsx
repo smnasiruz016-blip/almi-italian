@@ -60,14 +60,14 @@ export function PracticeGate({
       <button
         onClick={subscribe}
         disabled={busy || !billingLive}
-        className="mt-4 inline-flex rounded-full bg-almi-coral px-7 py-3 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark disabled:opacity-60"
+        className="mt-4 inline-flex rounded-full bg-almi-coral px-7 py-3 font-semibold text-almi-ink hover:bg-almi-coral-deep disabled:opacity-60"
       >
         {busy ? "Starting…" : !billingLive ? "Checkout unavailable" : "Start 7-day free trial"}
       </button>
       {!billingLive && (
         <p className="mt-2 text-xs text-almi-text-muted">Subscriptions are being switched on. Please check back shortly.</p>
       )}
-      {err && <p className="mt-2 text-xs text-almi-coral-deep">{err}</p>}
+      {err && <p className="mt-2 text-xs text-almi-coral-text">{err}</p>}
     </div>
   );
 }

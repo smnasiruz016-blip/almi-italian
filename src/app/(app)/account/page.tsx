@@ -28,7 +28,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ w
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-12">
-      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">Account</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral-text">Account</p>
       <h1 className="mt-3 text-3xl font-bold text-almi-ink">{user.name ?? user.email}</h1>
       <p className="mt-1 text-sm text-almi-text-muted">{user.email}</p>
 
@@ -77,7 +77,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ w
 
       <div className="mt-6 flex items-center gap-4 text-sm">
         <form action="/api/auth/logout" method="post">
-          <button type="submit" className="text-almi-text-muted hover:text-almi-coral">Log out</button>
+          <button type="submit" className="text-almi-text-muted hover:text-almi-coral-text">Log out</button>
         </form>
       </div>
     </main>

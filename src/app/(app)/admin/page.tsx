@@ -52,7 +52,7 @@ export default async function AdminIndex() {
 
   return (
     <div>
-      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">Admin</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral-text">Admin</p>
       <h1 className="mt-3 text-3xl font-bold text-almi-ink">AlmiItalian admin</h1>
       <p className="mt-3 text-almi-text">
         Signed in as <strong className="text-almi-ink">{user.email}</strong>.

@@ -16,7 +16,7 @@ export function Article({
 }) {
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
-      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">{eyebrow}</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral-text">{eyebrow}</p>
       <h1 className="mt-3 text-3xl font-bold text-almi-ink sm:text-4xl">{title}</h1>
       {lede && <p className="mt-4 text-lg text-almi-text">{lede}</p>}
       <div className="mt-8 space-y-4 text-almi-text [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-almi-ink [&_strong]:text-almi-ink">

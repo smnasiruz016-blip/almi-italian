@@ -28,10 +28,10 @@ export default function Page() {
     >
       <ul className="space-y-2">
         {INCLUDED.map((li) => (
-          <li key={li} className="flex gap-2"><span className="text-almi-teal">✓</span>{li}</li>
+          <li key={li} className="flex gap-2"><span className="text-almi-teal-text">✓</span>{li}</li>
         ))}
       </ul>
-      <Link href="/signup" className="inline-flex rounded-full bg-almi-coral px-7 py-3 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">
+      <Link href="/signup" className="inline-flex rounded-full bg-almi-coral px-7 py-3 font-semibold text-almi-ink hover:bg-almi-coral-deep">
         Start 7-day free trial
       </Link>
       <p className="text-sm text-almi-text-muted">

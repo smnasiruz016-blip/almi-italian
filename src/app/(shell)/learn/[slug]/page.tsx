@@ -50,7 +50,7 @@ export default async function LearnArticle({ params }: { params: Promise<{ slug:
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
-      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">
+      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral-text">
         <Link href={LEARN_BASE} className="hover:underline">
           Learn
         </Link>{" "}
@@ -72,7 +72,7 @@ export default async function LearnArticle({ params }: { params: Promise<{ slug:
       <div className="mt-10 rounded-2xl border border-almi-line bg-almi-paper p-5">
         <Link
           href={article.cta.href}
-          className="inline-flex rounded-full bg-almi-coral px-6 py-2.5 text-sm font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark"
+          className="inline-flex rounded-full bg-almi-coral px-6 py-2.5 text-sm font-semibold text-almi-ink hover:bg-almi-coral-deep"
         >
           {article.cta.label}
         </Link>

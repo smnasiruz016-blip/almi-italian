@@ -58,7 +58,7 @@ export default async function Page({ params }: { params: Promise<{ track: string
 
   const header = (
     <>
-      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">{t.label} · {s.label}</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral-text">{t.label} · {s.label}</p>
       <h1 className="mt-3 text-3xl font-bold text-almi-ink">Practice set</h1>
       <p className="mt-3 text-almi-text">
         This is a practice read-out, not an official result — only Siena (CILS) / Perugia (CELI) award a certificate.
@@ -78,7 +78,7 @@ export default async function Page({ params }: { params: Promise<{ track: string
           charged, then $12/month.
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
-          <Link href="/signup" className="inline-flex rounded-full bg-almi-coral px-6 py-2.5 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">Create free account</Link>
+          <Link href="/signup" className="inline-flex rounded-full bg-almi-coral px-6 py-2.5 font-semibold text-almi-ink hover:bg-almi-coral-deep">Create free account</Link>
           <Link href="/login" className="inline-flex rounded-full border border-almi-line px-6 py-2.5 font-medium text-almi-ink hover:border-almi-coral">Log in</Link>
         </div>
       </div>

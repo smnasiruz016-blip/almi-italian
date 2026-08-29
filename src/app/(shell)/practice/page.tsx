@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
-import { getAccessLevel, getFreeAccessDaysRemaining } from "@/lib/access";
+import { getAccessLevel } from "@/lib/access";
 import { TRACKS, sectionCount } from "@/lib/practice";
 import { canonical } from "@/lib/site";
 
@@ -17,19 +17,16 @@ export default async function Page() {
   // redirect("/account")`) is GONE: it sent every signed-in non-subscriber away from the
   // picker, which is what made the free tier described in lib/access.ts unreachable. The
   // per-section gate in practice/[track]/[section] is the real one; this page only lists.
+  // Two states now, not four: the 3-day grant was withdrawn on 2026-08-31, so a signed-in
+  // learner is either PAID or not. Anonymous visitors get no banner — the picker is public
+  // and a paywall notice on a page that only lists is noise.
   const level = getAccessLevel(user);
-  const daysLeft = user ? getFreeAccessDaysRemaining(user) : null;
 
-  const banner =
-    level === "NONE" && !user
-      ? null
-      : level === "PAID"
-        ? "AlmiItalian Pro active — every section open."
-        : level === "FREE_3DAY"
-          ? `Free practice: ${daysLeft} day${daysLeft === 1 ? "" : "s"} left on Ascolto, Lettura and Analisi — no card. Produzione scritta and orale are part of Pro.`
-          : level === "FREE_EXPIRED"
-            ? "Your 3 free days have ended. Start a 7-day free trial — card saved, not charged — then $12/month, cancel anytime."
-            : "Ascolto, Lettura and Analisi are free for 3 days — no card needed. Produzione scritta and orale are part of Pro: 7-day free trial (card saved, not charged), then $12/month.";
+  const banner = !user
+    ? null
+    : level === "PAID"
+      ? "AlmiItalian Pro active — every section open."
+      : "Practice is part of Pro: a 7-day free trial, card saved, not charged, then $12/month, cancel anytime. The study guides in /learn stay free.";
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">

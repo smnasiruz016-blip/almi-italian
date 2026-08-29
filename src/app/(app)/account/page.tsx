@@ -35,7 +35,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ w
       {sp.welcome && !paid && (
         <div className="mt-6 rounded-2xl border border-almi-coral/30 bg-almi-coral/10 p-4">
           <p className="text-sm text-almi-ink">
-            Welcome — your account is ready. Ascolto, Lettura and Analisi are free for 3 days, no card. Start the 7-day free trial below to add Produzione scritta and orale.
+            Welcome — your account is ready. Start the 7-day free trial below to open every practice section; your card is saved, not charged.
           </p>
         </div>
       )}
@@ -44,7 +44,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ w
         <p className="text-almi-text">Plan: <strong className="text-almi-ink">{planLabel}</strong></p>
         {!paid && (
           <p className="mt-2 text-sm text-almi-text-muted">
-            Ascolto, Lettura and Analisi are free for 3 days — no card. A 7-day free trial (card saved, not charged) adds Produzione scritta and orale; $12/month after the trial, cancel anytime.
+            Practice is part of Pro. A 7-day free trial — card saved, not charged — opens every section; $12/month after the trial, cancel anytime. The study guides in /learn are free without an account.
           </p>
         )}
         {isOwner(user.email) ? (

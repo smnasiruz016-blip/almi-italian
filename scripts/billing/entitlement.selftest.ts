@@ -1,13 +1,27 @@
-// ENTITLEMENT MATRIX — the 3-day no-card window, asserted rather than described.
+// ENTITLEMENT MATRIX — the paywall, asserted rather than described.
 //
-// This exists because the AlmiPrep version of this feature shipped GREEN and deadlocked
-// production: every gate asserted what a state was CALLED, none asserted what a user in
-// that state could DO. So this file names populations by their DATA and checks the answer
-// the product actually gives them.
+// This exists because the AlmiPrep version of the free-window feature shipped GREEN and
+// deadlocked production: every gate asserted what a state was CALLED, none asserted what a
+// user in that state could DO. So this file names populations by their DATA and checks the
+// answer the product actually gives them.
 //
-// It tests the decision layer — lib/access.ts + lib/free-window.ts — which is where the
-// policy lives. It does NOT open a session, hit HTTP, or touch the database: the clock
-// WRITE inside openSection() is the one thing here that is not covered (see the PR body).
+// ── REWRITTEN 2026-08-31, NOT DELETED ───────────────────────────────────────
+// The founder withdrew the 3-day no-card window network-wide. Most of this file's assertions
+// were about window arithmetic and they went red on that change — which is the gate doing its
+// job: it was telling us exactly what the old design protected. Deleting it would have thrown
+// away the part that still matters, so the window arithmetic is gone and the two properties
+// that outlive the window are kept and STRENGTHENED:
+//
+//   1. THE INVERSION IS ASSERTED. A signed-in, verified, never-paid user used to be OPEN on
+//      an objective section. That is now the single most important thing to get wrong
+//      silently, so it is checked head-on: that user is PAYWALL on every section.
+//   2. THE PREDICATES ARE STILL THREE. hasPaidAccess / hasObjectiveAccess /
+//      isPracticeStartBlocked answer three different questions; two now have an empty
+//      population. An empty population is exactly when someone collapses them, so the
+//      relationships between them are asserted here and a collapse fails.
+//
+// It tests the decision layer — lib/access.ts + lib/section-access.ts — which is where the
+// policy lives. It does NOT open a session, hit HTTP, or touch the database.
 
 process.env.OWNER_EMAILS = "founder@almiworld.com";
 process.env.STRIPE_SECRET_KEY = "sk_test_selftest";
@@ -18,20 +32,15 @@ import {
   hasPaidAccess,
   hasObjectiveAccess,
   isPracticeStartBlocked,
-  isFreeWindowActive,
-  isFreeWindowExpired,
   getAccessLevel,
-  getFreeAccessDaysRemaining,
-  FREE_ACCESS_DAYS,
 } from "../../src/lib/access";
-import { wouldRefuseSection, type RefusalReason } from "../../src/lib/free-window";
+import { refuseSection, type RefusalReason } from "../../src/lib/section-access";
 
 const DAY = 24 * 60 * 60 * 1000;
 const ago = (d: number) => new Date(Date.now() - d * DAY);
 const ahead = (d: number) => new Date(Date.now() + d * DAY);
 
-type U = Parameters<typeof wouldRefuseSection>[0];
-/** The non-null half: every helper below takes a user, not a maybe-user. */
+type U = Parameters<typeof refuseSection>[0];
 type StartU = NonNullable<U>;
 
 function user(over: Partial<User>): StartU {
@@ -42,30 +51,35 @@ function user(over: Partial<User>): StartU {
     subscriptionStatus: null,
     subscriptionCurrentPeriodEnd: null,
     compProUntil: null,
+    // Still set on some personas ON PURPOSE: the column survives in the database, and a
+    // legacy value must not resurrect a grant. See "THE COLUMN IS INERT" below.
     freeAccessStartedAt: null,
     ...over,
   } as StartU;
 }
 
-const PERSONAS: { name: string; u: U }[] = [
-  { name: "anonymous", u: null },
-  { name: "signed-in, never started", u: user({}) },
-  { name: "signed-in, in-window (day 1)", u: user({ freeAccessStartedAt: ago(1) }) },
-  { name: "signed-in, out-of-window (day 5)", u: user({ freeAccessStartedAt: ago(5) }) },
-  { name: "in-window, email UNVERIFIED", u: user({ freeAccessStartedAt: ago(1), emailVerifiedAt: null }) },
-  { name: "trialing", u: user({ subscriptionStatus: "trialing", subscriptionCurrentPeriodEnd: ahead(7) }) },
-  { name: "active", u: user({ subscriptionStatus: "active", subscriptionCurrentPeriodEnd: ahead(30) }) },
-  { name: "active but UNVERIFIED", u: user({ subscriptionStatus: "active", subscriptionCurrentPeriodEnd: ahead(30), emailVerifiedAt: null }) },
-  { name: "comp", u: user({ compProUntil: ahead(90) }) },
-  { name: "owner", u: user({ email: "founder@almiworld.com" }) },
+const PERSONAS: { name: string; u: U; paid: boolean }[] = [
+  { name: "anonymous", u: null, paid: false },
+  { name: "signed-in, verified, never paid", u: user({}), paid: false },
+  { name: "signed-in, UNVERIFIED, never paid", u: user({ emailVerifiedAt: null }), paid: false },
+  { name: "legacy freeAccessStartedAt day 1", u: user({ freeAccessStartedAt: ago(1) }), paid: false },
+  { name: "legacy freeAccessStartedAt day 5", u: user({ freeAccessStartedAt: ago(5) }), paid: false },
+  { name: "trialing", u: user({ subscriptionStatus: "trialing", subscriptionCurrentPeriodEnd: ahead(7) }), paid: true },
+  { name: "active", u: user({ subscriptionStatus: "active", subscriptionCurrentPeriodEnd: ahead(30) }), paid: true },
+  { name: "active but UNVERIFIED", u: user({ subscriptionStatus: "active", subscriptionCurrentPeriodEnd: ahead(30), emailVerifiedAt: null }), paid: false },
+  { name: "trialing but UNVERIFIED", u: user({ subscriptionStatus: "trialing", subscriptionCurrentPeriodEnd: ahead(7), emailVerifiedAt: null }), paid: false },
+  { name: "expired subscription", u: user({ subscriptionStatus: "active", subscriptionCurrentPeriodEnd: ago(1) }), paid: false },
+  { name: "canceled subscription", u: user({ subscriptionStatus: "canceled", subscriptionCurrentPeriodEnd: ahead(30) }), paid: false },
+  { name: "comp", u: user({ compProUntil: ahead(90) }), paid: true },
+  { name: "comp EXPIRED", u: user({ compProUntil: ago(1) }), paid: false },
+  { name: "owner", u: user({ email: "founder@almiworld.com" }), paid: true },
 ];
 
-/** What /api/it/submit returns for this persona and section kind, derived from the same two
- *  predicates the route calls, in the route's order. */
-function submitStatus(u: U, kind: "objective" | "estimate"): string {
+/** What /api/it/submit returns for this persona, derived from the same function the route
+ *  calls. The route no longer branches on section kind, and neither does this. */
+function submitStatus(u: U): string {
   if (!u) return "401 no-session";
-  if (!hasPaidAccess(u) && isPracticeStartBlocked(u)) return "402 window-expired";
-  const r = wouldRefuseSection(u, kind);
+  const r = refuseSection(u);
   return r ? "402 " + r.toLowerCase() : "200 marked";
 }
 
@@ -79,94 +93,90 @@ function check(label: string, actual: unknown, expected: unknown): void {
   }
 }
 
-console.log("Entitlement matrix — FREE_ACCESS_DAYS = " + FREE_ACCESS_DAYS + "\n");
+console.log("Entitlement matrix — ONE door: $12/mo, 7-day trial, card at checkout\n");
 const pad = (s: string, n: number) => s.padEnd(n);
-console.log(
-  pad("PERSONA", 34) + pad("OBJECTIVE", 16) + pad("SCRITTA/ORALE", 16) +
-  pad("SUBMIT(obj)", 21) + pad("SUBMIT(est)", 21) + "LEVEL",
-);
-console.log("-".repeat(126));
+console.log(pad("PERSONA", 36) + pad("SECTION", 14) + pad("SUBMIT", 20) + "LEVEL");
+console.log("-".repeat(84));
 for (const { name, u } of PERSONAS) {
-  console.log(
-    pad(name, 34) +
-    pad(show(wouldRefuseSection(u, "objective")), 16) +
-    pad(show(wouldRefuseSection(u, "estimate")), 16) +
-    pad(submitStatus(u, "objective"), 21) +
-    pad(submitStatus(u, "estimate"), 21) +
-    getAccessLevel(u),
-  );
+  console.log(pad(name, 36) + pad(show(refuseSection(u)), 14) + pad(submitStatus(u), 20) + getAccessLevel(u));
 }
 
 console.log("\nASSERTIONS");
 
-// ── The 18-Aug deadlock, as a standing test ─────────────────────────────────
-const fresh = user({});
-check("never-started is ALLOWED an objective section", wouldRefuseSection(fresh, "objective"), null);
-check("never-started is NOT window-active", isFreeWindowActive(fresh), false);
-check("never-started is NOT window-expired", isFreeWindowExpired(fresh), false);
-check("never-started is NOT start-blocked", isPracticeStartBlocked(fresh), false);
-// The exact substitution that caused the outage: hasObjectiveAccess() is FALSE for a
-// never-started user, so using it as the start gate would refuse them forever.
-check("hasObjectiveAccess is false for never-started (why it must NOT be the start gate)",
-  hasObjectiveAccess(fresh), false);
+// ── 1. THE INVERSION. This is the change, stated as a test. ─────────────────
+// Before 2026-08-31 this exact user was OPEN on Ascolto / Lettura / Analisi.
+const freeVerified = user({});
+check("verified never-paid user is REFUSED (the window is gone)", refuseSection(freeVerified), "PAYWALL");
+check("verified never-paid user has NO objective access", hasObjectiveAccess(freeVerified), false);
+check("verified never-paid user is NOT PAID", hasPaidAccess(freeVerified), false);
+check("verified never-paid user's access level is NONE", getAccessLevel(freeVerified), "NONE");
 
-// ── Window arithmetic ───────────────────────────────────────────────────────
-check("day 1 in-window", isFreeWindowActive(user({ freeAccessStartedAt: ago(1) })), true);
-check("day 5 expired", isFreeWindowExpired(user({ freeAccessStartedAt: ago(5) })), true);
-check("just under 3 days still active",
-  isFreeWindowActive(user({ freeAccessStartedAt: new Date(Date.now() - (3 * DAY - 60_000)) })), true);
-check("just over 3 days expired",
-  isFreeWindowActive(user({ freeAccessStartedAt: new Date(Date.now() - (3 * DAY + 60_000)) })), false);
-check("days remaining is null when never started", getFreeAccessDaysRemaining(fresh), null);
-check("days remaining is null when expired", getFreeAccessDaysRemaining(user({ freeAccessStartedAt: ago(5) })), null);
+// ── THE COLUMN IS INERT ─────────────────────────────────────────────────────
+// freeAccessStartedAt survives in the database. A legacy value must never grant anything, or
+// dropping the window would leave a back door open for exactly the rows we chose not to
+// delete. Both sides of the old 3-day boundary are checked, because "recent enough" was the
+// whole mechanism.
+for (const d of [0, 1, 2.9, 3.1, 5, 400]) {
+  const legacy = user({ freeAccessStartedAt: ago(d) });
+  check("legacy freeAccessStartedAt " + d + "d ago grants nothing", refuseSection(legacy), "PAYWALL");
+  check("legacy freeAccessStartedAt " + d + "d ago is not objective access", hasObjectiveAccess(legacy), false);
+}
 
-// ── The superset property: a payer is never refused what a free user gets ───
+// ── 2. THE THREE PREDICATES ARE STILL THREE ─────────────────────────────────
+// Two now have an empty population. That is when they get collapsed, so the relationships are
+// pinned here. See the note in src/lib/access.ts.
+check("isPracticeStartBlocked refuses NOBODY now", isPracticeStartBlocked(freeVerified), false);
+check("isPracticeStartBlocked refuses no payer either", isPracticeStartBlocked(user({ compProUntil: ahead(9) })), false);
+// If someone "simplifies" isPracticeStartBlocked into the paywall, these two start agreeing.
+// They must not: they are different questions with different answers for this user.
+check("isPracticeStartBlocked has NOT been collapsed into the paywall",
+  isPracticeStartBlocked(freeVerified) === (refuseSection(freeVerified) !== null), false);
 for (const { name, u } of PERSONAS) {
-  if (u && hasPaidAccess(u)) {
-    check(name + ": paid => objective access", hasObjectiveAccess(u), true);
-    check(name + ": paid => objective section open", wouldRefuseSection(u, "objective"), null);
-    check(name + ": paid => estimate section open", wouldRefuseSection(u, "estimate"), null);
-    check(name + ": paid => not start-blocked", isPracticeStartBlocked(u), false);
+  if (!u) continue;
+  // The superset property, which is the one that must survive any future free grant.
+  check(name + ": paid => objective access (superset holds)",
+    hasPaidAccess(u) ? hasObjectiveAccess(u) : true, true);
+  // Nobody is start-blocked, on any persona, ever.
+  check(name + ": not start-blocked", isPracticeStartBlocked(u), false);
+}
+
+// ── 3. EVERY POPULATION, BOTH DIRECTIONS ────────────────────────────────────
+for (const { name, u, paid } of PERSONAS) {
+  if (!u) continue;
+  check(name + ": hasPaidAccess", hasPaidAccess(u), paid);
+  if (paid) {
+    check(name + ": section OPEN", refuseSection(u), null);
+    check(name + ": submit marked", submitStatus(u), "200 marked");
+    check(name + ": level PAID", getAccessLevel(u), "PAID");
+  } else {
+    check(name + ": section refused", refuseSection(u) !== null, true);
+    check(name + ": level NONE", getAccessLevel(u), "NONE");
   }
 }
 
-// ── The paid-only skills are paid-only for every unpaid population ──────────
-for (const { name, u } of PERSONAS) {
-  if (u && !hasPaidAccess(u)) {
-    const r = wouldRefuseSection(u, "estimate");
-    check(name + ": SCRITTA/ORALE refused", r !== null, true);
-    check(name + ": SCRITTA/ORALE never opened by the window",
-      r === "PAYWALL" || r === "WINDOW_EXPIRED" || r === "VERIFY_EMAIL", true);
-  }
-}
-
-// ── Specific expectations ───────────────────────────────────────────────────
-check("anonymous objective -> SIGN_IN", wouldRefuseSection(null, "objective"), "SIGN_IN");
-check("anonymous estimate -> SIGN_IN", wouldRefuseSection(null, "estimate"), "SIGN_IN");
-check("out-of-window objective -> WINDOW_EXPIRED",
-  wouldRefuseSection(user({ freeAccessStartedAt: ago(5) }), "objective"), "WINDOW_EXPIRED");
-check("in-window unverified -> VERIFY_EMAIL",
-  wouldRefuseSection(user({ freeAccessStartedAt: ago(1), emailVerifiedAt: null }), "objective"), "VERIFY_EMAIL");
-check("in-window verified objective -> OPEN",
-  wouldRefuseSection(user({ freeAccessStartedAt: ago(1) }), "objective"), null);
-check("in-window verified estimate -> PAYWALL",
-  wouldRefuseSection(user({ freeAccessStartedAt: ago(1) }), "estimate"), "PAYWALL");
-check("active-but-unverified is NOT paid",
-  hasPaidAccess(user({ subscriptionStatus: "active", subscriptionCurrentPeriodEnd: ahead(30), emailVerifiedAt: null })), false);
+// ── 4. SPECIFIC EXPECTATIONS ────────────────────────────────────────────────
+check("anonymous -> SIGN_IN", refuseSection(null), "SIGN_IN");
 check("comp bypasses verification", hasPaidAccess(user({ compProUntil: ahead(90), emailVerifiedAt: null })), true);
 check("owner bypasses everything", hasPaidAccess(user({ email: "founder@almiworld.com", emailVerifiedAt: null })), true);
-check("expired subscription is not paid",
-  hasPaidAccess(user({ subscriptionStatus: "active", subscriptionCurrentPeriodEnd: ago(1) })), false);
-check("canceled status is not paid",
-  hasPaidAccess(user({ subscriptionStatus: "canceled", subscriptionCurrentPeriodEnd: ahead(30) })), false);
-check("expired comp is not paid", hasPaidAccess(user({ compProUntil: ago(1) })), false);
-// A subscriber who has only failed to verify must never be answered with a paywall — on
-// EITHER kind of section. They have already pressed the subscribe button.
-const unverifiedSub = user({ subscriptionStatus: "active", subscriptionCurrentPeriodEnd: ahead(30), emailVerifiedAt: null });
-check("active-but-unverified objective -> VERIFY_EMAIL", wouldRefuseSection(unverifiedSub, "objective"), "VERIFY_EMAIL");
-check("active-but-unverified estimate -> VERIFY_EMAIL (not PAYWALL)", wouldRefuseSection(unverifiedSub, "estimate"), "VERIFY_EMAIL");
-const trialingUnverified = user({ subscriptionStatus: "trialing", subscriptionCurrentPeriodEnd: ahead(7), emailVerifiedAt: null });
-check("trialing-but-unverified estimate -> VERIFY_EMAIL", wouldRefuseSection(trialingUnverified, "estimate"), "VERIFY_EMAIL");
+// A subscriber who has only failed to verify must never be answered with a paywall. They have
+// already pressed the subscribe button; sending them to checkout again is the bug this catches.
+check("active-but-unverified -> VERIFY_EMAIL, not PAYWALL",
+  refuseSection(user({ subscriptionStatus: "active", subscriptionCurrentPeriodEnd: ahead(30), emailVerifiedAt: null })), "VERIFY_EMAIL");
+check("trialing-but-unverified -> VERIFY_EMAIL, not PAYWALL",
+  refuseSection(user({ subscriptionStatus: "trialing", subscriptionCurrentPeriodEnd: ahead(7), emailVerifiedAt: null })), "VERIFY_EMAIL");
+// An unverified user who has NOT subscribed is a paywall, not a verify prompt: verifying
+// their email would not open anything.
+check("unverified never-paid -> PAYWALL, not VERIFY_EMAIL", refuseSection(user({ emailVerifiedAt: null })), "PAYWALL");
+
+// ── 5. NO REFUSAL REASON CAN NAME A STATE NOBODY IS IN ──────────────────────
+// WINDOW_EXPIRED was removed from the union. If a reason comes back without a population, the
+// copy for it becomes unreachable prose that reviewers still read as true.
+const REASONS: RefusalReason[] = ["SIGN_IN", "PAYWALL", "VERIFY_EMAIL"];
+const produced = new Set(PERSONAS.map(({ u }) => refuseSection(u)).filter((r): r is RefusalReason => r !== null));
+for (const r of produced) {
+  check('refusal "' + r + '" is a declared reason', REASONS.includes(r), true);
+}
+check("every declared reason is reachable by some persona", REASONS.every((r) => produced.has(r)), true);
 
 if (failures) {
   console.error("\nx Entitlement selftest: " + failures + " assertion(s) failed.\n");

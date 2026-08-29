@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { isBillingEnabled } from "@/lib/access";
-import { wouldRefuseSection } from "@/lib/free-window";
+import { refuseSection } from "@/lib/section-access";
 import { TRACKS, trackBySlug, sectionBySlug } from "@/lib/practice";
 import { itemsFor } from "@/lib/items";
 import { runnerItemsFor } from "@/lib/item-id";
@@ -45,16 +45,14 @@ export default async function Page({ params }: { params: Promise<{ track: string
   const served = runnerItemsFor(items);
   const user = await getCurrentUser();
 
-  // ENTITLEMENT (revised 2026-08-28) — the page and /api/it/submit MUST agree about who is
-  // refused, so both ask lib/free-window.ts and neither decides for itself. This is the
-  // read-only half: it never starts anyone's clock, because a Server Component must not
-  // write on render and a prefetch would otherwise burn a window nobody used.
+  // ENTITLEMENT (revised 2026-08-31) — the page and /api/it/submit MUST agree about who is
+  // refused, so both call the same function in lib/section-access.ts and neither decides for
+  // itself. It reads nothing and writes nothing, so a Server Component may call it on render.
   //
-  // This replaces the founder gate (`if (user && !paid) redirect("/account")`), which sent
-  // every signed-in non-subscriber away before any section rendered — the reason the free
-  // tier described in lib/access.ts did not exist. Owner and comp doors are unchanged: both
-  // are inside hasPaidAccess(), which wouldRefuseSection() checks first.
-  const refusal = wouldRefuseSection(user, s.kind);
+  // `s.kind` is no longer passed: the 3-day grant on objective sections was withdrawn, so
+  // every section asks the same question. Owner and comp doors are unchanged — both are
+  // inside hasPaidAccess(), which refuseSection() checks first.
+  const refusal = refuseSection(user);
 
   const header = (
     <>
@@ -66,19 +64,19 @@ export default async function Page({ params }: { params: Promise<{ track: string
     </>
   );
 
-  // One branch per refusal reason, in the same order lib/free-window.ts decides them.
+  // One branch per refusal reason, in the same order lib/section-access.ts decides them.
   let body: ReactNode;
   if (refusal === "SIGN_IN") {
     body = (
       <div className="mt-8 rounded-2xl border border-almi-line bg-almi-paper p-6">
         <h2 className="text-lg font-semibold text-almi-ink">Sign in to practise</h2>
         <p className="mt-2 text-sm text-almi-text">
-          Create a free account to practise {s.kind === "objective" ? "this section" : "the objective sections"} free
-          for 3 days — no card. Produzione scritta and orale are part of Pro: a 7-day free trial, card saved, not
-          charged, then $12/month.
+          Practice is part of AlmiItalian Pro: a 7-day free trial — your card is saved, not charged — then $12/month,
+          cancel anytime. Reading the free <Link href="/learn" className="underline">study guides</Link> needs no
+          account at all.
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
-          <Link href="/signup" className="inline-flex rounded-full bg-almi-coral px-6 py-2.5 font-semibold text-almi-ink hover:bg-almi-coral-deep">Create free account</Link>
+          <Link href="/signup" className="inline-flex rounded-full bg-almi-coral px-6 py-2.5 font-semibold text-almi-ink hover:bg-almi-coral-deep">Create an account</Link>
           <Link href="/login" className="inline-flex rounded-full border border-almi-line px-6 py-2.5 font-medium text-almi-ink hover:border-almi-coral">Log in</Link>
         </div>
       </div>
@@ -86,10 +84,10 @@ export default async function Page({ params }: { params: Promise<{ track: string
   } else if (refusal === "VERIFY_EMAIL") {
     body = <div className="mt-8"><EmailVerifyBanner email={user!.email} /></div>;
   } else if (refusal) {
-    // PAYWALL (Produzione scritta/orale) or WINDOW_EXPIRED. A subscriber who simply has not
-    // verified yet is caught by VERIFY_EMAIL above, so this is never "subscribe" shown to
+    // PAYWALL — the only refusal left that a subscription fixes. A subscriber who simply has
+    // not verified yet is caught by VERIFY_EMAIL above, so this is never "subscribe" shown to
     // someone who already has.
-    body = <PracticeGate billingLive={isBillingEnabled()} reason={refusal} />;
+    body = <PracticeGate billingLive={isBillingEnabled()} />;
   } else if (items.length === 0) {
     body = (
       <div className="mt-8 rounded-2xl border border-dashed border-almi-line bg-almi-paper p-6 text-almi-text">

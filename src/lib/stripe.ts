@@ -34,6 +34,14 @@ export async function createCheckoutSession(user: { id: string; email: string; n
   const session = await getStripe().checkout.sessions.create({
     mode: "subscription",
     customer: customerId,
+    // ⚠️ PINNED, NOT INHERITED. With the 3-day no-card window withdrawn (2026-08-31) this one
+    // parameter is the whole of "card first" — it is what stops a 7-day trial being claimable
+    // with no payment method at all. Stripe's default for a trialing subscription is already
+    // "always", so this changes no behaviour today; it changes who owns the behaviour. An
+    // upstream default is a promise somebody else can revise, and scripts/gates/paywall-gate
+    // asserts this literal so a silent flip to "if_required" fails the build instead of
+    // quietly opening the trial to anyone with an email address.
+    payment_method_collection: "always",
     line_items: [{ price: priceId, quantity: 1 }],
     subscription_data: { trial_period_days: TRIAL_DAYS, metadata: { userId: user.id } },
     metadata: { product: "almi-italian" }, // routing key for almi-billing-router (checkout.session.completed)

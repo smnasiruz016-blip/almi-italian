@@ -14,11 +14,9 @@
 // entitlement policy has to be true. src/lib/access.ts describes the policy; this route
 // enforces it, and both take the free/paid line from the ENGINE's section kind.
 //
-// Until 2026-08-28 this route required hasPaidAccess() for everything, and the page above
-// it redirected every signed-in non-subscriber to /account. That matched the shipped
-// product but not the stated one. The founder re-decided: objective sections (kind
-// "objective" — ASCOLTO / LETTURA / ANALISI) are open inside a 3-day no-card window;
-// SCRITTA / ORALE stay paid.
+// Between 2026-08-28 and 2026-08-31 the objective sections were open inside a 3-day no-card
+// window. The founder withdrew that grant network-wide, so this route is back to one rule:
+// hasPaidAccess() for every section. See src/lib/access.ts.
 //
 // An auth-only route would still be wrong, and the reason has not changed: this reply
 // DISCLOSES THE CORRECT ANSWER for every atom posted. The ids are sha256({exam, level,
@@ -27,20 +25,22 @@
 //
 // ORDER OF CHECKS — deliberate, do not reorder:
 //   1. no session                        → 401, nothing parsed
-//   2. expired non-payer                 → 402, nothing parsed, no item id confirmed
+//   2. refuseSection()                   → 402, nothing parsed, no item id confirmed
 //   3. resolve the section SERVER-SIDE from the posted item ids
-//   4. estimate section without payment  → 402
-//   5. openSection() — refuse, THEN set the clock (see lib/free-window.ts)
+//   4. grade
 //
-// Step 2 runs before any body parsing so the one population entitled to nothing cannot use
-// a 404 to test whether an item id exists. A never-started or in-window user reaches step 3
-// and can see those 404s — they are entitled to the keys of an objective section anyway.
+// ⚠️ STEP 2 RUNS BEFORE ANY BODY PARSING, AND THAT IS LOAD-BEARING. It was written that way
+// so the population entitled to nothing cannot use a 404 to test whether an item id exists.
+// Under the window there were two refusal points — an early one for expired non-payers and a
+// later openSection() after the section was resolved, because in-window users had to reach
+// it. With the window gone every non-payer is refused, so the whole decision moves UP to the
+// early point and the later call disappears. The oracle this comment protects is now closed
+// for MORE people than before, not fewer. Do not move it back down.
 
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { hasPaidAccess, isPracticeStartBlocked } from "@/lib/access";
 import { gradeAttempt, resolveAttemptSection, type AttemptBody } from "@/lib/it/grade";
-import { openSection, type RefusalReason } from "@/lib/free-window";
+import { refuseSection, type RefusalReason } from "@/lib/section-access";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -60,9 +60,7 @@ function logRefusal(status: number, reason: string, userId?: string) {
 const REFUSAL_COPY: Record<RefusalReason, string> = {
   SIGN_IN: "Sign in to practise.",
   PAYWALL:
-    "Produzione scritta and orale are part of AlmiItalian Pro — start a 7-day free trial, card saved, not charged.",
-  WINDOW_EXPIRED:
-    "Your 3-day free practice window has ended. Start a 7-day free trial — card saved, not charged — to keep practising.",
+    "Practice is part of AlmiItalian Pro — start a 7-day free trial, card saved, not charged, then $12/month. Cancel anytime.",
   VERIFY_EMAIL: "Verify your email address to have your section marked.",
 };
 
@@ -73,15 +71,13 @@ export async function POST(req: Request): Promise<NextResponse> {
     return NextResponse.json({ ok: false, error: "Not authenticated" }, { status: 401 });
   }
 
-  const paid = hasPaidAccess(user);
-
-  // STEP 2 — the one population entitled to nothing: a non-payer whose window has run out.
-  // Refused BEFORE the body is parsed, so a 404 can never be used to confirm that an item id
-  // exists. A never-started user is NOT in this population and falls through, which is the
-  // whole point (see lib/free-window.ts).
-  if (!paid && isPracticeStartBlocked(user)) {
-    logRefusal(402, "window-expired", user.id);
-    return NextResponse.json({ ok: false, error: REFUSAL_COPY.WINDOW_EXPIRED }, { status: 402 });
+  // STEP 2 — THE WHOLE ENTITLEMENT DECISION, and it happens BEFORE the body is parsed so a
+  // 404 can never be used to confirm that an item id exists. Same function the section page
+  // calls, so the page cannot offer what this route then refuses.
+  const refusal = refuseSection(user);
+  if (refusal) {
+    logRefusal(402, refusal.toLowerCase(), user.id);
+    return NextResponse.json({ ok: false, error: REFUSAL_COPY[refusal] }, { status: 402 });
   }
 
   let body: AttemptBody;
@@ -97,14 +93,10 @@ export async function POST(req: Request): Promise<NextResponse> {
     return NextResponse.json({ ok: false, error: resolved.error }, { status: resolved.status });
   }
 
-  // STEP 4+5 — entitlement, then the clock. An item that is in the bank but routed by no
-  // track has no kind; treat that as "estimate" so an unroutable section fails CLOSED
-  // (paid-only) rather than falling into the free window by accident.
-  const decision = await openSection(user, resolved.kind ?? "estimate");
-  if (!decision.allowed) {
-    logRefusal(402, decision.reason.toLowerCase(), user.id);
-    return NextResponse.json({ ok: false, error: REFUSAL_COPY[decision.reason] }, { status: 402 });
-  }
+  // The second entitlement check that used to sit here is GONE, not lost: it existed because
+  // the decision depended on `resolved.kind`, which is only known after the section is
+  // resolved. The decision no longer depends on kind, so it moved to step 2 above, where it
+  // also closes the item-id oracle for everyone it refuses.
 
   const graded = gradeAttempt(body);
   if (!graded.ok) {

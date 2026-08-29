@@ -3,6 +3,7 @@
 import { scoreCilsStandard, CILS_STANDARD_FLOOR, CILS_STANDARD_SECTIONS } from "./cils-standard";
 import { scoreCilsB1c, CILS_B1C_FLOOR, CILS_B1C_TOTAL_FLOOR, CILS_B1C_SECTIONS } from "./cils-b1c";
 import { scoreCeli, CELI_CONFIG } from "./celi";
+import type { SectionStatus } from "./status";
 
 let passed = 0;
 let failed = 0;
@@ -167,6 +168,96 @@ function eq<T>(a: T, b: T, msg: string) { assert(a === b, `${msg} (got ${JSON.st
     eq(scoreCeli(lv, { writtenScore: 0, oralScore: 0 }).pending, false, `CELI ${lv} is verified (not pending)`);
   // Guard still refuses fabrication: overall mode must NOT bank, both-parts mode must gate on part minima.
   assert(CELI_CONFIG.IMPATTO.passMode === "overall" && CELI_CONFIG.UNO.passMode === "both-parts", "pass modes assigned correctly");
+}
+
+// ---------- SECTION STATUS BANDS: every boundary, pinned as LITERALS ----------
+// statusFor() is on the LIVE path and nothing asserted it until now: src/app/page.tsx,
+// src/components/EstimateReport.tsx and src/components/PracticeRunner.tsx all branch on
+// `.status` to tell a learner whether a section is above, at, or below its floor. The
+// engines compute it (cils-b1c.ts statusFor, cils-standard.ts statusFor) and 190 lines of
+// self-test never once read the field.
+//
+// 🔴 WHY THE EXPECTED VALUES BELOW ARE WRITTEN OUT AS LITERALS.
+// They are NOT derived from CILS_B1C_FLOOR / CILS_STANDARD_FLOOR, and NOT from the band
+// width. If this table computed its expectations from the same constant the engine reads,
+// then widening a band would move the expectation along with it and this gate could never
+// go red — a check fed its own value. That is precisely the PR #38 defect. Changing a floor
+// or a band width MUST require editing these tables by hand, deliberately, so the change is
+// visible in the diff.
+//
+// Read the tables as: score -> the status a learner is shown for that score.
+{
+  type Band = SectionStatus;
+
+  // CILS B1 CITTADINANZA — sections are /12, floor 7, BORDERLINE is the SINGLE point 6.
+  const B1C_BANDS: [number, Band][] = [
+    [0, "BELOW"], [1, "BELOW"], [2, "BELOW"], [3, "BELOW"], [4, "BELOW"], [5, "BELOW"],
+    [6, "BORDERLINE"],
+    [7, "CLEAR"], [8, "CLEAR"], [9, "CLEAR"], [10, "CLEAR"],
+    [11, "CLEAR"], [12, "CLEAR"],
+  ];
+  for (const [score, want] of B1C_BANDS) {
+    const r = scoreCilsB1c([{ section: "ASCOLTO", score }]);
+    eq(r.sections[0].status, want, `B1c ${score}/12 -> ${want}`);
+  }
+
+  // The three boundaries, named, so a failure says which edge moved.
+  eq(scoreCilsB1c([{ section: "ASCOLTO", score: 5 }]).sections[0].status, "BELOW", "B1c lower edge: 5 is BELOW, not BORDERLINE");
+  eq(scoreCilsB1c([{ section: "ASCOLTO", score: 6 }]).sections[0].status, "BORDERLINE", "B1c BORDERLINE band: 6");
+  eq(scoreCilsB1c([{ section: "ASCOLTO", score: 7 }]).sections[0].status, "CLEAR", "B1c upper edge: 7 is CLEAR, not BORDERLINE");
+
+  // Band WIDTH pinned as a literal count. Widening the band makes this 2+, narrowing makes
+  // it 0 — so this single assertion goes red in BOTH directions.
+  const b1cBorderline = B1C_BANDS.filter(([s]) => scoreCilsB1c([{ section: "ASCOLTO", score: s }]).sections[0].status === "BORDERLINE").length;
+  eq(b1cBorderline, 1, "B1c BORDERLINE band is exactly 1 score wide (only 6)");
+
+  // Every section bands identically — not just the one we probed.
+  for (const s of CILS_B1C_SECTIONS) {
+    eq(scoreCilsB1c([{ section: s.section, score: 6 }]).sections.find((x) => x.section === s.section)!.status, "BORDERLINE", `B1c ${s.section} bands 6 as BORDERLINE`);
+    eq(scoreCilsB1c([{ section: s.section, score: 7 }]).sections.find((x) => x.section === s.section)!.status, "CLEAR", `B1c ${s.section} bands 7 as CLEAR`);
+  }
+
+  // Out-of-range input is clamped BEFORE banding, so the status is still one of the three.
+  eq(scoreCilsB1c([{ section: "ASCOLTO", score: 99 }]).sections[0].status, "CLEAR", "B1c clamps 99 to 12 -> CLEAR");
+  eq(scoreCilsB1c([{ section: "ASCOLTO", score: -5 }]).sections[0].status, "BELOW", "B1c clamps -5 to 0 -> BELOW");
+  eq(scoreCilsB1c([{ section: "ASCOLTO", score: NaN }]).sections[0].status, "BELOW", "B1c NaN becomes 0 -> BELOW");
+
+  // CILS STANDARD — sections are /20, floor 11, BORDERLINE is the TWO points 9 and 10.
+  // A different width from B1c on purpose; this table is what stops the two being conflated.
+  const STD_BANDS: [number, Band][] = [
+    [0, "BELOW"], [1, "BELOW"], [2, "BELOW"], [3, "BELOW"], [4, "BELOW"],
+    [5, "BELOW"], [6, "BELOW"], [7, "BELOW"], [8, "BELOW"],
+    [9, "BORDERLINE"], [10, "BORDERLINE"],
+    [11, "CLEAR"], [12, "CLEAR"], [13, "CLEAR"], [14, "CLEAR"], [15, "CLEAR"],
+    [16, "CLEAR"], [17, "CLEAR"], [18, "CLEAR"], [19, "CLEAR"], [20, "CLEAR"],
+  ];
+  for (const [score, want] of STD_BANDS) {
+    const r = scoreCilsStandard("UNO", [{ section: "ASCOLTO", score }]);
+    eq(r.sections[0].status, want, `CILS std ${score}/20 -> ${want}`);
+  }
+
+  eq(scoreCilsStandard("UNO", [{ section: "ASCOLTO", score: 8 }]).sections[0].status, "BELOW", "CILS std lower edge: 8 is BELOW, not BORDERLINE");
+  eq(scoreCilsStandard("UNO", [{ section: "ASCOLTO", score: 9 }]).sections[0].status, "BORDERLINE", "CILS std BORDERLINE band starts at 9");
+  eq(scoreCilsStandard("UNO", [{ section: "ASCOLTO", score: 10 }]).sections[0].status, "BORDERLINE", "CILS std BORDERLINE band ends at 10");
+  eq(scoreCilsStandard("UNO", [{ section: "ASCOLTO", score: 11 }]).sections[0].status, "CLEAR", "CILS std upper edge: 11 is CLEAR, not BORDERLINE");
+
+  const stdBorderline = STD_BANDS.filter(([s]) => scoreCilsStandard("UNO", [{ section: "ASCOLTO", score: s }]).sections[0].status === "BORDERLINE").length;
+  eq(stdBorderline, 2, "CILS std BORDERLINE band is exactly 2 scores wide (9 and 10)");
+
+  for (const s of CILS_STANDARD_SECTIONS) {
+    eq(scoreCilsStandard("DUE", [{ section: s.section, score: 9 }]).sections.find((x) => x.section === s.section)!.status, "BORDERLINE", `CILS std ${s.section} bands 9 as BORDERLINE`);
+    eq(scoreCilsStandard("DUE", [{ section: s.section, score: 11 }]).sections.find((x) => x.section === s.section)!.status, "CLEAR", `CILS std ${s.section} bands 11 as CLEAR`);
+  }
+
+  eq(scoreCilsStandard("UNO", [{ section: "ASCOLTO", score: 99 }]).sections[0].status, "CLEAR", "CILS std clamps 99 to 20 -> CLEAR");
+  eq(scoreCilsStandard("UNO", [{ section: "ASCOLTO", score: -5 }]).sections[0].status, "BELOW", "CILS std clamps -5 to 0 -> BELOW");
+  eq(scoreCilsStandard("UNO", [{ section: "ASCOLTO", score: NaN }]).sections[0].status, "BELOW", "CILS std NaN becomes 0 -> BELOW");
+
+  // CROSS-ENGINE: the two bands are DIFFERENT widths, and the score 9 is the proof.
+  // 9 is BORDERLINE on the /20 standard scale but BELOW on the /12 B1c scale. If someone
+  // ever unified statusFor into one shared helper, one of these two flips.
+  eq(scoreCilsStandard("UNO", [{ section: "ASCOLTO", score: 9 }]).sections[0].status, "BORDERLINE", "score 9 is BORDERLINE on CILS standard (/20, floor 11)");
+  eq(scoreCilsB1c([{ section: "ASCOLTO", score: 9 }]).sections[0].status, "CLEAR", "the same score 9 is CLEAR on B1c (/12, floor 7) — scales not blended");
 }
 
 // ---------- MANDATED GUARD: scales are never mixed across engines ----------

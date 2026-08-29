@@ -40,11 +40,11 @@ type Me = { loggedIn: boolean; email: string | null };
 
 /** Plain link treatment — matches the family strip's weight so the cluster reads as one group. */
 const LINK =
-  "rounded-sm text-base font-semibold text-almi-ink hover:text-almi-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-almi-coral focus-visible:ring-offset-2 focus-visible:ring-offset-almi-bg";
+  "rounded-sm text-base font-semibold text-almi-ink hover:text-almi-coral-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-almi-coral focus-visible:ring-offset-2 focus-visible:ring-offset-almi-bg";
 
 /** The one filled pill that ends the cluster. */
 const PILL =
-  "inline-flex min-h-[40px] items-center justify-center rounded-full bg-almi-coral px-5 py-2 text-sm font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-almi-coral/30";
+  "inline-flex min-h-[40px] items-center justify-center rounded-full bg-almi-coral px-5 py-2 text-sm font-semibold text-almi-ink hover:bg-almi-coral-deep focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-almi-coral/30";
 
 export function AuthNav() {
   const [me, setMe] = useState<Me | null>(null);

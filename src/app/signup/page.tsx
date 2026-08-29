@@ -18,7 +18,7 @@ export default function Page() {
       footer={
         <>
           Already have an account?{" "}
-          <Link href="/login" className="font-medium text-almi-coral hover:underline">
+          <Link href="/login" className="font-medium text-almi-link underline">
             Log in
           </Link>
         </>

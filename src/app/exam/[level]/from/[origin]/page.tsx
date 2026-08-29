@@ -28,7 +28,7 @@ export default async function Page({ params }: { params: Promise<{ level: string
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
-      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">{l.exam} · {o.name}</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral-text">{l.exam} · {o.name}</p>
       <h1 className="mt-3 text-3xl font-bold text-almi-ink">{l.name}</h1>
       <p className="mt-1 text-sm text-almi-text-muted">{l.cefr} · {l.official}</p>
 
@@ -46,7 +46,7 @@ export default async function Page({ params }: { params: Promise<{ level: string
       </p>
 
       <div className="mt-6 flex flex-wrap gap-3 text-sm">
-        <Link href="/practice" className="rounded-full bg-almi-coral px-5 py-2 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">Practise {l.name}</Link>
+        <Link href="/practice" className="rounded-full bg-almi-coral px-5 py-2 font-semibold text-almi-ink hover:bg-almi-coral-deep">Practise {l.name}</Link>
         <Link href={`/exams-in/${o.slug}`} className="rounded-full border border-almi-line px-5 py-2 text-almi-text hover:border-almi-coral">Sitting {l.exam} in {o.name}</Link>
       </div>
 

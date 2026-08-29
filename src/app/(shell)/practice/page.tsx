@@ -33,7 +33,7 @@ export default async function Page() {
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
-      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">Practice</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral-text">Practice</p>
       <h1 className="mt-3 text-3xl font-bold text-almi-ink">Choose your Italian exam</h1>
       <p className="mt-4 text-almi-text">
         CILS and CELI are scored differently, so we keep them apart — pick the exam you&apos;re actually sitting. Ascolto,
@@ -57,7 +57,7 @@ export default async function Page() {
                   <Link
                     key={s.slug}
                     href={`/practice/${t.slug}/${s.slug}`}
-                    className="rounded-full bg-almi-coral px-4 py-1.5 font-medium text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark"
+                    className="rounded-full bg-almi-coral px-4 py-1.5 font-medium text-almi-ink hover:bg-almi-coral-deep"
                   >
                     {s.label.replace(/\s*\(.*$/, "").replace(/\s*—.*$/, "")} · {n}{s.kind === "estimate" ? " est." : ""}
                   </Link>
@@ -74,7 +74,7 @@ export default async function Page() {
             exist until the content drop lands — so this internal link points at the HUB, which
             always resolves, rather than shipping a known 404 into the picker. The content-drop
             PR should restore the deep link once the article is there. */}
-        <Link href="/learn" className="text-almi-coral hover:underline">read the honest guide</Link>.
+        <Link href="/learn" className="text-almi-link underline">read the honest guide</Link>.
       </p>
     </main>
   );

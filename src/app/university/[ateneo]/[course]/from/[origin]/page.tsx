@@ -31,11 +31,11 @@ export default async function Page({ params }: { params: Promise<{ ateneo: strin
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
-      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">Study in Italy · {o.name}</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral-text">Study in Italy · {o.name}</p>
       <h1 className="mt-3 text-3xl font-bold text-almi-ink">{c.nomeCorso}</h1>
       <p className="mt-1 text-sm text-almi-text-muted">{c.classeDes} · {a.name} · {a.region}</p>
       <p className="mt-2 text-sm">
-        <Link href={`/university/${a.slug}/from/${o.slug}`} className="text-almi-coral hover:underline">← all of {a.nameShort}&apos;s courses</Link>
+        <Link href={`/university/${a.slug}/from/${o.slug}`} className="text-almi-link underline">← all of {a.nameShort}&apos;s courses</Link>
       </p>
 
       <dl className="mt-6 grid grid-cols-2 gap-3 rounded-2xl border border-almi-line bg-almi-paper p-5 text-sm sm:grid-cols-3">
@@ -60,7 +60,7 @@ export default async function Page({ params }: { params: Promise<{ ateneo: strin
       <OriginRecognitionSection origin={o} />
 
       <div className="mt-6 flex flex-wrap gap-3 text-sm">
-        <Link href="/practice" className="rounded-full bg-almi-coral px-5 py-2 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">Practise CILS &amp; CELI</Link>
+        <Link href="/practice" className="rounded-full bg-almi-coral px-5 py-2 font-semibold text-almi-ink hover:bg-almi-coral-deep">Practise CILS &amp; CELI</Link>
         <Link href={`/study-in-italy/${o.slug}`} className="rounded-full border border-almi-line px-5 py-2 text-almi-text hover:border-almi-coral">Study in Italy from {o.name}</Link>
       </div>
 

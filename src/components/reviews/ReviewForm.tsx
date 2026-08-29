@@ -119,7 +119,7 @@ export function ReviewForm({ onSuccess }: { onSuccess?: () => void }) {
           className="flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-almi-text-muted"
         >
           <span>Your review</span>
-          <span className={"tabular-nums " + (remaining < 0 ? "text-almi-coral-deep" : "text-almi-text-muted")}>
+          <span className={"tabular-nums " + (remaining < 0 ? "text-almi-coral-text" : "text-almi-text-muted")}>
             {text.length} / {TEXT_MAX}
           </span>
         </label>
@@ -136,7 +136,7 @@ export function ReviewForm({ onSuccess }: { onSuccess?: () => void }) {
         />
       </div>
 
-      {error && <p className="text-sm text-almi-coral-deep">{error}</p>}
+      {error && <p className="text-sm text-almi-coral-text">{error}</p>}
 
       <div className="flex justify-end">
         <button

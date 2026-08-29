@@ -35,7 +35,7 @@ export default async function Page({
         <h1 className="text-2xl font-bold text-almi-ink">{m.heading}</h1>
         <p className="mt-3 text-almi-text">{m.body}</p>
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link href="/account" className="inline-flex rounded-full bg-almi-coral px-6 py-2.5 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">Go to account</Link>
+          <Link href="/account" className="inline-flex rounded-full bg-almi-coral px-6 py-2.5 font-semibold text-almi-ink hover:bg-almi-coral-deep">Go to account</Link>
           <Link href="/practice" className="inline-flex rounded-full border border-almi-line px-6 py-2.5 font-medium text-almi-ink hover:border-almi-coral">Practise</Link>
         </div>
       </div>

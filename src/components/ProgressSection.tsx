@@ -28,7 +28,7 @@ const STATUS_COPY: Record<NonNullable<ProgressAttempt["score"]>["status"], strin
 
 const STATUS_CLASS: Record<NonNullable<ProgressAttempt["score"]>["status"], string> = {
   CLEAR: "text-almi-ink",
-  BORDERLINE: "text-almi-coral-deep",
+  BORDERLINE: "text-almi-coral-text",
   BELOW: "text-almi-text-muted",
 };
 
@@ -49,7 +49,7 @@ export function ProgressSection({
     <section className="mt-8 rounded-2xl border border-almi-line bg-almi-paper p-6">
       <div className="flex items-center justify-between gap-4">
         <h2 className="text-lg font-semibold text-almi-ink">{title}</h2>
-        <Link href={practiseHref} className="text-xs font-medium text-almi-coral hover:underline">
+        <Link href={practiseHref} className="text-xs font-medium text-almi-link underline">
           {practiseLabel} →
         </Link>
       </div>

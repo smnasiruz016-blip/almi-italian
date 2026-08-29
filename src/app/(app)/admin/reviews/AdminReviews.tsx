@@ -53,7 +53,7 @@ export function AdminReviews({ rows: initialRows }: { rows: AdminReviewRow[] }) 
   return (
     <div>
       <header className="mb-6">
-        <p className="text-xs font-bold uppercase tracking-wider text-almi-teal">Admin</p>
+        <p className="text-xs font-bold uppercase tracking-wider text-almi-teal-text">Admin</p>
         <h1 className="mt-1 text-3xl font-semibold text-almi-ink">Reviews</h1>
         <p className="mt-1 text-sm text-almi-text-muted">
           Approve testimonials. Reviews are unapproved by default, and editing a
@@ -65,7 +65,7 @@ export function AdminReviews({ rows: initialRows }: { rows: AdminReviewRow[] }) 
         <span className="rounded-full bg-almi-bg-peach px-3 py-1 text-sm font-semibold text-almi-ink">
           {approvedCount} / {rows.length} approved
         </span>
-        {error && <span className="text-xs text-almi-coral-deep">{error}</span>}
+        {error && <span className="text-xs text-almi-coral-text">{error}</span>}
       </div>
 
       <div className="mb-6 flex flex-wrap gap-2 text-sm">
@@ -107,7 +107,7 @@ export function AdminReviews({ rows: initialRows }: { rows: AdminReviewRow[] }) 
                       <span aria-hidden className="text-almi-bg-peach">{"★".repeat(5 - Math.max(0, Math.min(5, r.rating)))}</span>
                     </span>
                     {r.approved ? (
-                      <span className="rounded bg-almi-teal/15 px-1.5 py-0.5 text-[11px] font-semibold text-almi-teal">
+                      <span className="rounded bg-almi-teal/15 px-1.5 py-0.5 text-[11px] font-semibold text-almi-teal-text">
                         ✓ Approved
                       </span>
                     ) : (

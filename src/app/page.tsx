@@ -40,9 +40,9 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2">
           {/* LEFT */}
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">ALMIITALIAN · CILS + CELI PRACTICE</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral-text">ALMIITALIAN · CILS + CELI PRACTICE</p>
             <h1 className="mt-4 text-4xl font-bold text-almi-ink sm:text-5xl">
-              Prepare for the Italian exam you <span className="text-almi-coral">actually need</span>.
+              Prepare for the Italian exam you <span className="text-almi-coral-text">actually need</span>.
             </h1>
             <p className="mt-5 max-w-xl text-lg text-almi-text">
               CILS (Siena) and CELI (Perugia) are two different exams with two different scoring systems — and we keep them{" "}
@@ -51,7 +51,7 @@ export default function HomePage() {
               <strong className="text-almi-ink">B1</strong>. Prepare for the right one.
             </p>
             <div className="mt-7 flex flex-wrap items-center gap-3">
-              <Link href="/signup" className="rounded-full bg-almi-coral px-7 py-3 font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">
+              <Link href="/signup" className="rounded-full bg-almi-coral px-7 py-3 font-semibold text-almi-ink hover:bg-almi-coral-deep">
                 Start 7-day free trial
               </Link>
               <Link href="/practice" className="rounded-full border border-almi-line px-7 py-3 font-semibold text-almi-text hover:border-almi-coral">
@@ -67,7 +67,7 @@ export default function HomePage() {
           <div className="rounded-3xl border border-almi-line bg-almi-paper p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold uppercase tracking-wide text-almi-text-muted">Sample readiness report · {B1C.examLabel}</p>
-              <span className="rounded-full bg-almi-bg-peach px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-almi-coral-deep">Sample</span>
+              <span className="rounded-full bg-almi-bg-peach px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-almi-coral-text">Sample</span>
             </div>
 
             {/* Four section bars, each out of the section max, with a floor tick at the pass floor */}
@@ -78,7 +78,7 @@ export default function HomePage() {
                   <div key={s.section}>
                     <div className="flex items-baseline justify-between text-xs">
                       <span className="text-almi-text">{cap(s.section)}{s.isEstimate ? " *" : ""}</span>
-                      <span className={clears ? "font-semibold text-almi-teal" : "font-semibold text-almi-coral-deep"}>{s.score}/{s.max}{clears ? " ✓" : ""}</span>
+                      <span className={clears ? "font-semibold text-almi-teal-text" : "font-semibold text-almi-coral-text"}>{s.score}/{s.max}{clears ? " ✓" : ""}</span>
                     </div>
                     <div className="relative mt-1 h-2.5 rounded-full bg-almi-bg-peach/60">
                       <div className={`absolute inset-y-0 left-0 rounded-full ${clears ? "bg-almi-teal" : "bg-almi-coral-deep"}`} style={{ width: `${(s.score / s.max) * 100}%` }} />
@@ -98,7 +98,7 @@ export default function HomePage() {
 
             {/* Verdict strip — the punchline */}
             <div className="mt-2 rounded-xl border border-almi-coral-deep/30 bg-almi-coral-deep/10 px-4 py-3 text-sm text-almi-ink">
-              <strong className="text-almi-coral-deep">Certificate: {B1C.passed ? "on track" : "not yet"}</strong> — {B1C_BELOW ? cap(B1C_BELOW.section) : "a section"} is under the {CILS_B1C_FLOOR}-point floor.
+              <strong className="text-almi-coral-text">Certificate: {B1C.passed ? "on track" : "not yet"}</strong> — {B1C_BELOW ? cap(B1C_BELOW.section) : "a section"} is under the {CILS_B1C_FLOOR}-point floor.
               CILS B1 Cittadinanza has <strong>NO banking</strong>: the whole exam is retaken.
             </div>
 
@@ -120,14 +120,14 @@ export default function HomePage() {
           <div className="mt-8 grid gap-5 md:grid-cols-3">
             {/* CILS standard — capitalization banking */}
             <div className="rounded-2xl border border-almi-line bg-almi-paper p-6">
-              <p className="text-xs font-semibold uppercase tracking-wide text-almi-coral">CILS standard · {CILS_STD.examLabel}</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-almi-coral-text">CILS standard · {CILS_STD.examLabel}</p>
               <h3 className="mt-1 font-semibold text-almi-ink">Floors + banking</h3>
               <p className="mt-2 text-sm text-almi-text">≥11/20 in every section. Capitalization: you bank the sections you pass and retake only the rest.</p>
               <ul className="mt-3 space-y-1 text-sm">
                 {CILS_STD.sections.map((s) => (
                   <li key={s.section} className="flex justify-between">
                     <span className="text-almi-text">{SEC_LABEL_STD[s.section]}{s.isEstimate ? " *" : ""}</span>
-                    <span className={s.status === "CLEAR" ? "font-semibold text-almi-teal" : "text-almi-text-muted"}>
+                    <span className={s.status === "CLEAR" ? "font-semibold text-almi-teal-text" : "text-almi-text-muted"}>
                       {s.score}/20 <span className="text-xs font-normal">{SECTION_STATUS_LABEL_EN[s.status]}</span>
                     </span>
                   </li>
@@ -140,14 +140,14 @@ export default function HomePage() {
 
             {/* CILS B1 Cittadinanza — all-or-nothing */}
             <div className="rounded-2xl border-2 border-almi-coral bg-almi-paper p-6">
-              <p className="text-xs font-semibold uppercase tracking-wide text-almi-coral">Flagship · {B1C.examLabel}</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-almi-coral-text">Flagship · {B1C.examLabel}</p>
               <h3 className="mt-1 font-semibold text-almi-ink">All-or-nothing (citizenship)</h3>
               <p className="mt-2 text-sm text-almi-text">NO banking — miss one section and the whole exam is retaken. We train you to ≥7/12 per section and ≥28/48 overall: Siena publishes the 48-point total but not a pass mark for this module, so that floor is our benchmark, derived from the standard CILS B1 rule of 11/20 per skill.</p>
               <ul className="mt-3 space-y-1 text-sm">
                 {B1C.sections.map((s) => (
                   <li key={s.section} className="flex justify-between">
                     <span className="text-almi-text">{s.section.charAt(0) + s.section.slice(1).toLowerCase()}{s.isEstimate ? " *" : ""}</span>
-                    <span className={s.status === "CLEAR" ? "font-semibold text-almi-teal" : "font-semibold text-almi-coral-deep"}>
+                    <span className={s.status === "CLEAR" ? "font-semibold text-almi-teal-text" : "font-semibold text-almi-coral-text"}>
                       {s.score}/12 <span className="text-xs font-normal">{SECTION_STATUS_LABEL_EN[s.status]}</span>
                     </span>
                   </li>
@@ -161,14 +161,14 @@ export default function HomePage() {
 
             {/* CELI — parts + band estimate */}
             <div className="rounded-2xl border border-almi-line bg-almi-paper p-6">
-              <p className="text-xs font-semibold uppercase tracking-wide text-almi-coral">CELI · {CELI_B1.examLabel} ({CELI_B1.cefr})</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-almi-coral-text">CELI · {CELI_B1.examLabel} ({CELI_B1.cefr})</p>
               <h3 className="mt-1 font-semibold text-almi-ink">Two parts, both must clear</h3>
               <p className="mt-2 text-sm text-almi-text">Written and Oral each need their own minimum. Clear one, miss the other → the passed part banks for a year.</p>
               {CELI_B1.verified && (
                 <>
                   <ul className="mt-3 space-y-1 text-sm">
-                    <li className="flex justify-between"><span className="text-almi-text">Written</span><span className={CELI_B1.written.pass ? "font-semibold text-almi-teal" : "font-semibold text-almi-coral-deep"}>{CELI_B1.written.score}/{CELI_B1.written.max}</span></li>
-                    <li className="flex justify-between"><span className="text-almi-text">Oral</span><span className={CELI_B1.oral.pass ? "font-semibold text-almi-teal" : "font-semibold text-almi-coral-deep"}>{CELI_B1.oral.score}/{CELI_B1.oral.max}</span></li>
+                    <li className="flex justify-between"><span className="text-almi-text">Written</span><span className={CELI_B1.written.pass ? "font-semibold text-almi-teal-text" : "font-semibold text-almi-coral-text"}>{CELI_B1.written.score}/{CELI_B1.written.max}</span></li>
+                    <li className="flex justify-between"><span className="text-almi-text">Oral</span><span className={CELI_B1.oral.pass ? "font-semibold text-almi-teal-text" : "font-semibold text-almi-coral-text"}>{CELI_B1.oral.score}/{CELI_B1.oral.max}</span></li>
                   </ul>
                   <p className="mt-3 rounded-lg bg-almi-bg-peach/50 p-2 text-xs text-almi-text">
                     Grade band <strong className="text-almi-ink">{CELI_B1.gradeBand}</strong> (estimate)
@@ -246,7 +246,7 @@ export default function HomePage() {
             ))}
           </dl>
           <div className="mt-8 text-center">
-            <Link href="/signup" className="rounded-full bg-almi-coral px-7 py-3 text-sm font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark">
+            <Link href="/signup" className="rounded-full bg-almi-coral px-7 py-3 text-sm font-semibold text-almi-ink hover:bg-almi-coral-deep">
               Create your account →
             </Link>
           </div>

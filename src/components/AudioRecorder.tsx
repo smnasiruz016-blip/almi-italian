@@ -90,7 +90,7 @@ export function AudioRecorder({
             type="button"
             onClick={start}
             disabled={disabled}
-            className="rounded-full bg-almi-coral px-4 py-2 text-sm font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark disabled:opacity-50"
+            className="rounded-full bg-almi-coral px-4 py-2 text-sm font-semibold text-almi-ink hover:bg-almi-coral-deep disabled:opacity-50"
           >
             {state === "ready" ? "● Record again" : "● Record"}
           </button>
@@ -109,7 +109,7 @@ export function AudioRecorder({
         // eslint-disable-next-line jsx-a11y/media-has-caption
         <audio className="mt-3 w-full" src={previewUrl} controls aria-label="Your recording" />
       )}
-      {error && <p className="mt-2 text-xs text-almi-coral-deep">{error}</p>}
+      {error && <p className="mt-2 text-xs text-almi-coral-text">{error}</p>}
     </div>
   );
 }

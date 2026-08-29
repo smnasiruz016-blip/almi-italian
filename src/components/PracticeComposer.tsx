@@ -93,7 +93,7 @@ function WritingTask({ itemId, p }: { itemId: string; p: RunnerWritingPayload })
         placeholder="Scrivi qui la tua risposta…"
       />
       <div className="mt-1 flex items-center justify-between text-xs">
-        <span className={under || over ? "text-almi-coral-deep" : "text-almi-teal"}>
+        <span className={under || over ? "text-almi-coral-text" : "text-almi-teal-text"}>
           {n} word{n === 1 ? "" : "s"} · target {p.minWords}{p.maxWords ? `–${p.maxWords}` : "+"}
         </span>
       </div>
@@ -104,11 +104,11 @@ function WritingTask({ itemId, p }: { itemId: string; p: RunnerWritingPayload })
         type="button"
         onClick={submit}
         disabled={s.busy || n === 0}
-        className="mt-4 inline-flex rounded-full bg-almi-coral px-6 py-2.5 text-sm font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark disabled:opacity-50"
+        className="mt-4 inline-flex rounded-full bg-almi-coral px-6 py-2.5 text-sm font-semibold text-almi-ink hover:bg-almi-coral-deep disabled:opacity-50"
       >
         {s.busy ? "Valutazione in corso…" : "Ricevi la valutazione"}
       </button>
-      {s.error && <p className="mt-2 text-sm text-almi-coral-deep">{s.error}</p>}
+      {s.error && <p className="mt-2 text-sm text-almi-coral-text">{s.error}</p>}
       {s.estimate && <EstimateReport estimate={s.estimate} />}
     </div>
   );
@@ -159,7 +159,7 @@ function SpeakingTask({ itemId, p }: { itemId: string; p: RunnerSpeakingPayload 
         type="button"
         onClick={submit}
         disabled={s.busy || !rec}
-        className="mt-3 inline-flex rounded-full bg-almi-coral px-6 py-2.5 text-sm font-semibold text-almi-ink hover:bg-almi-coral-deep hover:text-almi-on-dark disabled:opacity-50"
+        className="mt-3 inline-flex rounded-full bg-almi-coral px-6 py-2.5 text-sm font-semibold text-almi-ink hover:bg-almi-coral-deep disabled:opacity-50"
       >
         {s.busy ? "Valutazione in corso…" : "Invia la registrazione"}
       </button>
@@ -168,7 +168,7 @@ function SpeakingTask({ itemId, p }: { itemId: string; p: RunnerSpeakingPayload 
       <p className="mt-2 text-xs text-almi-text-muted">
         La valutazione si basa su una trascrizione automatica: non giudica la pronuncia reale.
       </p>
-      {s.error && <p className="mt-2 text-sm text-almi-coral-deep">{s.error}</p>}
+      {s.error && <p className="mt-2 text-sm text-almi-coral-text">{s.error}</p>}
       {s.estimate && <EstimateReport estimate={s.estimate} transcript={s.transcript} needsReview={s.needsReview} />}
     </div>
   );

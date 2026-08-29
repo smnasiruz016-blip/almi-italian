@@ -14,9 +14,9 @@
 import { ESTIMATE_DISCLAIMER, type LabelledEstimate } from "@/lib/ai/schemas";
 
 const BAND_LABEL: Record<string, { text: string; cls: string }> = {
-  RAGGIUNTO: { text: "Raggiunto", cls: "bg-almi-teal/15 text-almi-teal" },
+  RAGGIUNTO: { text: "Raggiunto", cls: "bg-almi-teal/15 text-almi-teal-text" },
   PARZIALE: { text: "Parziale", cls: "bg-almi-bg-peach text-almi-ink" },
-  NON_RAGGIUNTO: { text: "Non raggiunto", cls: "bg-almi-coral/15 text-almi-coral-deep" },
+  NON_RAGGIUNTO: { text: "Non raggiunto", cls: "bg-almi-coral/15 text-almi-coral-text" },
 };
 
 export function EstimateReport({ estimate, transcript, needsReview }: {
@@ -40,9 +40,9 @@ export function EstimateReport({ estimate, transcript, needsReview }: {
             <span className="text-xs text-almi-text-muted">(l&apos;esame assegna {s.officialMax} punti; qui se ne valutano {s.max})</span>
           )}
           <span className={`rounded-full px-3 py-1 text-xs font-semibold ${
-            s.status === "CLEAR" ? "bg-almi-teal/15 text-almi-teal"
+            s.status === "CLEAR" ? "bg-almi-teal/15 text-almi-teal-text"
               : s.status === "BORDERLINE" ? "bg-almi-bg-peach text-almi-ink"
-                : "bg-almi-coral/15 text-almi-coral-deep"
+                : "bg-almi-coral/15 text-almi-coral-text"
           }`}>
             {s.status === "CLEAR" ? "Sopra la soglia (stima)" : s.status === "BORDERLINE" ? "Al limite (stima)" : "Sotto la soglia (stima)"}
           </span>
@@ -62,7 +62,7 @@ export function EstimateReport({ estimate, transcript, needsReview }: {
       <p className="mt-3 text-xs text-almi-text-muted">{estimate.engineNote}</p>
 
       {needsReview && (
-        <p className="mt-3 rounded-lg border border-almi-coral/40 bg-almi-coral/10 px-3 py-2 text-xs text-almi-coral-deep">
+        <p className="mt-3 rounded-lg border border-almi-coral/40 bg-almi-coral/10 px-3 py-2 text-xs text-almi-coral-text">
           La trascrizione automatica di questa registrazione è poco affidabile, quindi questa stima
           potrebbe riferirsi a parole diverse da quelle che hai detto. Riprova in un ambiente più silenzioso.
         </p>
@@ -115,7 +115,7 @@ export function EstimateReport({ estimate, transcript, needsReview }: {
 
       {transcript && (
         <details className="mt-5 rounded-lg bg-almi-bg-peach/30 p-3 text-sm">
-          <summary className="cursor-pointer text-xs font-medium text-almi-coral">Mostra la trascrizione</summary>
+          <summary className="cursor-pointer text-xs font-medium text-almi-coral-text">Mostra la trascrizione</summary>
           <p className="mt-2 whitespace-pre-line text-almi-text">{transcript}</p>
         </details>
       )}

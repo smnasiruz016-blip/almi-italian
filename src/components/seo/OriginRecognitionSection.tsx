@@ -15,7 +15,7 @@ export function OriginRecognitionSection({ origin }: { origin: Origin }) {
           <>
             Recognition of a foreign degree in {origin.name} runs through{" "}
             <strong className="text-almi-ink">{r.recognitionBody}</strong>
-            {url ? <> (<a href={r.recognitionUrl} className="text-almi-coral hover:underline" rel="nofollow noopener" target="_blank">{url}</a>)</> : null}. {r.equivalenceNote}
+            {url ? <> (<a href={r.recognitionUrl} className="text-almi-link underline" rel="nofollow noopener" target="_blank">{url}</a>)</> : null}. {r.equivalenceNote}
           </>
         ) : (
           r.equivalenceNote

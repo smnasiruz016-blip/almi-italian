@@ -28,7 +28,7 @@ export default function LearnHub() {
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
-      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral">Learn</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-almi-coral-text">Learn</p>
       <h1 className="mt-3 text-3xl font-bold text-almi-ink">
         CILS, CELI and Italian citizenship — explained honestly
       </h1>

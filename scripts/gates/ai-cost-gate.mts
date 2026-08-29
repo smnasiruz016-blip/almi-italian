@@ -60,14 +60,16 @@ const CASES: [string, EntitlementUser | null, number | null][] = [
 
 console.log("1. the decision (pure — no database):");
 for (const [label, user, want] of CASES) {
-  const status = decideAiEntitlement(user)?.status ?? null;
+  // Usage NOT supplied: this table is about the entitlement decision, not the trial cap.
+  // A null tally must never refuse — see the note on decideAiEntitlement.
+  const status = decideAiEntitlement(user, "SCRITTA", null)?.status ?? null;
   if (status !== want) fail(`${label}: expected ${want ?? "ALLOW"}, got ${status ?? "ALLOW"}`);
   else console.log(`     ${(status ?? "ALLOW").toString().padEnd(5)} ${label}`);
 }
 // The RED direction as its own assertion: if the decision allowed everyone, the table above
 // would still print eleven lines and mean nothing.
 const refused = CASES.filter(([, , w]) => w !== null);
-if (refused.every(([, u]) => decideAiEntitlement(u) === null)) {
+if (refused.every(([, u]) => decideAiEntitlement(u, "SCRITTA", null) === null)) {
   fail("RED PROOF FAILED — decideAiEntitlement allowed every unentitled shape. It is not deciding anything.");
 } else {
   ok(`decision refuses ${refused.length} unentitled shape(s) and allows ${CASES.length - refused.length}`);
@@ -75,7 +77,7 @@ if (refused.every(([, u]) => decideAiEntitlement(u) === null)) {
 // The comp case is called out because it is the one AlmiPTE got wrong: checking email
 // verification before hasPaidAccess locks a comped user out with a 403 for a mailbox nobody
 // asked them to confirm.
-if (decideAiEntitlement(U({ compProUntil: future })) !== null) {
+if (decideAiEntitlement(U({ compProUntil: future }), "SCRITTA", null) !== null) {
   fail("a comped user was refused — the decision is checking verification before hasPaidAccess");
 } else ok("a comped, unverified user is ALLOWED (the order is hasPaidAccess first)");
 

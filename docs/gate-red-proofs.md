@@ -1,0 +1,134 @@
+# Gate red proofs — every gate seen failing on its own property
+
+Run: `node scripts/proofs/gate-red-sweep.mjs` — never wired into `build`, because it edits source.
+
+Measured 2026-08-31 against `origin/master` @ `e379d36`.
+
+## Why this file exists
+
+The standing rule is: **a gate that has never been seen red has not been tested.** Until it has
+refused something, its green is a claim about the world made by a program nobody has watched
+say no.
+
+The population was counted before any of this was written — from the gates' own output, not
+from a grep over their prose:
+
+| | |
+|---|---|
+| gate steps in the build chain | **40** |
+| steps that print a control of their own | **8** — `gate:item-id`, `gate:serve`, `gate:degame`, `gate:coverage`, `gate:security`, `gate:paywall`, `gate:trial-cap`, `gate:ai-ledger` |
+| steps already driven red in earlier work | **3** — `gate:ai-cost` (#66), `gate:entitlement` (#65), `gate:served-copy` (#65) |
+| **steps trusted on their own prose, never observed failing** | **29** |
+
+Those 29 are the subject of this file.
+
+## Result
+
+**29 of 29 went red. Zero hollow gates. All 29 files restored byte-exact, and every gate went
+green again on the restored file.**
+
+Restore is a byte copy taken before the edit and verified by sha256 — deliberately **not**
+`git checkout --`, which discards uncommitted work in the same path silently.
+
+## The table
+
+| # | gate | sabotage (its own property) | RED? | why it said no | restored |
+|---|---|---|---|---|---|
+| 1 | `gate:fork-hygiene` | a banned ancestor noun in a string literal | **RED** | FORK HYGIENE GATE FAILED — ancestor content found | bytes-ok + GREEN |
+| 2 | `seo:test` | one tier-1 descent country removed | **RED** | 7 Tier-1 decree countries (got 6) | bytes-ok + GREEN |
+| 3 | `selftest:engine` | CILS standard floor moved 11/20 → 12/20 | **RED** | 20 FAILED, 130 passed | bytes-ok + GREEN |
+| 4 | `gate:status-band` | default BORDERLINE width widened 1 → 3 | **RED** | an unknown scale falls back to the narrow band — got 3, expected 1 | bytes-ok + GREEN |
+| 5 | `gate:exam-verdict` | CELI 2 written-part minimum lowered 72 → 70 | **RED** | CELI DUE: written 71 (one under) fails — got true, expected false | bytes-ok + GREEN |
+| 6 | `gate:contrast` | a foreground token lightened below its WCAG threshold | **RED** | #f0c8c0 on #fffaf3 is 1.47:1 — needs 4.5:1 | bytes-ok + GREEN |
+| 7 | `gate:jsx-space` | a trailing space after `</strong>` in an entity-bearing tail that continues next line | **RED** | ProgressSection.tsx:3 — Turbopack trims that space, so it will not reach the page | bytes-ok + GREEN |
+| 8 | `gate:criterion-band` | 1 point reads as NON_RAGGIUNTO instead of PARZIALE | **RED** | 1/1 — got "NON_RAGGIUNTO", expected "RAGGIUNTO" | bytes-ok + GREEN |
+| 9 | `gate:derived-verdict` | per-criterion accumulation no longer clamps to the official ceiling | **RED** | rubric.ts: a criterion could exceed its own ceiling | bytes-ok + GREEN |
+| 10 | `validate:batch1` | a WRITING item's authored criteria emptied **in the seed source** | **RED** | 1 FAILED, 790 passed | bytes-ok + GREEN |
+| 11 | `gate:bank` | one item deleted so a bucket falls to 14 | **RED** | Rule #7: module(s) below the minimum | bytes-ok + GREEN |
+| 12 | `gate:item-id` | two items in one module given the same {exam,level,section,title} | **RED** | both hash to the same stable id | bytes-ok + GREEN |
+| 13 | `gate:real-entity` | a tier-1 real brand name placed in an item title | **RED** | an invented document names a real company | bytes-ok + GREEN |
+| 14 | `gate:titles` | a title repeated inside one module | **RED** | one module has two items with the same title | bytes-ok + GREEN |
+| 15 | `gate:ascolto-audio` | a manifest entry pointed at a clip that is not on disk | **RED** | manifest url does not match its id | bytes-ok + GREEN |
+| 16 | `gate:honesty` | the renderer stops referencing the estimate disclaimer | **RED** | EstimateReport.tsx renders estimates but never references ESTIMATE_DISCLAIMER | bytes-ok + GREEN |
+| 17 | `gate:ai-e2e` | the band enum loosened so an invented band parses | **RED** | an unknown band is REJECTED (failed) | bytes-ok + GREEN |
+| 18 | `gate:marking` | the NFD accent fold removed | **RED** | did NOT accept "e stato scritto" for key "è stato scritto" | bytes-ok + GREEN |
+| 19 | `gate:reveal` | a protected field rendered in a component that never uses the chokepoint | **RED** | PracticeComposer.tsx renders audioScript but never uses `<RevealAfterSubmit>` | bytes-ok + GREEN |
+| 20 | `gate:content:full` | a /guides redirect pointed at a page that does not exist | **RED** | an indexed URL 301ing to a 404 | bytes-ok + GREEN |
+| 21 | `gate:static-shell` | unknown slugs allowed to render on demand | **RED** | does not set dynamicParams = false | bytes-ok + GREEN |
+| 22 | `gate:token:full` | a numeric token made to resolve to prose | **RED** | `{{CILS_B1C_SECTION_MAX}}` renders "twelve", expected "12" | bytes-ok + GREEN |
+| 23 | `gate:webhook-idempotency` | a failed handler no longer releases its claim | **RED** | the route never calls releaseClaim — a failed handler would block every retry | bytes-ok + GREEN |
+| 24 | `gate:billing-health` | the rate limit removed from a route that makes three live Stripe calls | **RED** | the route does NOT rate-limit | bytes-ok + GREEN |
+| 25 | `gate:spend-limits` | the per-hour spend limit removed from a metered AI route | **RED** | configured but never used: aiScritta | bytes-ok + GREEN |
+| 26 | `gate:audio-retention` | the 30-day deletion disclosure removed from the privacy page | **RED** | the code enforces 30 days but the learner is told something else | bytes-ok + GREEN |
+| 27 | `gate:speaking-claims` | the confidence threshold put back to 0.7 | **RED** | good Italian speech trips it and the warning becomes noise | bytes-ok + GREEN |
+| 28 | `gate:summary-consistency` | the summary-contradiction retry branch removed at BOTH sites | **RED** | nothing branches on `bad === "summary-contradiction"` | bytes-ok + GREEN |
+| 29 | `gate:sidebar` | a sidebar item pointed at a route that does not render | **RED** | "Choose a Test" points at /nowhere | bytes-ok + GREEN |
+
+## Four sabotages that missed first, and why that matters
+
+Three gates and one more looked hollow until the sabotage was read properly. **A sabotage that
+misses is not evidence of a hollow gate until you have read why it missed** — and each of these
+turned out to be the gate behaving correctly:
+
+| gate | the miss | what it actually showed |
+|---|---|---|
+| `gate:fork-hygiene` | banned noun put in a **comment** | the gate strips comments before scanning — "read CODE, not prose". Correct, and documented. |
+| `gate:jsx-space` | trailing space at **end of line** with nothing after it | the check is deliberately scoped to tails carrying an HTML entity, because 13 other sites have the bare shape and keep their space in the build. The shape alone is not the bug. |
+| `validate:batch1` | the **JSON bundle** edited | this selftest reads the TS seed under `scripts/seed/batch1/`, not the served bundle. |
+| `gate:real-entity` | brand "Microsoft" used | the gate knows 48 brands and says so in its own output. It cannot see one that is not on its list. |
+
+One miss was a genuine weakness in the sabotage design rather than the gate: renaming
+`ESTIMATE_LABEL` did not red `gate:honesty`, because the gate **imports that same constant** and
+was comparing it to itself. The label's real protection — that the renderer must reference the
+disclaimer — does red, and that is what row 16 breaks.
+
+## 🔴 The planted-item run: three bad items, caught by nothing
+
+Bank sha256 before and after: `bf22adc474ad3cff9e072ce0544b6d12bac6e8f26e15c80c918636959f037227` —
+**byte-identical**.
+
+All three plants went into one real item, `CILS_B1C / B1C / LETTURA`, *"Avviso del comune: orari
+dell'anagrafe"*, whose passage states **"Il giovedì l'ufficio è chiuso."**
+
+| plant | what was changed | caught by |
+|---|---|---|
+| **(a) wrong answer key** | `answerIndex` 2 → 0: the key now says "Lunedì", a day the passage says the office is **open** | 🔴 **nothing — all 39 gates passed** |
+| **(b) two options, one meaning** | option 3 "Venerdì" → "Di giovedì": options 2 and 3 both name Thursday, so the item has two correct answers | 🔴 **nothing — all 39 gates passed** |
+| **(c) the stem gives the answer away** | stem → *"Il giovedì l'ufficio è chiuso. In quale giorno l'ufficio è chiuso?"* — answerable without reading the passage | 🔴 **nothing — all 39 gates passed** |
+
+### What that means, stated plainly
+
+AlmiPrep closed this criterion at **"0 wrong items in 2,254 active over 9 rules, and a planted
+item produced 3 findings."** Italian's planted items produce **0 findings**. The bar is not met.
+
+The 40 gates are real and all of them can fail — that is what the table above proves. But every
+one of them checks **structure**: counts, ids, shapes, wiring, copy, scoring arithmetic,
+retention, redirects, palettes. **Not one of them reads the Italian and asks whether it is true.**
+
+Named, not softened — this product's quality blind spots are:
+
+1. **No gate verifies an answer key against its own stimulus.** A key can point at any option.
+2. **No gate detects semantically equivalent distractors.** Options are compared as strings, so
+   "Giovedì" and "Di giovedì" are two different options as far as every check is concerned.
+3. **No gate detects an answer disclosed by its own stem.** `gate:reveal` protects `audioScript`
+   and `guidanceNote` from reaching the DOM early; it says nothing about a stem that contains
+   its own answer.
+4. **No gate checks that the Italian is correct Italian** — grammar, agreement, or register.
+5. **`gate:real-entity` is bounded by a list and says so**: "A brand absent from those lists is
+   NOT detected." That honesty is good; the coverage is still a list.
+
+A sixth, found while running this and not previously recorded: **nothing in the build compares
+the served bundle `src/data/items-batch1.json` against the TS seed it is generated from.**
+`scripts/seed/_gen_bank_json.mjs` produces it, but the generator is not in the build chain and
+no gate asserts the two agree — so a hand-edit to the bundle, or a stale bundle after a seed
+edit, ships unnoticed. Row 10 above is the same fact from the other side: emptying a WRITING
+item's criteria in the **seed** reds `validate:batch1`, while doing it in the **bundle** does
+not.
+
+## What this file does NOT claim
+
+- It does not claim the bank is correct. It claims the opposite is currently undetectable.
+- It does not claim these 29 sabotages are the only way each gate can fail — one property each,
+  chosen as the one the gate exists for.
+- `gate:served-copy` is excluded from the planted-item run: it reads `.next`, and a bank plant
+  cannot change build output produced before the plant existed.

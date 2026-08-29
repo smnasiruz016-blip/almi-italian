@@ -6,6 +6,7 @@ import type { ItalianExam } from "@/lib/items";
 import { countFor } from "@/lib/items";
 import {
   CILS_B1C_SECTION_MAX, CILS_B1C_FLOOR, CILS_B1C_TOTAL_MAX, CILS_B1C_TOTAL_FLOOR, scoreCilsB1c,
+  CILS_B1C_FLOOR_DISCLOSURE,
   CILS_STANDARD_SECTION_MAX, CILS_STANDARD_FLOOR, scoreCilsStandard,
   CELI_CONFIG, scoreCeli,
 } from "@/lib/scoring";
@@ -62,7 +63,8 @@ export const TRACKS: Track[] = [
     flag: true,
     scale: { max: CILS_B1C_SECTION_MAX, floor: CILS_B1C_FLOOR },
     honesty: B1C_HONESTY,
-    modelNote: `All-or-nothing: nothing banks — miss one section and the whole exam is retaken. Siena publishes the ${CILS_B1C_TOTAL_MAX}-point total for this module but NOT a pass mark, so the ≥${CILS_B1C_FLOOR}/${CILS_B1C_SECTION_MAX} per section and ≥${CILS_B1C_TOTAL_FLOOR}/${CILS_B1C_TOTAL_MAX} overall shown here are OUR practice benchmark, taken from the standard CILS B1 rule of 11/20 per skill.`,
+    // The second sentence is CILS_B1C_FLOOR_DISCLOSURE, not a copy of it. It used to be a copy.
+    modelNote: `All-or-nothing: nothing banks — miss one section and the whole exam is retaken. ${CILS_B1C_FLOOR_DISCLOSURE}`,
     sections: [
       S("ascolto", "ASCOLTO", "Ascolto (Listening)", "objective"),
       S("lettura", "LETTURA", "Lettura + strutture (Reading)", "objective"),

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { scoreCilsStandard, scoreCilsB1c, scoreCeli, CILS_B1C_FLOOR, CILS_B1C_SECTION_MAX, CILS_B1C_TOTAL_FLOOR } from "@/lib/scoring";
+import { SECTION_STATUS_LABEL_EN } from "@/lib/scoring/section-status";
 import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -126,7 +127,9 @@ export default function HomePage() {
                 {CILS_STD.sections.map((s) => (
                   <li key={s.section} className="flex justify-between">
                     <span className="text-almi-text">{SEC_LABEL_STD[s.section]}{s.isEstimate ? " *" : ""}</span>
-                    <span className={s.status === "CLEAR" ? "font-semibold text-almi-teal" : "text-almi-text-muted"}>{s.score}/20</span>
+                    <span className={s.status === "CLEAR" ? "font-semibold text-almi-teal" : "text-almi-text-muted"}>
+                      {s.score}/20 <span className="text-xs font-normal">{SECTION_STATUS_LABEL_EN[s.status]}</span>
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -144,7 +147,9 @@ export default function HomePage() {
                 {B1C.sections.map((s) => (
                   <li key={s.section} className="flex justify-between">
                     <span className="text-almi-text">{s.section.charAt(0) + s.section.slice(1).toLowerCase()}{s.isEstimate ? " *" : ""}</span>
-                    <span className={s.status === "CLEAR" ? "font-semibold text-almi-teal" : "font-semibold text-almi-coral-deep"}>{s.score}/12</span>
+                    <span className={s.status === "CLEAR" ? "font-semibold text-almi-teal" : "font-semibold text-almi-coral-deep"}>
+                      {s.score}/12 <span className="text-xs font-normal">{SECTION_STATUS_LABEL_EN[s.status]}</span>
+                    </span>
                   </li>
                 ))}
               </ul>

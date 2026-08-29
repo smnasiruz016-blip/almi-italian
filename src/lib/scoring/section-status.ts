@@ -35,6 +35,28 @@ export function borderlineWidthFor(max: number): number {
 export type SectionStatusValue = "CLEAR" | "BORDERLINE" | "BELOW";
 
 /**
+ * The band in words, for English surfaces.
+ *
+ * Two screens used to render the band as COLOUR ALONE (the score turned teal or coral and
+ * nothing said why), and a third dropped the raw uppercase enum "BORDERLINE" into an English
+ * sentence. Colour alone fails WCAG 1.4.1 - Use of Color: a colour-blind reader, a greyscale
+ * print or a high-contrast theme loses the verdict entirely, and the verdict is the thing a
+ * learner decides on.
+ *
+ * These mirror the Italian strings already live in EstimateReport ("Sopra la soglia" /
+ * "Al limite" / "Sotto la soglia") on the screens whose language is English. They carry no
+ * "(estimate)" suffix: each surface already labels its own estimates, and the objective
+ * sections in the practice runner are marked, not estimated.
+ *
+ * One record, so a fourth wording cannot appear the way five banding rules did.
+ */
+export const SECTION_STATUS_LABEL_EN: Record<SectionStatusValue, string> = {
+  CLEAR: "Above the threshold",
+  BORDERLINE: "At the threshold",
+  BELOW: "Below the threshold",
+};
+
+/**
  * Band one section score against its own floor.
  *
  * `max` selects the band width, so a /12 and a /20 section are never banded on each other's

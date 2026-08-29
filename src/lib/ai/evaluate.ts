@@ -17,6 +17,7 @@
 
 import type Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
+import { parseMessage } from "@anthropic-ai/sdk/lib/parser";
 import { getAnthropicClient, recordCost } from "@/lib/ai/anthropic-client";
 import { MODELS } from "@/lib/ai/models";
 import { refuseUnlessEntitled } from "@/lib/ai/entitlement";
@@ -103,8 +104,22 @@ export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
       : `TESTO DEL CANDIDATO:\n${input.response}`,
   ].join("\n\n");
 
+  // EVERY provider call this evaluate() makes, summed — not the last one.
+  //
+  // ── WHY AN ACCUMULATOR AND NOT `response.usage` ─────────────────────────────
+  // callOnce() runs TWICE whenever a guard below trips (word-count, duration,
+  // summary-contradiction, schema). The ledger used to read usage off the FINAL response, so a
+  // retried evaluation billed two calls and recorded one; and the catch below hardcoded zeros,
+  // so a response that arrived HTTP 200 and then failed to parse was billed by the provider and
+  // written down as costing nothing. Production row 2026-08-28T02:11 (orale.evaluate,
+  // in=0 out=0 cost=0, "Failed to parse structured output") is that second shape, live.
+  //
+  // A ledger that under-reports does not make /admin/costs look broken. It makes it QUIETLY
+  // LOW, which is worse, because a number that is merely too small still reads as an answer.
+  const spent = { inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0 };
+
   async function callOnce(extra: string | null) {
-    return client.messages.parse({
+    const params = {
       model: MODEL,
       max_tokens: MAX_OUTPUT_TOKENS,
       // The rubric half is stable per task and carries the cache breakpoint; the learner's
@@ -117,10 +132,27 @@ export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
       // it is documented because a silent no-op that looks like an optimisation is how a cost
       // assumption survives unexamined. Verify with usage.cache_read_input_tokens on a real
       // call: if it stays 0, caching is not engaging.
-      system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
-      messages: [{ role: "user", content: extra ? `${userTurn}\n\n${extra}` : userTurn }],
+      // `as const` on the whole object would make these arrays readonly, which the SDK's
+      // param types reject; the literal types are pinned per-field instead.
+      system: [{ type: "text" as const, text: system, cache_control: { type: "ephemeral" as const } }],
+      messages: [{ role: "user" as const, content: extra ? `${userTurn}\n\n${extra}` : userTurn }],
       output_config: { format: zodOutputFormat(ModelAssessmentSchema) },
-    });
+    };
+
+    // create() + parseMessage() IS parse(). The SDK's own definition is
+    // `parse(params, options) { return this.create(params, options).then(m => parseMessage(m, params, ...)) }`
+    // (node_modules/@anthropic-ai/sdk/resources/messages/messages.js), and parseMessage only
+    // attaches `parsed_output` to a copy of the message — it never touches `usage`. Same
+    // request, same response object, same thrown AnthropicError on a bad payload.
+    //
+    // Splitting them is the whole fix: the tokens are banked BEFORE anything can throw past
+    // this line. Do not "tidy" this back to client.messages.parse().
+    const raw = await client.messages.create(params);
+    spent.inputTokens += raw.usage?.input_tokens ?? 0;
+    spent.outputTokens += raw.usage?.output_tokens ?? 0;
+    spent.cacheReadTokens += raw.usage?.cache_read_input_tokens ?? 0;
+    spent.cacheWriteTokens += raw.usage?.cache_creation_input_tokens ?? 0;
+    return parseMessage(raw, params, { logger: console });
   }
 
   try {
@@ -182,12 +214,8 @@ export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
               : null;
     }
 
-    const usage = {
-      inputTokens: response.usage?.input_tokens ?? 0,
-      outputTokens: response.usage?.output_tokens ?? 0,
-      cacheReadTokens: response.usage?.cache_read_input_tokens ?? 0,
-      cacheWriteTokens: response.usage?.cache_creation_input_tokens ?? 0,
-    };
+    // The SUM of every call made above — one when nothing tripped, two after a retry.
+    const usage = spent;
     const feature = input.skill === "SCRITTA" ? "scritta.evaluate" : "orale.evaluate";
     const latencyMs = Date.now() - startedAt;
 
@@ -249,7 +277,10 @@ export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
       userId: input.userId,
       feature: input.skill === "SCRITTA" ? "scritta.evaluate" : "orale.evaluate",
       model: MODEL,
-      usage: { inputTokens: 0, outputTokens: 0 },
+      // NOT hardcoded zeros. Whatever calls got as far as a response are already banked in
+      // `spent`; this is zero only when the throw happened before any call was served — a
+      // network error on the first attempt, or a client the guard above never let us build.
+      usage: spent,
       success: false,
       errorMessage: msg,
     });

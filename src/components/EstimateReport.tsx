@@ -12,6 +12,7 @@
 // scripts/gates/honesty-gate.mts fails the build if this file stops importing it.
 
 import { ESTIMATE_DISCLAIMER, type LabelledEstimate } from "@/lib/ai/schemas";
+import { criterionBand } from "@/lib/scoring/section-status";
 
 const BAND_LABEL: Record<string, { text: string; cls: string }> = {
   RAGGIUNTO: { text: "Raggiunto", cls: "bg-almi-teal/15 text-almi-teal-text" },
@@ -74,7 +75,18 @@ export function EstimateReport({ estimate, transcript, needsReview }: {
           // A criterion with no band is one this product could not assess — it is appended by
           // our own code, never by the model, and it must never look like a zero.
           const notAssessed = c.band === null;
-          const b = c.band ? (BAND_LABEL[c.band] ?? { text: c.band, cls: "bg-almi-line" }) : null;
+          // WHERE THERE IS A NUMBER, THE NUMBER DECIDES THE WORD.
+          // The model returns `band` alongside `points`, unconstrained by them, and a live
+          // report showed two criteria at 0/1 carrying different verdicts. criterionBand()
+          // derives it from the score instead; the model's word is ignored in that case.
+          // It is derived at RENDER, not at evaluation, for two reasons: the stored row
+          // keeps the model's raw answer so a past report stays auditable, and every
+          // already-stored attempt is re-banded the next time a learner opens it.
+          // Returns null when the module publishes no per-criterion weight (CILS UNO/DUE,
+          // CELI) — there the band IS the verdict and the model's word stands.
+          const derived = criterionBand(c.points, c.pointsMax);
+          const band = derived ?? c.band;
+          const b = band ? (BAND_LABEL[band] ?? { text: band, cls: "bg-almi-line" }) : null;
           return (
             <li key={i} className={`rounded-lg border p-3 ${notAssessed ? "border-dashed border-almi-line bg-almi-bg-peach/20" : "border-almi-line"}`}>
               <div className="flex flex-wrap items-center justify-between gap-2">

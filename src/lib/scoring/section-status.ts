@@ -34,6 +34,53 @@ export function borderlineWidthFor(max: number): number {
 
 export type SectionStatusValue = "CLEAR" | "BORDERLINE" | "BELOW";
 
+// ── THE CRITERION BAND ──────────────────────────────────────────────────────
+// A second vocabulary, for a second grain. A SECTION gets CLEAR/BORDERLINE/BELOW against its
+// floor; a CRITERION inside that section gets RAGGIUNTO/PARZIALE/NON_RAGGIUNTO. Both are "a
+// number becoming a word a learner reads", so both live here rather than in two files.
+//
+// WHY THIS FUNCTION EXISTS
+// The band was a field of the AI schema and the model filled it in, in parallel with the
+// points and unconstrained by them. Nothing in the codebase compared the two. A live report
+// carried, on one screen at one moment:
+//     Adeguatezza stilistica      0/1  ->  "Non raggiunto"
+//     Ortografia e punteggiatura  0/1  ->  "Parziale"
+// Same value, same ceiling, two different verdicts. The second criterion's comment explains
+// it: the band had followed the PROSE ("l'ortografia ... è corretta, ma la punteggiatura è
+// insufficiente") rather than the score. It is the same failure summary-consistency.ts was
+// written for, and its header says why a rule in the prompt is not the answer: "a rule is an
+// instruction, and an instruction is what was already being ignored".
+//
+// THE RULE INVENTS NO NUMBER
+//     points === max        -> RAGGIUNTO
+//     points === 0          -> NON_RAGGIUNTO
+//     0 < points < max      -> PARZIALE
+// No percentage, no threshold, nothing the rubric does not already state. A consequence worth
+// naming: on a 1-point criterion PARZIALE becomes unreachable, because the rubric itself only
+// offers two outcomes there. Inventing a middle state on a binary criterion would be exactly
+// the "precision the rubric does not have" that schemas.ts warns against.
+//
+// WHERE IT DOES NOT APPLY
+// Returns null when either number is missing. CILS UNO/DUE and CELI publish no per-criterion
+// weights: the prompt orders points = null there and, as schemas.ts:53-54 and
+// summary-consistency.ts:64-67 both record, the BAND CARRIES THE VERDICT on those modules.
+// There is nothing to derive from and the model's word is kept untouched. A criterion this
+// product could not assess is also null/null and stays "Non valutato".
+export type CriterionBand = "RAGGIUNTO" | "PARZIALE" | "NON_RAGGIUNTO";
+
+export function criterionBand(
+  points: number | null | undefined,
+  pointsMax: number | null | undefined,
+): CriterionBand | null {
+  if (typeof points !== "number" || typeof pointsMax !== "number") return null;
+  if (!Number.isFinite(points) || !Number.isFinite(pointsMax) || pointsMax <= 0) return null;
+  if (points <= 0) return "NON_RAGGIUNTO";
+  // >= rather than ===: a stored row from a revised rubric could exceed its ceiling, and
+  // "at or above the maximum" is still the maximum verdict, never a partial one.
+  if (points >= pointsMax) return "RAGGIUNTO";
+  return "PARZIALE";
+}
+
 /**
  * The band in words, for English surfaces.
  *

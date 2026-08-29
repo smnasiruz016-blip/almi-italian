@@ -55,9 +55,21 @@ export const CILS_B1C_SOURCING = {
 } as const;
 
 /** One sentence, used wherever the floor is shown to a learner, so a practice benchmark is never
- *  presented as the exam's own rule. */
+ *  presented as the exam's own rule.
+ *
+ *  This was exported and rendered NOWHERE - it survived only in comments - while practice.ts
+ *  carried its own near-identical wording. Two texts saying the same thing is the arrangement
+ *  in which one is edited and the other quietly becomes a lie. practice.ts now renders THIS
+ *  constant, so there is one sentence.
+ *
+ *  Built from the constants rather than typed digits: the old version hardcoded "48-point" and
+ *  "7-per-section", which would have gone stale the moment either number moved. The 11/20 stays
+ *  a literal on purpose - importing cils-standard here would be the cross-engine blending this
+ *  file exists to prevent, and the CILS standard gate pins that number separately. */
 export const CILS_B1C_FLOOR_DISCLOSURE =
-  "Siena publishes the 48-point total for this module but not a pass mark: the 7-per-section floor is our practice benchmark, taken from the standard CILS B1 rule of 11/20 per skill.";
+  `Siena publishes the ${CILS_B1C_TOTAL_MAX}-point total for this module but NOT a pass mark, so the 
+  ≥${CILS_B1C_FLOOR}/${CILS_B1C_SECTION_MAX} per section and ≥${CILS_B1C_TOTAL_FLOOR}/${CILS_B1C_TOTAL_MAX} overall shown here are OUR practice 
+  benchmark, taken from the standard CILS B1 rule of 11/20 per skill.`.replace(/\s+/g, " ");
 
 // Register is everyday/administrative Italian life (poste, comune, prefettura) — a "simplified B1"
 // scoped for citizenship, not academic use. Scritta/Orale are criteria-based estimates: Scritta

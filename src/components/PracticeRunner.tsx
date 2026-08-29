@@ -19,6 +19,7 @@
 
 import { useRef, useState } from "react";
 import { RevealAfterSubmit } from "@/components/RevealAfterSubmit";
+import { SECTION_STATUS_LABEL_EN } from "@/lib/scoring/section-status";
 import {
   ATOM,
   isMcq,
@@ -339,10 +340,18 @@ export function PracticeRunner({
           {result.scaled ? (
             <p className="mt-2 text-almi-text">
               On this section&apos;s scale that is about <strong className="text-almi-ink">{result.scaled.score}/{result.scaled.max}</strong> — you need ≥{result.scaled.floor}/{result.scaled.max} to clear it.{" "}
-              <span className={result.scaled.status === "CLEAR" ? "font-semibold text-almi-teal" : result.scaled.status === "BORDERLINE" ? "font-semibold text-almi-coral" : "font-semibold text-almi-coral-deep"}>{result.scaled.status}</span>
+              <span className={result.scaled.status === "CLEAR" ? "font-semibold text-almi-teal" : result.scaled.status === "BORDERLINE" ? "font-semibold text-almi-coral" : "font-semibold text-almi-coral-deep"}>{SECTION_STATUS_LABEL_EN[result.scaled.status]}</span>
             </p>
           ) : (
             celiContext && <p className="mt-2 text-almi-text">{celiContext}</p>
+          )}
+          {result.scaled?.status === "BORDERLINE" && (
+            // The floor is the exam's; the band just under it is ours. Said where the word is
+            // read, not in a footnote, because this is the one band a learner could mistake for
+            // a published category.
+            <p className="mt-2 text-xs text-almi-text-muted">
+              The ≥{result.scaled.floor}/{result.scaled.max} threshold is Siena&apos;s; the &quot;{SECTION_STATUS_LABEL_EN.BORDERLINE}&quot; band just below it is our own practice cue, not part of any published mark scheme.
+            </p>
           )}
           <p className="mt-3 text-xs text-almi-text-muted">{modelNote}</p>
           <p className="mt-2 text-xs text-almi-text-muted">{honesty}</p>

@@ -18,6 +18,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { checkAiEntitlement } from "@/lib/ai/entitlement";
+import { logRefusal } from "@/lib/observability";
 import { limitByClient, tooManyRequests } from "@/lib/rate-limit";
 import { getItemByStableId } from "@/lib/item-id";
 import { putAudio, isBlobConfigured } from "@/lib/storage/blob";
@@ -41,9 +42,12 @@ export async function POST(req: Request): Promise<NextResponse> {
     return NextResponse.json({ ok: false, error: "Not authenticated" }, { status: 401 });
   }
 
-  // BEFORE the upload. See the header.
-  const refusal = await checkAiEntitlement(user.id);
+  // BEFORE the upload. See the header. Includes the TRIAL CAP, so a trialing account that has
+  // used its speaking allowance is refused before the clip is stored, before Whisper is
+  // called, and before any Anthropic token is spent. 402, never 500.
+  const refusal = await checkAiEntitlement(user.id, "ORALE");
   if (refusal) {
+    logRefusal({ route: "/api/it/evaluate/orale", status: refusal.status, reason: refusal.reason, req, userId: user.id });
     return NextResponse.json(
       { ok: false, error: refusal.error, upgradeUrl: refusal.upgradeUrl },
       { status: refusal.status },

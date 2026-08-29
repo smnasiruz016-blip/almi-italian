@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run gate:fork-hygiene && npm run seo:test && npm run selftest:engine && npm run gate:status-band && npm run gate:exam-verdict && npm run gate:contrast && npm run gate:jsx-space && npm run gate:criterion-band && npm run gate:derived-verdict && npm run validate:batch1 && npm run gate:bank && npm run gate:item-id && npm run gate:serve && npm run gate:degame && npm run gate:coverage && npm run gate:security && npm run gate:real-entity && npm run gate:titles && node scripts/seo/uniqueness-gate.mjs && npm run gate:entitlement && npm run gate:paywall && npm run gate:ascolto-audio && npm run gate:ai-cost && npm run gate:ai-ledger && npm run gate:honesty && npm run gate:ai-e2e && npm run gate:marking && npm run gate:reveal && npm run gate:content:full && npm run gate:static-shell && npm run gate:token:full && npm run gate:webhook-idempotency && npm run gate:billing-health && npm run gate:spend-limits && npm run gate:audio-retention && npm run gate:speaking-claims && npm run gate:summary-consistency && npm run gate:sidebar && prisma generate && next build && npm run gate:served-copy",
+    "build": "npm run gate:fork-hygiene && npm run seo:test && npm run selftest:engine && npm run gate:status-band && npm run gate:exam-verdict && npm run gate:contrast && npm run gate:jsx-space && npm run gate:criterion-band && npm run gate:derived-verdict && npm run validate:batch1 && npm run gate:bank && npm run gate:item-id && npm run gate:serve && npm run gate:degame && npm run gate:coverage && npm run gate:security && npm run gate:real-entity && npm run gate:titles && node scripts/seo/uniqueness-gate.mjs && npm run gate:entitlement && npm run gate:paywall && npm run gate:ascolto-audio && npm run gate:ai-cost && npm run gate:trial-cap && npm run gate:ai-ledger && npm run gate:honesty && npm run gate:ai-e2e && npm run gate:marking && npm run gate:reveal && npm run gate:content:full && npm run gate:static-shell && npm run gate:token:full && npm run gate:webhook-idempotency && npm run gate:billing-health && npm run gate:spend-limits && npm run gate:audio-retention && npm run gate:speaking-claims && npm run gate:summary-consistency && npm run gate:sidebar && prisma generate && next build && npm run gate:served-copy",
     "start": "next start",
     "postinstall": "prisma generate",
     "lint": "next lint",
@@ -52,7 +52,8 @@
     "gate:sidebar": "tsx scripts/gates/sidebar-gate.mts",
     "gate:content:full": "tsx scripts/gates/content-gate.mts --expect-full",
     "gate:paywall": "tsx scripts/gates/paywall-gate.mts",
-    "gate:served-copy": "tsx scripts/gates/served-copy-gate.mts"
+    "gate:served-copy": "tsx scripts/gates/served-copy-gate.mts",
+    "gate:trial-cap": "tsx scripts/gates/trial-cap-gate.mts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.121.0",

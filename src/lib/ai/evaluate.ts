@@ -70,7 +70,7 @@ export async function evaluate(input: EvaluateInput): Promise<EvaluateResult> {
   const startedAt = Date.now();
 
   // GUARD FIRST. Nothing above this line touches a client, a key, or a network.
-  const denied = await refuseUnlessEntitled(input.userId);
+  const denied = await refuseUnlessEntitled(input.userId, input.skill);
   if (denied) return { ...denied, latencyMs: 0 };
 
   // Scale and criteria from the engine and the item. Throws rather than guessing a scale.

@@ -68,10 +68,18 @@ export type PaidUser = Pick<
   "email" | "emailVerifiedAt" | "subscriptionStatus" | "subscriptionCurrentPeriodEnd" | "compProUntil"
 >;
 
+/** An unexpired admin-granted comp. Exported because THREE places need this exact question —
+ *  hasPaidAccess, needsEmailVerification, and the trial cap in lib/ai/entitlement.ts. It was
+ *  already written out twice here; a third hand-copy is how a badge and a paywall come to
+ *  disagree, so it is one function now. */
+export function isCompActive(user: Pick<User, "compProUntil"> | null): boolean {
+  return Boolean(user?.compProUntil && user.compProUntil > new Date());
+}
+
 export function hasPaidAccess(user: PaidUser | null): boolean {
   if (!user) return false;
   if (isOwner(user.email)) return true; //                    owner bypass
-  if (user.compProUntil && user.compProUntil > new Date()) return true; // admin-granted comp
+  if (isCompActive(user)) return true; //                     admin-granted comp
   return hasActiveSubscription(user) && user.emailVerifiedAt !== null;
 }
 
@@ -80,7 +88,7 @@ export function hasPaidAccess(user: PaidUser | null): boolean {
 export function needsEmailVerification(user: PaidUser | null): boolean {
   if (!user) return false;
   if (isOwner(user.email)) return false;
-  if (user.compProUntil && user.compProUntil > new Date()) return false;
+  if (isCompActive(user)) return false;
   return hasActiveSubscription(user) && user.emailVerifiedAt === null;
 }
 

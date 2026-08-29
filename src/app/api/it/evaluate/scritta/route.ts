@@ -16,6 +16,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { checkAiEntitlement } from "@/lib/ai/entitlement";
+import { logRefusal } from "@/lib/observability";
 import { limitByClient, tooManyRequests } from "@/lib/rate-limit";
 import { getItemByStableId } from "@/lib/item-id";
 import { evaluate } from "@/lib/ai/evaluate";
@@ -38,8 +39,12 @@ export async function POST(req: Request): Promise<NextResponse> {
   }
 
   // BEFORE anything is loaded and long before anything is spent.
-  const refusal = await checkAiEntitlement(user.id);
+  // Includes the TRIAL CAP: a trialing account gets TRIAL_EVALUATIONS_PER_SKILL of this
+  // skill, and the third attempt is refused HERE — before any client is built and before a
+  // single token is spent. 402, never 500.
+  const refusal = await checkAiEntitlement(user.id, "SCRITTA");
   if (refusal) {
+    logRefusal({ route: "/api/it/evaluate/scritta", status: refusal.status, reason: refusal.reason, req, userId: user.id });
     return NextResponse.json(
       { ok: false, error: refusal.error, upgradeUrl: refusal.upgradeUrl },
       { status: refusal.status },

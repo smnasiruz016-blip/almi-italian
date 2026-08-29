@@ -1,23 +1,33 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
-import { canAccessAdmin } from "@/lib/access";
+import { canAccessAdmin, isOwner, isFreeWindowActive, FREE_ACCESS_DAYS } from "@/lib/access";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-type Plan = "comp" | "pro" | "free";
+type Plan = "owner" | "comp" | "pro" | "free3d" | "free";
 
 const ACTIVE_STATUSES = ["trialing", "active"];
 
+// One source for "what is this person". /account said "Owner - full access" while this
+// table said "Free" about the same person: it read only compProUntil and
+// subscriptionStatus and never asked isOwner(), which is the predicate every other
+// surface uses. An owner has no subscription row, so the honest columns were producing a
+// dishonest label. The 3-day no-card window is the same omission one tier down - it is a
+// real grant (access.ts isFreeWindowActive) and was being counted as plain "free".
 function classifyPlan(u: {
+  email: string;
   compProUntil: Date | null;
   subscriptionStatus: string | null;
+  freeAccessStartedAt: Date | null;
 }): Plan {
   const now = Date.now();
+  if (isOwner(u.email)) return "owner";
   if (u.compProUntil && u.compProUntil.getTime() > now) return "comp";
   if (u.subscriptionStatus && ACTIVE_STATUSES.includes(u.subscriptionStatus)) {
     return "pro";
   }
+  if (isFreeWindowActive(u)) return "free3d";
   return "free";
 }
 
@@ -31,13 +41,18 @@ function formatDate(d: Date | null): string {
 }
 
 const BADGE: Record<Plan, string> = {
+  owner: "bg-almi-ink text-almi-on-dark",
   comp: "bg-amber-100 text-amber-800",
   pro: "bg-emerald-100 text-emerald-800",
+  free3d: "bg-almi-bg-peach text-almi-ink",
   free: "bg-gray-100 text-gray-600",
 };
 const BADGE_LABEL: Record<Plan, string> = {
+  // The same words the learner sees on /account, from the same predicates.
+  owner: "Owner",
   comp: "Comp",
   pro: "Pro",
+  free3d: "3-day free",
   free: "Free",
 };
 
@@ -66,6 +81,7 @@ export default async function AccountsPage() {
         createdAt: true,
         compProUntil: true,
         subscriptionStatus: true,
+        freeAccessStartedAt: true,
         authSessions: {
           orderBy: { createdAt: "desc" },
           take: 1,
@@ -75,11 +91,20 @@ export default async function AccountsPage() {
     }),
   ]);
 
-  const freeCount = total - compCount - proCount;
+  // Counted, not inferred: a window is "active" only while it is running, so this is a
+  // query rather than a subtraction. AlmiPrep shows the same stat.
+  const free3dCount = await prisma.user.count({
+    where: {
+      freeAccessStartedAt: { gt: new Date(Date.now() - FREE_ACCESS_DAYS * 24 * 60 * 60 * 1000) },
+      compProUntil: null,
+    },
+  });
+  const freeCount = Math.max(0, total - compCount - proCount - free3dCount);
 
   const stats: { label: string; value: number }[] = [
     { label: "Total", value: total },
     { label: "Free", value: freeCount },
+    { label: "3-day free", value: free3dCount },
     { label: "Pro", value: proCount },
     { label: "Comp", value: compCount },
   ];

@@ -547,7 +547,7 @@ export const CILS_DUE_ITEMS: RawItem[] = [
       blanks: [
         { answer: "Andando", options: ["Andando", "Andare", "Andato", "Vado"] },
         { answer: "parlando", options: ["parlando", "parlare", "di parlare", "parlato"] },
-        { answer: "aver finito", options: ["aver finito", "finire", "finendo", "finendolo"] },
+        { answer: "aver finito", options: ["aver finito", "finire", "finendo", "avendo finito"] },
         { answer: "cercando", options: ["cercando", "cercare", "di cercare", "cercato"] },
       ],
     },

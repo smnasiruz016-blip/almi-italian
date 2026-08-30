@@ -5,10 +5,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run gate:fork-hygiene && npm run seo:test && npm run selftest:engine && npm run gate:status-band && npm run gate:exam-verdict && npm run gate:contrast && npm run gate:jsx-space && npm run gate:criterion-band && npm run gate:derived-verdict && npm run validate:batch1 && npm run gate:bank && npm run gate:seed-bundle && npm run gate:option-category && npm run gate:title-key && npm run gate:item-id && npm run gate:serve && npm run gate:degame && npm run gate:numeric && npm run gate:coverage && npm run gate:source-freshness && npm run gate:security && npm run gate:real-entity && npm run gate:titles && node scripts/seo/uniqueness-gate.mjs && npm run gate:entitlement && npm run gate:admin-counting && npm run gate:paywall && npm run gate:ascolto-audio && npm run gate:ai-cost && npm run gate:trial-cap && npm run gate:ai-ledger && npm run gate:honesty && npm run gate:ai-e2e && npm run gate:marking && npm run gate:reveal && npm run gate:content:full && npm run gate:static-shell && npm run gate:token:full && npm run gate:webhook-idempotency && npm run gate:billing-health && npm run gate:spend-limits && npm run gate:audio-retention && npm run gate:speaking-claims && npm run gate:summary-consistency && npm run gate:sidebar && prisma generate && next build && npm run gate:served-copy",
+    "build": "npm run gate:fork-hygiene && npm run seo:test && npm run selftest:engine && npm run gate:status-band && npm run gate:exam-verdict && npm run gate:contrast && npm run gate:jsx-space && npm run gate:criterion-band && npm run gate:derived-verdict && npm run validate:batch1 && npm run gate:bank && npm run gate:seed-bundle && npm run gate:option-category && npm run gate:title-key && npm run gate:item-id && npm run gate:serve && npm run gate:degame && npm run gate:numeric && npm run gate:coverage && npm run gate:source-freshness && npm run gate:security && npm run gate:real-entity && npm run gate:titles && node scripts/seo/uniqueness-gate.mjs && npm run gate:entitlement && npm run gate:admin-counting && npm run gate:paywall && npm run gate:ascolto-audio && npm run gate:ai-cost && npm run gate:trial-cap && npm run gate:ai-ledger && npm run gate:honesty && npm run gate:ai-e2e && npm run gate:marking && npm run gate:reveal && npm run gate:content:full && npm run gate:static-shell && npm run gate:token:full && npm run gate:webhook-idempotency && npm run gate:billing-health && npm run gate:spend-limits && npm run gate:audio-retention && npm run gate:speaking-claims && npm run gate:summary-consistency && npm run gate:sidebar && npm run gate:lint-wiring && npm run lint && prisma generate && next build && npm run gate:served-copy",
     "start": "next start",
     "postinstall": "prisma generate",
-    "lint": "next lint",
+    "lint": "eslint .",
     "seo:data": "python scripts/seo/build-data.py",
     "seo:test": "node scripts/seo/exclusions.selftest.mjs && tsx scripts/seo/content.selftest.ts",
     "selftest:engine": "tsx src/lib/scoring/scoring.selftest.ts",
@@ -59,7 +59,8 @@
     "gate:admin-counting": "tsx scripts/gates/admin-counting-gate.mts",
     "gate:source-freshness": "tsx scripts/gates/source-freshness-gate.mts",
     "gate:option-category": "tsx scripts/gates/option-category-gate.mts",
-    "gate:title-key": "tsx scripts/gates/title-key-gate.mts"
+    "gate:title-key": "tsx scripts/gates/title-key-gate.mts",
+    "gate:lint-wiring": "tsx scripts/gates/lint-wiring-gate.mts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.121.0",
@@ -85,7 +86,10 @@
     "@types/react-dom": "^19",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.3",
+    "eslint-plugin-jsx-a11y": "^6.10.2"
   },
   "overrides": {
     "sharp": "^0.35.3",

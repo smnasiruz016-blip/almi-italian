@@ -69,6 +69,13 @@ export default async function AdminCostsPage() {
   const user = await requireUser();
   if (!canAccessAdmin(user.email)) redirect("/account");
 
+  // react-hooks/purity flags Date.now() here. It is right about client components and wrong
+  // about this one: the file declares `export const dynamic = "force-dynamic"` and this is an
+  // async SERVER component, so it runs once per request and never re-renders. "Now" is exactly
+  // what a spend report for the last 24 hours has to be computed from; freezing it would make
+  // the windows wrong rather than stable. The rule cannot see which side of the boundary it is
+  // standing on.
+  // eslint-disable-next-line react-hooks/purity
   const now = Date.now();
   const since = (days: number) => new Date(now - days * DAY_MS);
   const startOfTodayUtc = new Date(Date.UTC(

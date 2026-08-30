@@ -262,8 +262,8 @@ export const CILS_B1C_ITEMS: RawItem[] = [
       shuffled: [
         "Metti il sacchetto giusto fuori dalla porta la sera prima della raccolta.",
         "Separa i rifiuti: carta, plastica, vetro e organico.",
-        "Lava velocemente i contenitori sporchi di cibo.",
-        "Controlla il calendario per sapere quale rifiuto esce quel giorno.",
+        "Lava velocemente i contenitori che hai messo nella plastica e nel vetro.",
+        "Poi controlla il calendario per sapere quale rifiuto esce quel giorno.",
       ],
       correctOrder: [1, 2, 3, 0],
     },
@@ -317,7 +317,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
       instruction: "Metti in ordine le fasi del prestito.",
       shuffled: [
         "Riporta il libro entro trenta giorni per non pagare la multa.",
-        "Fai la tessera gratuita presentando un documento d'identità.",
+        "Prima di tutto, fai la tessera gratuita presentando un documento d'identità.",
         "Porta il libro al banco e mostra la tessera per registrarlo.",
         "Cerca il libro sugli scaffali o nel catalogo online.",
       ],

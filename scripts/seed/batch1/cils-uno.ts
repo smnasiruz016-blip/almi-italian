@@ -346,7 +346,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
       instruction: "Ordina le fasi dalla prima all'ultima.",
       shuffled: [
         "Inserisci il gettone e premi il pulsante di avvio.",
-        "Scegli il programma in base al tipo di tessuto.",
+        "Scegli il programma adatto ai tessuti che hai messo nel cestello.",
         "Metti i panni nel cestello senza riempirlo troppo.",
         "Aspetta la fine del ciclo e ritira subito il bucato.",
       ],

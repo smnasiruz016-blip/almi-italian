@@ -526,6 +526,16 @@ export const CILS_DUE_ITEMS: RawItem[] = [
   },
   {
     exam: "CILS_STANDARD", level: L, section: "ANALISI", taskType: "ANALISI", difficulty: "CORE",
+    // RESOLVED — do not re-open. Blank 4 is `Non sapevo che ___` and the key is the congiuntivo
+    // trapassato `fosse partito`, in an item titled *Il trapassato prossimo*. That looked like a
+    // key contradicting its own title, and it is not: after `non sapevo che` the indicative
+    // trapassato BECOMES the congiuntivo trapassato. Same tense family — the title governs and
+    // the key obeys it. Blanks 1-3 carry the indicative, which is what makes the contrast the
+    // point of the item rather than an inconsistency in it.
+    //
+    // The distractor `partira` was replaced by `sara partito` to remove a longest-option cue.
+    // `era partito` was deliberately NOT used: prescriptively wrong after `non sapevo che`, but so
+    // common in speech that it would be a defensible answer rather than a distractor.
     title: "Il trapassato prossimo", topicTag: "grammatica",
     prompt: "Completa il testo con la forma corretta.",
     payload: {
@@ -540,6 +550,14 @@ export const CILS_DUE_ITEMS: RawItem[] = [
   },
   {
     exam: "CILS_STANDARD", level: L, section: "ANALISI", taskType: "ANALISI", difficulty: "CORE",
+    // RESOLVED — do not re-open. Blank 3's carrier sentence is `Dopo ___ il lavoro, siamo usciti.`
+    // and the key is `aver finito`: after `dopo`, Italian takes the infinito passato.
+    //
+    // The distractor `avendo finito` is therefore WRONG here and safe to keep — a gerund cannot
+    // follow `dopo`. It would NOT be safe in a sentence-initial frame: `Avendo finito il lavoro,
+    // e uscito` is perfectly correct Italian and would have been a second right answer. The frame
+    // is what decides it, which is why the carrier sentence is written out above rather than left
+    // for the next reader to go and find.
     title: "Gerundio e infinito", topicTag: "grammatica",
     prompt: "Completa il testo con la forma corretta.",
     payload: {

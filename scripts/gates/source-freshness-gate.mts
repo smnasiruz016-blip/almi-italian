@@ -9,11 +9,21 @@
 // scroll past. So this prints and exits 0. Its whole job is that "up to date" stops being a
 // belief and becomes a date on a screen.
 //
-// ── WHAT IT CANNOT SEE, SAID PLAINLY ────────────────────────────────────────
-// Nothing here re-reads a PDF or compares a number. It reads docs/source-record.md and does
-// arithmetic on the dates in it. If somebody edits the date without opening the document, this
-// gate says fresh and is wrong — which is why the record file tells you to re-hash rather than
-// re-date, and why a hash sits beside every entry.
+// ── IT RE-HASHES THE COMMITTED BYTES ───────────────────────────────────────
+// The documents live at docs/sources/, in this repository, beside the check that asserts them.
+// Every recorded sha256 is recomputed from the committed file on every build. A mismatch, or a
+// recorded document with no file, is RED.
+//
+// This is what the earlier version could not do. It read dates out of a markdown table and did
+// arithmetic on them; the bytes were in almi-italian-data/, a folder no check could reach. A
+// record that says 'sha256 abc…' while nothing ever recomputes abc… is a decoration. It is how
+// CELI 2 stayed `verified: true` for a month with no document behind it at all.
+//
+// What it still cannot see: whether anybody READ the document. A hash proves the bytes are the
+// bytes that were fetched, not that the numbers pinned in the code were checked against them.
+// That is why the pinned-value tables in the record are written out by hand and why two of the
+// PDFs went to a human reader — pdftotext dropped sentence layers on the CILS Linee guida in
+// this same audit, so a number pulled by that tool is not evidence on its own.
 //
 // ── THE ONE FAILURE MODE A WARNING-ONLY GATE HAS ───────────────────────────
 // Going quiet. If the record disappears, is renamed, or stops matching the row format, a gate
@@ -34,6 +44,7 @@
 // demonstrated — and a false claim that only whispers is the same defect wearing a warning.
 
 import { readFileSync, existsSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -44,7 +55,7 @@ const WARN_AFTER_DAYS = 120;
 const failures: string[] = [];
 const ok = (c: boolean, m: string) => { if (!c) failures.push(m); };
 
-console.log("SOURCE FRESHNESS GATE — warns at " + WARN_AFTER_DAYS + " days on age; fails on an unsourced claim\n");
+console.log("SOURCE FRESHNESS GATE — re-hashes the committed sources; warns at " + WARN_AFTER_DAYS + " days on age\n");
 
 const path = join(ROOT, RECORD);
 ok(existsSync(path), `${RECORD} is missing. A warning-only gate with nothing to read prints nothing, and silence reads as freshness.`);
@@ -83,7 +94,68 @@ ok(future.length === 0,
    `a future date silences this gate forever, which is the one way to make it useless without ` +
    `deleting it.`);
 
-// ── EVERY VERIFIED LEVEL HAS A DOCUMENT — THIS ONE FAILS ───────────────────
+// ── EVERY RECORDED DOCUMENT IS COMMITTED, AND ITS BYTES STILL HASH — FAILS ─
+{
+  console.log("\nevery recorded document is committed at docs/sources/ and re-hashed");
+  // Parsed by CELL, not by a fixed pipe count: the CILS table has six columns (it carries a url)
+  // and the CELI table has five. A regex with four pipes in it read the URL as the filename and
+  // reported three documents missing that were sitting right there.
+  const docs: { doc: string; hash: string }[] = [];
+  for (const line of text.split(/\r?\n/)) {
+    if (!line.trimStart().startsWith("|")) continue;
+    const cells = line.split("|").map((c) => c.trim()).filter((c, i, a) => !(i === 0 || i === a.length - 1));
+    const hashCell = cells.find((c) => /^`[0-9a-f]{64}`$/.test(c));
+    if (!hashCell) continue;
+    const m = (cells[0] ?? "").match(/`([^`]+\.pdf)`/);
+    if (!m) continue;
+    docs.push({ doc: m[1], hash: hashCell.replace(/`/g, "") });
+  }
+
+  console.log(`  recorded documents with a sha256: ${docs.length}`);
+  ok(docs.length > 0,
+     `${RECORD} records no document with a sha256. Without one this gate has nothing to recompute ` +
+     `and would pass on an empty record, which is the shape the old version failed in.`);
+  ok(docs.length >= 8,
+     `only ${docs.length} hashed document(s) recorded. The product pins numbers from three CILS ` +
+     `documents and six CELI levels; fewer than eight means a source stopped being tracked.`);
+
+  let verified = 0;
+  for (const d of docs) {
+    const p = join(ROOT, "docs", "sources", d.doc);
+    if (!existsSync(p)) {
+      failures.push(
+        `${RECORD} records ${d.doc} with a sha256, but docs/sources/${d.doc} does not exist. A hash ` +
+        `with no bytes beside it is a decoration: nothing can ever recompute it, so the record can ` +
+        `never be wrong and this gate can never be right.`,
+      );
+      continue;
+    }
+    const actual = createHash("sha256").update(readFileSync(p)).digest("hex");
+    if (actual !== d.hash) {
+      failures.push(
+        `docs/sources/${d.doc} does not hash to what ${RECORD} records. Recorded ${d.hash.slice(0, 16)}…, ` +
+        `the committed file is ${actual.slice(0, 16)}…. Either the document was replaced without ` +
+        `re-reading the numbers pinned from it, or the record was edited without the bytes.`,
+      );
+      continue;
+    }
+    verified++;
+  }
+  console.log(`  ✓ ${verified} of ${docs.length} re-hashed from the committed file and matched`);
+
+  // CONTROL. A hash comparison that cannot tell two byte strings apart proves nothing.
+  const first = docs[0] && existsSync(join(ROOT, "docs", "sources", docs[0].doc))
+    ? createHash("sha256").update(readFileSync(join(ROOT, "docs", "sources", docs[0].doc))).digest("hex")
+    : "";
+  const nudged = docs[0] && first
+    ? createHash("sha256").update(Buffer.concat([readFileSync(join(ROOT, "docs", "sources", docs[0].doc)), Buffer.from([0])])).digest("hex")
+    : "x";
+  const distinguishes = first !== nudged;
+  console.log(`  ${distinguishes ? "✓" : "✗"} control: the hash distinguishes a file from the same file plus one byte`);
+  ok(distinguishes, "control: the hash comparison cannot see a one-byte difference, so every match above means nothing");
+}
+
+// ── EVERY VERIFIED LEVEL HAS A DOCUMENT — THIS ONE FAILS TOO ───────────────
 // The mapping is READ FROM THE RECORD, not hard-coded here. A gate that carried its own
 // level->document table would be asserting its own belief about the world; this asserts that
 // two files agree, and both have to be edited to make it lie.
@@ -160,7 +232,8 @@ if (stale.length) {
   console.log(`    If the hash is unchanged the numbers were not restated and only the date moves.`);
 } else {
   console.log(`\n✅ source-freshness gate: ${rows.length} document(s) tracked, none older than ${WARN_AFTER_DAYS} days ` +
-              `(oldest ${Math.max(...rows.map((r) => r.ageDays))}d), and every verified CELI level has a hashed ` +
+              `(oldest ${Math.max(...rows.map((r) => r.ageDays))}d); every recorded document re-hashed from its ` +
+              `committed bytes, and every verified CELI level has a ` +
               `document behind it. Warns on age; fails on a claim with no source.`);
 }
 

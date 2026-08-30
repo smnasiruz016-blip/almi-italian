@@ -4,8 +4,15 @@ Every number this product pins about an exam comes from one of the documents bel
 records **which document, from where, fetched when, and what it hashed to** — so "up to date" is
 a date somebody can check rather than a belief.
 
-`scripts/gates/source-freshness-gate.mts` reads the `fetched:` dates here and **warns** (never
-fails) once one passes 120 days.
+**The documents themselves are committed at `docs/sources/`**, under the filename in the first
+column of each table. `scripts/gates/source-freshness-gate.mts` **re-hashes every one of them on
+every build** and FAILS if a hash does not match, if a file is missing, or if a level is marked
+`verified: true` with no document recorded against it. Age is the one soft signal: it **warns**
+at 120 days and never fails, because Siena and CVCL publish when they publish.
+
+> Evidence lives beside the check that asserts it. A hash in a file, with the bytes somewhere
+> else, is a check that can never fail — which is how this record spent a month asserting a
+> CELI 2 document that did not exist.
 
 > ⚠️ This file records provenance. It does **not** change any pinned number. Where a document and
 > the code disagree, or where a pinned number has no document behind it, that is written down
@@ -16,6 +23,9 @@ fails) once one passes 120 days.
 ## CILS — Università per Stranieri di Siena
 
 Re-read **2026-08-30**. Previous recorded read: 2026-07-05.
+
+All three are committed at `docs/sources/` under the filename in the first column. The `url`
+column records where the bytes came from; the committed copy is what the gate re-hashes.
 
 | document | url | fetched | http | bytes | sha256 |
 |---|---|---|---|---|---|
@@ -68,7 +78,8 @@ differs between them.**
 
 ## CELI — CVCL, Università per Stranieri di Perugia
 
-**Five held from the previous read, two fetched fresh on 2026-08-30.** The five already on disk
+**All seven are committed at `docs/sources/`.** Five were held from the previous read and hashed
+from disk; two were downloaded on 2026-08-30. The five already on disk
 were hashed from disk rather than re-downloaded, so they keep their original `fetched:` date.
 `celi-2-valutazione.pdf` and `celi-2-a-valutazione.pdf` were downloaded on 2026-08-30 to close
 Finding 1 below — they had never been fetched at all.
@@ -79,15 +90,20 @@ been listed in `SOURCES.md`.
 
 | document | held at | fetched | bytes | sha256 |
 |---|---|---|---|---|
-| `celi-i-a1-criteri-di-valutazione.pdf` | `almi-italian-data/celi-pdfs/` | 2026-07-05 | 615440 | `e46652dc9f3970a7cf56533026d8cbb0a3a1b4c7b166b36a7096afab65c782d3` |
-| `celi-1-valutazione.pdf` | `almi-italian-data/celi-pdfs/` | 2026-07-05 | 204330 | `64d55c1d8111ff1801e2d4ab2f85cb37bc9f4d663c1d7630e40bdfff8cf25917` |
-| `celi-2-valutazione.pdf` | `almi-italian-data/celi-pdfs/` | 2026-08-30 | 214375 | `0179afdd0b0e7bd62eca9bc2dbe443b8ed7500a4d1fe7a7e7d484d6a77143aa1` |
-| `celi-2-a-valutazione.pdf` (sibling) | `almi-italian-data/celi-pdfs/` | 2026-08-30 | 214253 | `0a15bb57540afb22125c53dae3d59fd79f285b371ac53aaf8292e65a0840c31b` |
-| `celi-3-a-valutazione.pdf` | `almi-italian-data/celi-pdfs/` | 2026-07-05 | 217173 | `2baeb377d182662b46b17251421bae8a71f9933d83e202064443116b97836f25` |
-| `celi-4-valutazione.pdf` | `almi-italian-data/celi-pdfs/` | 2026-07-05 | 219648 | `3937fc88ae05290cd7d0b33b3903d4b8580ee13b420560991440ef0886624ce1` |
-| `celi-5-valutazione.pdf` | `almi-italian-data/celi-pdfs/` | 2026-07-05 | 216527 | `b5b913253b295da6602c0203179b4cbbd1fe7d867847187552a8fbb7c007850a` |
+| `celi-i-a1-criteri-di-valutazione.pdf` | `docs/sources/` | 2026-07-05 | 615440 | `e46652dc9f3970a7cf56533026d8cbb0a3a1b4c7b166b36a7096afab65c782d3` |
+| `celi-1-valutazione.pdf` | `docs/sources/` | 2026-07-05 | 204330 | `64d55c1d8111ff1801e2d4ab2f85cb37bc9f4d663c1d7630e40bdfff8cf25917` |
+| `celi-2-valutazione.pdf` | `docs/sources/` | 2026-08-30 | 214375 | `0179afdd0b0e7bd62eca9bc2dbe443b8ed7500a4d1fe7a7e7d484d6a77143aa1` |
+| `celi-2-a-valutazione.pdf` (sibling) | `docs/sources/` | 2026-08-30 | 214253 | `0a15bb57540afb22125c53dae3d59fd79f285b371ac53aaf8292e65a0840c31b` |
+| `celi-3-a-valutazione.pdf` | `docs/sources/` | 2026-07-05 | 217173 | `2baeb377d182662b46b17251421bae8a71f9933d83e202064443116b97836f25` |
+| `celi-4-valutazione.pdf` | `docs/sources/` | 2026-07-05 | 219648 | `3937fc88ae05290cd7d0b33b3903d4b8580ee13b420560991440ef0886624ce1` |
+| `celi-5-valutazione.pdf` | `docs/sources/` | 2026-07-05 | 216527 | `b5b913253b295da6602c0203179b4cbbd1fe7d867847187552a8fbb7c007850a` |
 
-Source: `almi-italian-data/SOURCES.md` names
+**`almi-italian-data/` is no longer a dependency of anything here.** It was where these PDFs
+used to live, and while they lived there no check could reach them — a second place to look, a
+second thing to keep in sync, and a gate that could not read either. The copies under
+`docs/sources/` are the ones that count.
+
+Origin: `almi-italian-data/SOURCES.md` names
 `www.unistrapg.it/sites/default/files/docs/certificazioni/` as the origin. The two new files
 came from exactly that path:
 
@@ -217,7 +233,9 @@ future reader needs Siena's own punteggi page, it is down, not moved.
 
 ## How to update this file
 
-1. Re-fetch the document. Record its URL, the date, and `sha256sum` of the bytes you fetched.
+1. Re-fetch the document, **write it into `docs/sources/` under the same filename**, and record
+   its URL, the date, and `sha256sum` of the bytes you fetched. The gate re-hashes the committed
+   file, so a record updated without the bytes goes RED rather than quietly out of date.
 2. If the hash is unchanged, only the date moves — the numbers were not restated.
 3. If the hash changed, read it and compare every pinned value before touching the date.
 4. Keep the `fetched:` lines in the format the gate parses (`| … | YYYY-MM-DD | …`), or the gate

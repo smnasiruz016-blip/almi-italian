@@ -81,6 +81,29 @@ const reason = (u: EntitlementUser, skill: AiSkillKind, used: TrialUsage | null)
 
 console.log(`TRIAL CAP GATE — ${CAP} evaluations per skill, trials only (fixtures: production has 0 trialing users)\n`);
 
+// ── P. THE DECIDED NUMBERS, PINNED ─────────────────────────────────────────
+// This gate imports CAP and NFAIL from the product and then measures everything RELATIVE to
+// them. That is right for the driving — it keeps the fixtures honest if a number legitimately
+// changes — and on its own it is a hole: move the constant and the gate moves with it.
+//
+// Proven, not argued. Setting CONSECUTIVE_FAILURE_LIMIT to 999999 (a breaker that never trips,
+// so one trial account can burn a provider bill unbounded) left this gate GREEN. It tested at
+// 999999 and was satisfied. A verifier that reads its expectation from the thing it is checking
+// proves the key, not the world.
+//
+// So both numbers are pinned here with the decision behind them. Changing one is allowed; doing
+// it without a human editing this line is not.
+ok(CAP === 2,
+   `TRIAL_EVALUATIONS_PER_SKILL is ${CAP}, not 2. Two per skill is the network decision (OET set it ` +
+   `first). If that changed on purpose, change it here too and say why — this gate measures ` +
+   `everything relative to CAP, so it would otherwise follow the new number and stay green.`);
+ok(NFAIL === 3,
+   `CONSECUTIVE_FAILURE_LIMIT is ${NFAIL}, not 3. Three is the decided breaker: it is short enough ` +
+   `that a provider outage costs a bounded amount and long enough that two unlucky failures do not ` +
+   `lock out a paying learner. Setting it high does not fail any driven check below, because they ` +
+   `are all relative to it — which is exactly why it is pinned here.`);
+console.log(`  ✓ pinned: CAP = ${CAP}, CONSECUTIVE_FAILURE_LIMIT = ${NFAIL}`);
+
 // ── A. THE CAP EXISTS AND BITES AT EXACTLY THE RIGHT ATTEMPT ────────────────
 console.log("A. the cap bites on the attempt after the allowance");
 for (const skill of ["SCRITTA", "ORALE"] as AiSkillKind[]) {

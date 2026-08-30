@@ -161,13 +161,66 @@ totals page in full:
 | `oralMin` | 22 | *22 punti nella Prova orale* | ✅ |
 | `bands` A | 138–160 | *Punteggio compreso tra 138 e 160 punti — A = ottimo* | ✅ |
 | `bands` B | 115–137 | *Punteggio compreso tra 115 e 137 punti — B = buono* | ✅ |
-| `bands` C / `passFloor` | 94 | *Punteggio compreso tra 94 e 114 punti — C = sufficiente* | ✅ |
+| `bands` C | 94–114 | *Punteggio compreso tra 94 e 114 punti — C = sufficiente* | ✅ |
 | `bands` D | 60–93 | *Punteggio compreso tra 60 e 93 punti — D = insufficiente* | ✅ |
+| `bands` E | 0–59 | *Punteggio compreso tra 0 e 59 punti — E = gravemente insufficiente* | ✅ |
+| `passFloor` | 94 | *"L'esame è considerato superato se il punteggio ottenuto è compreso tra **94** e 160."* | ✅ |
+
+🔴 **Two corrections to this table, both mine.**
+
+**It stopped at D.** There are FIVE bands and this table checked four — the E band was never
+compared against the document at all. `celi.ts` holds it and holds it correctly (a learner
+scoring 30/160 is shown *E — gravemente insufficiente*, measured, not reasoned), but nothing here
+had established that. A verification table that stops one row short is a verification that stops
+one row short.
+
+**And the floor is PUBLISHED, not derived.** This table read 94 as "the bottom of the
+*sufficiente* band" and folded it into the C row. It is its own sentence in the PDF —
+*"L'esame è considerato superato se il punteggio ottenuto è compreso tra 94 e 160"* — an
+explicit pass threshold, now on its own row.
+
+⚠️ **This does NOT transfer to CILS B1 Cittadinanza.** Unistrasi publishes no threshold at all
+for that module, which is exactly why `CILS_B1C_FLOOR` keeps its *"our practice benchmark, not a
+Siena-published pass mark"* wording. One awarding body publishing a floor says nothing about the
+other.
 
 **The numbers were right; the SOURCING was missing.** `verified: true` was a true statement
 with nothing behind it, which is indistinguishable from a false one until somebody looks. It
 now has a hashed document behind it and stays `true` — nothing in the engine changed, and no
 learner's result moves.
+
+#### 🔴 The pass rule has THREE conditions, and the code enforced two
+
+Every CELI 1–5 PDF states them together:
+
+> *"Per superare l'esame del CELI 2 - B1 è necessario ottenere un minimo di …"*
+> **72 punti nella Prova scritta** · **22 punti nella Prova orale**
+>
+> *"L'esame è considerato superato se il punteggio ottenuto è compreso tra 94 e 160."*
+
+So passing is **total ≥ floor AND scritta ≥ min AND orale ≥ min**. `scoreCeli` read
+`writtenPass && oralPass` and never consulted `passFloor` outside "overall" mode.
+
+**No learner was ever told the wrong thing by that**, and that is measured rather than argued:
+**33 595 score pairs** — every (written, oral) combination at all five both-parts levels — were
+driven through both rules and disagreed **zero** times.
+
+| level | writtenMin + oralMin | published floor | |
+|---|---|---|---|
+| UNO | 54 + 25 = **79** | 79 | equal |
+| DUE | 72 + 22 = **94** | 94 | equal |
+| TRE | 84 + 33 = **117** | 117 | equal |
+| QUATTRO | 84 + 33 = **117** | 117 | equal |
+| CINQUE | 89 + 28 = **117** | 117 | equal |
+
+The rules agree because **the sum of the minima IS the floor at every level**, so clearing both
+parts already implies clearing the total. That is an arithmetic fact about the numbers CVCL
+chose — **not a guarantee**. If CVCL ever publishes a floor above the sum, a two-condition rule
+starts telling people they passed an exam they did not pass, every individual number stays
+correct, and every gate stays green.
+
+`scoreCeli` now enforces all three, and `gate:celi-pass-rule` asserts the equality and drives
+each condition across its own boundary.
 
 #### CELI 3 (`TRE`, B2) — identical to CELI 4 because CVCL publishes it that way
 
@@ -178,6 +231,21 @@ Its totals page reads *140 punti* / *60 punti* / *200 punti*, minima *84* and *3
 *173–200 A*, *144–172 B*, *117–143 C*, *69–116 D* — every one of them what `TRE` holds. The
 match with `QUATTRO` is not a copied row: **CELI 3 and CELI 4 genuinely publish the same
 scale**, and that is now established from two separate documents rather than assumed from one.
+
+#### SISTEMA DI CAPITALIZZAZIONE — recorded, nothing built
+
+All five CELI 1–5 PDFs carry this section; the A1 Impatto PDF does **not** (zero mentions).
+Verbatim from `celi-2-valutazione.pdf`:
+
+> *"I candidati che non abbiano superato la Prova Scritta (Parti A, B, C) e che abbiano invece*
+> *superato la Prova Orale o viceversa …, possono capitalizzare per un anno (due sessioni*
+> *d'esame) il risultato parziale ottenuto, sottoponendosi nuovamente alla prova risultata*
+> *insufficiente."*
+
+Pass one part, fail the other, and the passed part carries for **one year / two sessions**;
+only the failed part is resat. `celi.ts` already models this as `banking`, and only for
+`both-parts` levels — which matches the A1 PDF having no such section. **Recorded as a check on
+what is already there, not as a change.**
 
 #### What stops this recurring
 

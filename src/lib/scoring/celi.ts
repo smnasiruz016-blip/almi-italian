@@ -115,8 +115,27 @@ export function scoreCeli(level: CeliLevel, input: CeliInput): CeliResult {
   const total = w + o;
   const writtenPass = w >= cfg.writtenMin; // indicative in "overall" mode
   const oralPass = o >= cfg.oralMin; //      indicative in "overall" mode
-  // "overall": certificate = single total threshold (A1). "both-parts": each part must clear its minimum.
-  const passed = cfg.passMode === "overall" ? total >= cfg.passFloor : writtenPass && oralPass;
+  const totalPass = total >= cfg.passFloor;
+
+  // THE PUBLISHED RULE HAS THREE CONDITIONS, and this used to enforce two.
+  //
+  // Every CELI 1–5 criteri-di-valutazione PDF (committed at docs/sources/) states them together:
+  //   "Per superare l'esame … è necessario ottenere un minimo di X punti nella Prova scritta"
+  //   "… Y punti nella Prova orale"
+  //   "L'esame è considerato superato se il punteggio ottenuto è compreso tra Z e MAX."
+  // so passing is total ≥ Z AND scritta ≥ X AND orale ≥ Y. This line used to read
+  // `writtenPass && oralPass` and never consulted passFloor outside "overall" mode.
+  //
+  // No learner was ever told the wrong thing by that: 33 595 score pairs across all five
+  // both-parts levels were driven through both rules and they disagreed on ZERO. They agree
+  // because writtenMin + oralMin === passFloor at every level, so clearing both parts already
+  // implies clearing the total. That equality is an arithmetic fact about CVCL's published
+  // numbers — NOT a guarantee. Move one of the three and the two rules come apart silently,
+  // which is why gate:celi-pass-rule now asserts the equality and drives all three conditions.
+  //
+  // "overall" (A1 Impatto) is genuinely single-condition: the regulation decides the certificate
+  // on the total alone and the per-part marks are indicative sub-results.
+  const passed = cfg.passMode === "overall" ? totalPass : (totalPass && writtenPass && oralPass);
 
   let gradeBand: CeliGrade | "PASS" | "FAIL";
   let gradeLabel: string;

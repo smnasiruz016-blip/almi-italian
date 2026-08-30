@@ -86,7 +86,8 @@ function emit(level: "warn" | "error", payload: Record<string, unknown>): void {
  */
 export function logRefusal(args: {
   route: string;
-  status: 401 | 402 | 403 | 404 | 413 | 429;
+  /** 503 is ours, not theirs: the provider failed us and we stopped calling it. */
+  status: 401 | 402 | 403 | 404 | 413 | 429 | 503;
   /** Short machine-readable cause, e.g. "no-session", "not-paid", "rate-limited". */
   reason: string;
   req: Request;

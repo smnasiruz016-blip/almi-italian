@@ -45,9 +45,25 @@ export function isAiConfigured(): boolean {
 /**
  * Append one Anthropic call to the ledger and return its cost in 1/100 cents.
  *
- * FAILURES ARE RECORDED TOO, at cost 0. A ledger that only holds successes cannot answer
- * "what did we spend and what did we get for it" — and a run of failures is exactly the
- * shape that should be visible.
+ * FAILURES ARE RECORDED TOO — and, since 2026-08-30, at their REAL cost rather than at zero.
+ *
+ * ── WHY THE RULE CHANGED ────────────────────────────────────────────────────
+ * The old rule was `input.success ? computeCostCents(...) : 0`, and its stated purpose was
+ * "a call that spent nothing costs nothing". That purpose is right. The implementation was
+ * only ever correct because "failed" and "spent nothing" had never been seen to come apart:
+ * every failure anyone had looked at was a refusal or a missing key, where no request was
+ * served and no tokens existed.
+ *
+ * Then one came apart. Production AICostLedger row 2026-08-28T02:11 — orale.evaluate, HTTP
+ * 200 from Anthropic, then a schema parse failure on our side. Tokens were spent; the row
+ * said costCents = 0. The learner got nothing and the founder paid for it, and the ledger
+ * called it free.
+ *
+ * So the rule is now what it always meant: COST FOLLOWS THE TOKENS. A refusal, a missing key
+ * and a network error before any response still cost zero — because their token counts are
+ * zero, which is the honest reason rather than a flag that happened to agree. The `success`
+ * column is still written, because "what did we get for it" is a different question from
+ * "what did it cost" and the page needs both.
  */
 export async function recordCost(input: {
   userId: string | null;
@@ -57,7 +73,8 @@ export async function recordCost(input: {
   success: boolean;
   errorMessage?: string;
 }): Promise<number> {
-  const costCents = input.success ? computeCostCents(input.model, input.usage) : 0;
+  // Unconditional. Zero tokens cost zero on their own; no flag is consulted.
+  const costCents = computeCostCents(input.model, input.usage);
   try {
     await prisma.aICostLedger.create({
       data: {
@@ -83,6 +100,12 @@ export async function recordCost(input: {
 /**
  * Whisper into the same ledger. Cost is per SECOND of audio, not per token, so the token
  * columns are 0 — the same shape AlmiPTE uses for its per-minute transcription rows.
+ *
+ * `durationSeconds` is the SECONDS OPENAI ACTUALLY PROCESSED, and the caller owes it that
+ * rather than whatever the browser claimed the clip was. Whisper has its own served-then-
+ * failed shape: an HTTP 200 whose transcript is empty ("The recording produced no speech")
+ * is a request OpenAI ran and billed, and the old code recorded it at zero for the same
+ * reason the Anthropic path did. See transcribeAudio's `billedSeconds`.
  */
 export async function recordTranscriptionCost(input: {
   userId: string | null;
@@ -92,9 +115,8 @@ export async function recordTranscriptionCost(input: {
   success: boolean;
   errorMessage?: string;
 }): Promise<number> {
-  const costCents = input.success
-    ? computeTranscriptionCostCents(input.model, input.durationSeconds)
-    : 0;
+  // Unconditional, like the token path above. Zero seconds processed costs zero.
+  const costCents = computeTranscriptionCostCents(input.model, input.durationSeconds);
   try {
     await prisma.aICostLedger.create({
       data: {

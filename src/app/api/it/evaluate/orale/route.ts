@@ -103,11 +103,13 @@ export async function POST(req: Request): Promise<NextResponse> {
 
   const transcription = await transcribeAudio({ audio, contentType, filename: `clip.${ext}` });
   if (!transcription.ok) {
+    // What OpenAI actually processed, NOT the browser's `durationSeconds`. Usually 0; a 200
+    // with an empty transcript is the exception that costs real money.
     await recordTranscriptionCost({
       userId: user.id,
       feature: "orale.transcribe",
       model: "whisper-1",
-      durationSeconds,
+      durationSeconds: transcription.billedSeconds,
       success: false,
       errorMessage: transcription.error,
     });

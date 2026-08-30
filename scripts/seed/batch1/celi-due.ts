@@ -272,7 +272,7 @@ export const CELI_DUE_ITEMS: RawItem[] = [
       shuffled: [
         "Per questo chiedo al Comune di aggiungere più cestini e panchine.",
         "Gentile Direttore, le scrivo per parlare del parco vicino a casa mia.",
-        "È un bel posto, ma purtroppo mancano i cestini per i rifiuti.",
+        "È un bel posto, ma purtroppo mancano i cestini per i rifiuti e ci sono poche panchine.",
         "Sono sicuro che con piccoli interventi il parco potrebbe migliorare molto.",
       ],
       correctOrder: [1, 2, 0, 3],

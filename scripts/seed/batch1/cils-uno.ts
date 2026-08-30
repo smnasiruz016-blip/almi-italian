@@ -612,7 +612,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
         { answer: "Ho risposto", options: ["Ho risposto", "Rispondevo", "Risponderò", "Rispondessi"] },
         { answer: "c'era", options: ["c'era", "c'è stato", "ci sarà", "ci fosse"] },
         { answer: "ero", options: ["ero", "sono stato", "sarò", "fossi"] },
-        { answer: "sono andato", options: ["sono andato", "andavo", "andrò", "andassi"] },
+        { answer: "sono andato", options: ["sono andato", "andavo", "ero andato", "andassi"] },
       ],
     },
   },

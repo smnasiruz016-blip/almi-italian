@@ -42,7 +42,11 @@ const A_E = (a: number, b: number, c: number, d: number, top: number): CeliBand[
 ];
 
 // CELI 1–5 (A2–C2) both-parts; Impatto (A1) overall-threshold. All read from official CVCL
-// criteri-di-valutazione PDFs (unistrapg.it, read 2026-07-05; see almi-italian-data/celi-numerics-verified.md).
+// criteri-di-valutazione PDFs (unistrapg.it). The documents are COMMITTED at docs/sources/ and every
+// one is re-hashed on every build by gate:source-freshness, which also fails if any level below is
+// marked verified: true with no document recorded against it in docs/source-record.md.
+// (It used to point at almi-italian-data/celi-numerics-verified.md — a folder no check could read,
+//  which is how CELI 2 stayed "verified" for a month with no document behind it.)
 // CELI 3 (B2) and CELI 4 (C1) legitimately share the identical 140/60/200 frame — confirmed against both
 // official PDFs, not a copy error.
 // IMPATTO (A1): Written (Lettura 0–8 + Interazione scritta 0–8) = 0–16; Oral raw 0–6 ×2,67 = 0–16; TOTALE

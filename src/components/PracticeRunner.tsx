@@ -80,6 +80,17 @@ function AudioPlay({ url, title }: { url?: string; title: string }) {
     <div className="mb-3 rounded-lg bg-almi-bg-peach/40 p-3 text-sm">
       {/* Deliberately NO `controls`: the native player offers scrubbing and unlimited replay,
           which would make the two-play limit decorative. */}
+      {/* NO <track> either, and this one is a real accessibility gap rather than an oversight.
+          The only caption text that exists for these items is `audioScript` — which IS the
+          content being tested. A caption track on a LISTENING item hands the learner the answer
+          in writing, so adding one to satisfy the rule would break the exercise for everyone in
+          order to make it nominally accessible for one group.
+          What this leaves standing: a deaf or hard-of-hearing learner cannot attempt ASCOLTO at
+          all. That is a product decision, not a lint fix — the transcript already exists behind
+          "Show transcript" after submission, and whether to offer it BEFORE, as a declared
+          accommodation with the result marked as such, is Nasir's call. Reported, not silently
+          suppressed. */}
+      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <audio
         ref={ref}
         src={url}
@@ -319,6 +330,22 @@ export function PracticeRunner({
           {error}
         </p>
       )}
+
+      {/* The one live region. Mounted ALWAYS, empty until there is something to say: a region
+          inserted at the same moment as its text is frequently not announced at all, because the
+          screen reader has nothing to observe a change against. Errors are announced separately
+          by role="alert" above; this is for the outcome, which previously changed silently —
+          the button was replaced by a results panel and a screen-reader user was told nothing. */}
+      <p role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+        {busy
+          ? "Marking your answers."
+          : result
+            ? `Marked. ${result.correct} of ${result.total} correct, ${result.percent} per cent.` +
+              (result.scaled
+                ? ` On this section's scale, ${result.scaled.score} out of ${result.scaled.max}: ${SECTION_STATUS_LABEL_EN[result.scaled.status]}.`
+                : "")
+            : ""}
+      </p>
 
       {!submitted ? (
         <button

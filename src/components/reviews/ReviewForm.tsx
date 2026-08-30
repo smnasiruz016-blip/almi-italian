@@ -105,10 +105,14 @@ export function ReviewForm({ onSuccess }: { onSuccess?: () => void }) {
       </p>
 
       <div>
-        <label className="block text-xs font-semibold uppercase tracking-wide text-almi-text-muted">
+        {/* A labelled GROUP, not a label. StarPicker renders its own buttons, so there is no
+            single control for a <label> to own — it named the rating and pointed at nothing,
+            which is what jsx-a11y/label-has-associated-control was reporting. A screen reader
+            now announces "Rating" before the stars. */}
+        <span id="review-rating-label" className="block text-xs font-semibold uppercase tracking-wide text-almi-text-muted">
           Rating
-        </label>
-        <div className="mt-1">
+        </span>
+        <div className="mt-1" role="group" aria-labelledby="review-rating-label">
           <StarPicker value={rating} onChange={setRating} disabled={pending} />
         </div>
       </div>

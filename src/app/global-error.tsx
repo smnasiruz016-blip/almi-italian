@@ -46,6 +46,12 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
             >
               Try again
             </button>
+            {/* A plain <a>, not <Link>. global-error replaces the ROOT layout, so it renders
+                outside the app router's provider tree; <Link> needs that router and would throw
+                inside the very boundary that exists to catch a throw. A full document load is
+                also the behaviour you want when the app has already failed once. The lint rule
+                cannot see which boundary it is standing in. */}
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a
               href="/"
               style={{ borderRadius: "9999px", border: `1px solid ${LINE}`, color: INK, padding: "0.625rem 1.5rem", fontWeight: 500, fontSize: "0.95rem", textDecoration: "none" }}

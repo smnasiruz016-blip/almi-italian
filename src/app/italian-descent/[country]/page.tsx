@@ -48,7 +48,7 @@ export default async function Page({ params }: { params: Promise<{ country: stri
         If your route is one of those, the two exams are{" "}
         <Link href={`/exam/cils-b1-cittadinanza/from/${t.slug}`} className="text-almi-link underline">CILS B1 Cittadinanza</Link> and{" "}
         <Link href={`/exam/celi-2-b1/from/${t.slug}`} className="text-almi-link underline">CELI 2 (B1)</Link>, each on its own scale.
-        This page is about the decree's out-of-quota <strong className="text-almi-ink">work entry</strong>, which is a separate matter from both.
+        This page is about the decree&apos;s out-of-quota <strong className="text-almi-ink">work entry</strong>, which is a separate matter from both.
       </p>
       <p className="mt-3 text-sm text-almi-text-muted">{CONFIRM_WITH_OFFICE}</p>
 

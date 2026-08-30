@@ -19,6 +19,15 @@
 // printed. A call whose cost is null is shown as null, never as zero, because a zero would
 // join the total and make it lie about money.
 //
+// ── THE TOTALS NO LONGER FILTER ON success ──────────────────────────────────
+// They used to read `where: { success: true }`, which was correct only while a failed call
+// always cost nothing. It does not: an Anthropic 200 that then fails to parse, and a Whisper
+// 200 with an empty transcript, are both served, both billed, and both success = false.
+// Filtering them out hid exactly the spend nobody had budgeted for. The ledger now costs
+// every row from its own tokens or seconds, so summing ALL rows is summing what was spent.
+// "Failed calls" stays as its own stat, because how many failed is a different question from
+// how much was spent.
+//
 // Two providers reach this ledger and both are recorded by the caller, not automatically:
 // Anthropic per token (recordCost) and OpenAI Whisper per second of audio
 // (recordTranscriptionCost). Failed calls are written with success=false and costCents=0,
@@ -66,10 +75,10 @@ export default async function AdminCostsPage() {
     new Date(now).getUTCFullYear(), new Date(now).getUTCMonth(), new Date(now).getUTCDate(),
   ));
 
-  // Totals filter on success: a failed call is a real row but not real money.
+  // No success filter: a failed call can be real money. See the header.
   const spend = (where: object) =>
     prisma.aICostLedger.aggregate({
-      where: { success: true, ...where },
+      where: { ...where },
       _sum: { costCents: true, inputTokens: true, outputTokens: true },
       _count: { _all: true },
     });
@@ -83,21 +92,21 @@ export default async function AdminCostsPage() {
       prisma.aICostLedger.count({ where: { success: false, createdAt: { gte: since(30) } } }),
       prisma.aICostLedger.groupBy({
         by: ["feature"],
-        where: { success: true, createdAt: { gte: since(30) } },
+        where: { createdAt: { gte: since(30) } },
         _sum: { costCents: true },
         _count: { _all: true },
         orderBy: { _sum: { costCents: "desc" } },
       }),
       prisma.aICostLedger.groupBy({
         by: ["model"],
-        where: { success: true, createdAt: { gte: since(30) } },
+        where: { createdAt: { gte: since(30) } },
         _sum: { costCents: true },
         _count: { _all: true },
         orderBy: { _sum: { costCents: "desc" } },
       }),
       prisma.aICostLedger.groupBy({
         by: ["userId"],
-        where: { success: true, createdAt: { gte: since(30) }, userId: { not: null } },
+        where: { createdAt: { gte: since(30) }, userId: { not: null } },
         _sum: { costCents: true },
         _count: { _all: true },
         orderBy: { _sum: { costCents: "desc" } },
@@ -136,7 +145,8 @@ export default async function AdminCostsPage() {
         <h1 className="mt-3 text-3xl font-bold text-almi-ink">AI usage</h1>
         <p className="mt-1 text-sm text-almi-text-muted">
           Every metered call this product has made, as recorded in AICostLedger. Totals count
-          successful calls only — failures are written at zero cost and listed below.
+          EVERY call, because a call can fail after it has already been served and billed. Cost
+          comes from the tokens or the seconds, never from the success flag.
         </p>
       </header>
 
@@ -149,7 +159,7 @@ export default async function AdminCostsPage() {
 
       <section className="grid gap-4 sm:grid-cols-3">
         <Stat label="Evaluations (30d)" value={String(evalCount)} hint={evals.map((e) => `${e.skill} ${e._count._all}`).join(" · ") || "none"} />
-        <Stat label="Avg / evaluation (30d)" value={avgPerEval} hint={evalCount === 0 ? "no attempts to divide by" : undefined} />
+        <Stat label="Avg / evaluation (30d)" value={avgPerEval} hint={evalCount === 0 ? "no attempts to divide by" : "all spend ÷ results delivered"} />
         <Stat label="Failed calls (30d)" value={String(failures)} hint="recorded at zero cost" />
       </section>
 
@@ -169,7 +179,7 @@ export default async function AdminCostsPage() {
                 </tr>
               ))}
               {perFeature.length === 0 && (
-                <tr><td colSpan={3} className="py-3 text-almi-text-muted">No successful calls in the last 30 days.</td></tr>
+                <tr><td colSpan={3} className="py-3 text-almi-text-muted">No calls in the last 30 days.</td></tr>
               )}
             </tbody>
           </table>
@@ -192,7 +202,7 @@ export default async function AdminCostsPage() {
                 </tr>
               ))}
               {perModel.length === 0 && (
-                <tr><td colSpan={3} className="py-3 text-almi-text-muted">No successful calls in the last 30 days.</td></tr>
+                <tr><td colSpan={3} className="py-3 text-almi-text-muted">No calls in the last 30 days.</td></tr>
               )}
             </tbody>
           </table>

@@ -44,6 +44,27 @@ import { hasPaidAccess, isOwner, isCompActive } from "@/lib/access";
  *  so the network has one answer to this question. */
 export const TRIAL_EVALUATIONS_PER_SKILL = 2;
 
+/**
+ * Consecutive failed evaluations after which we stop calling the provider.
+ *
+ * ── WHY 3, FROM THE POPULATION RATHER THAN A FEELING ────────────────────────
+ * Production AICostLedger, 2026-08-29: 9 evaluate calls, 1 of them served-then-failed — an
+ * observed failure rate near 11%. If failures were independent at that rate, three in a row
+ * is about 1 in 750. So 3 is comfortably past coincidence while still letting a learner who
+ * hit one bad response try again twice.
+ *
+ * CONSECUTIVE, not "3 in a window": one success resets it. A learner who succeeds, fails,
+ * succeeds, fails is not experiencing an outage and should not be stopped; a learner whose
+ * last three attempts all failed is, and every further call spends money to produce nothing.
+ *
+ * This is the half of the trial cap the cap cannot do. The cap counts RESULTS RECEIVED and
+ * deliberately does not charge a learner for our failures — which means an evaluation that
+ * fails every time never consumes an allowance and never stops. The measured worst case for
+ * a trial account is $72.83 in seven days, unchanged by the cap for exactly that reason.
+ * This is the guard that closes it.
+ */
+export const CONSECUTIVE_FAILURE_LIMIT = 3;
+
 /** The two metered skills. Mirrors the AiSkill enum in prisma/schema.prisma. */
 export type AiSkillKind = "SCRITTA" | "ORALE";
 
@@ -53,10 +74,11 @@ export type TrialUsage = Record<AiSkillKind, number>;
 
 export type AiRefusal = {
   ok: false;
-  /** 401 = no user · 402 = pay (or trial allowance spent) · 403 = verify the address you already have. */
-  status: 401 | 402 | 403;
+  /** 401 = no user · 402 = pay (or trial allowance spent) · 403 = verify the address you
+   *  already have · 503 = OUR provider is failing and we stopped calling it. */
+  status: 401 | 402 | 403 | 503;
   /** Short machine-readable cause, for logRefusal(). Prose belongs in `error`. */
-  reason: "no-user" | "unverified" | "not-paid" | "trial-cap";
+  reason: "no-user" | "unverified" | "not-paid" | "trial-cap" | "provider-failing";
   error: string;
   upgradeUrl?: string;
 };
@@ -113,11 +135,31 @@ export function decideAiEntitlement(
   user: EntitlementUser | null,
   skill: AiSkillKind,
   usage: TrialUsage | null,
+  consecutiveFailures = 0,
 ): AiRefusal | null {
   if (!user) return { ok: false, status: 401, reason: "no-user", error: "Not authenticated" };
 
   // FIRST, and the order is load-bearing — see the header.
   if (hasPaidAccess(user)) {
+    // THE CIRCUIT BREAKER, BEFORE THE ALLOWANCE. It applies to everyone who would otherwise
+    // be allowed to call — owner, comp and paying subscriber included — because it is not
+    // about what they are entitled to. It is about us having failed three times in a row and
+    // having no reason to believe the fourth call will be different.
+    if (consecutiveFailures >= CONSECUTIVE_FAILURE_LIMIT) {
+      const used = usage?.[skill] ?? 0;
+      const allowanceLine = isCappedTrial(user)
+        ? ` Your trial allowance is untouched — you have used ${used} of ${TRIAL_EVALUATIONS_PER_SKILL} ${skillLabel(skill)} evaluations, and these failures did not count against it.`
+        : "";
+      return {
+        ok: false,
+        status: 503,
+        reason: "provider-failing",
+        error:
+          `We could not produce a result — your last ${consecutiveFailures} attempts failed on our side, ` +
+          `so we have stopped trying rather than keep charging for nothing. This is our problem, ` +
+          `not yours.${allowanceLine} Please try again later.`,
+      };
+    }
     // Entitled. The only remaining question is whether a TRIAL has spent its allowance.
     // `!usage` and not `usage === null`: a caller that passes undefined must fall through to
     // ALLOW, not throw. This function is on the path of a request that must answer 402 and
@@ -203,6 +245,27 @@ export async function countTrialUsage(userId: string): Promise<TrialUsage> {
 }
 
 /**
+ * How many evaluations this learner has failed in a row, most recent first, with no success
+ * since. Read from AICostLedger because that is the record of CALLS — AiEvaluation only has
+ * rows for results that were delivered, so it cannot see a failure at all.
+ *
+ * Scoped to the two evaluate features: a Whisper transcription failure is a different fault
+ * with a different fix, and folding it in here would stop the writing path for a microphone
+ * problem.
+ */
+export async function countConsecutiveFailures(userId: string): Promise<number> {
+  const recent = await prisma.aICostLedger.findMany({
+    where: { userId, feature: { in: ["scritta.evaluate", "orale.evaluate"] } },
+    orderBy: { createdAt: "desc" },
+    take: CONSECUTIVE_FAILURE_LIMIT,
+    select: { success: true },
+  });
+  let n = 0;
+  for (const r of recent) { if (r.success) break; n++; }
+  return n;
+}
+
+/**
  * May this user trigger a metered AI evaluation of THIS skill right now?
  *
  * Returns `null` when they may — deliberately, so a caller that ignores the return value
@@ -232,7 +295,11 @@ export async function checkAiEntitlement(
     },
   });
   const usage = isCappedTrial(user) ? await countTrialUsage(userId) : null;
-  return decideAiEntitlement(user, skill, usage);
+  // Counted for everyone who could otherwise call: the breaker is about our provider, not
+  // about their tier. A user with no entitlement never gets here in a state where it matters,
+  // because the paywall answers first.
+  const consecutiveFailures = hasPaidAccess(user) ? await countConsecutiveFailures(userId) : 0;
+  return decideAiEntitlement(user, skill, usage, consecutiveFailures);
 }
 
 /**

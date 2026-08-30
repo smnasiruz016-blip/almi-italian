@@ -94,10 +94,24 @@ ok(/prisma\.aICostLedger\.create/.test(till),
    `${TILL}: no ledger insert — nothing is being recorded at all`);
 ok((till.match(/prisma\.aICostLedger\.create/g) ?? []).length >= 2,
    `${TILL}: fewer than two ledger inserts — token billing and per-second billing each need one`);
-ok((till.match(/input\.success\s*\?/g) ?? []).length >= 2,
-   `${TILL}: fewer than two cost expressions are conditioned on success — a failed call may now ` +
-   `be billed as spend. Both recorders need it; a check that passed when only ONE did let a ` +
-   `sabotage through.`);
+// REWRITTEN 2026-08-30. The old rule here was "both cost expressions must be conditioned on
+// input.success", and it went red the moment that condition was removed — which is the gate
+// doing its job: it was holding the line that a call which spent nothing must cost nothing.
+//
+// That purpose is kept. What changed is that "failed" is no longer accepted as a PROXY for
+// "spent nothing". Production row 2026-08-28T02:11 was an Anthropic 200 that then failed to
+// parse: served, billed, and recorded at zero. Whisper has the same shape — a 200 whose
+// transcript is empty. So cost now follows the tokens and the seconds, and a refusal still
+// costs zero because its token count is zero, which is the honest reason rather than a flag
+// that happened to agree.
+//
+// The inverse is now the rule: NEITHER cost expression may be gated on success again.
+ok((till.match(/input\.success\s*\?/g) ?? []).length === 0,
+   `${TILL}: a cost expression is conditioned on input.success again. A call that was served and then failed IS billed by the provider, and gating its cost on the success flag is how row 2026-08-28T02:11 came to say a paid-for call was free. Cost follows the tokens and the seconds; zero of those already costs zero.`);
+ok(/const costCents = computeCostCents\(input\.model, input\.usage\);/.test(till),
+   `${TILL}: the token cost is no longer computed unconditionally from the usage`);
+ok(/const costCents = computeTranscriptionCostCents\(input\.model, input\.durationSeconds\);/.test(till),
+   `${TILL}: the per-second cost is no longer computed unconditionally from the duration`);
 ok(/success:\s*input\.success/.test(till),
    `${TILL}: the success flag is no longer stored, so failures cannot be told from spend`);
 
@@ -169,7 +183,13 @@ const { evaluate } = await import("../../src/lib/ai/evaluate");
   }),
 };
 let rows: { inputTokens: number; outputTokens: number; success: boolean }[] = [];
-(prisma as any).aICostLedger = { create: async (a: any) => { rows.push(a.data); return a.data; } };
+// The double replaces the WHOLE delegate, so every method the path uses has to be here.
+// countConsecutiveFailures() reads findMany; without it the gate crashed rather than
+// asserting — a stack trace exits 1 too, but it does not say what broke.
+(prisma as any).aICostLedger = {
+  create: async (a: any) => { rows.push(a.data); return a.data; },
+  findMany: async () => [], //     no prior failures: the breaker stays open
+};
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
 const assessment = (inventedCount: boolean) => JSON.stringify({
@@ -238,6 +258,47 @@ ok(calls === 0 && rows.length === 0,
 ok(refused.ok === false, `an entitlement refusal returned ok — the guard is gone`);
 console.log(`  ✓ entitlement refusal: 0 provider calls, 0 ledger rows, still refused`);
 
+// ── F. COST FOLLOWS THE TOKENS — DRIVEN, NOT READ ──────────────────────────
+// Sections above read the till's source. This calls it. A rule you only grep for is a rule
+// that can be satisfied by a comment.
+console.log("\nF. cost follows the tokens, proven by calling the till");
+{
+  const { recordCost, recordTranscriptionCost } = await import("../../src/lib/ai/anthropic-client");
+  const seen: { costCents: number; success: boolean }[] = [];
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  (prisma as any).aICostLedger = { create: async (a: any) => { seen.push(a.data); return a.data; }, findMany: async () => [] };
+  /* eslint-enable @typescript-eslint/no-explicit-any */
+
+  const servedThenFailed = await recordCost({
+    userId: null, feature: "gate.probe", model: "claude-sonnet-4-6",
+    usage: { inputTokens: 1000, outputTokens: 2000 }, success: false, errorMessage: "parse",
+  });
+  ok(servedThenFailed > 0,
+     `a FAILED call carrying 1000/2000 tokens was costed at ${servedThenFailed} — served-then-failed ` +
+     `is exactly the shape that was being written down as free`);
+
+  const neverServed = await recordCost({
+    userId: null, feature: "gate.probe", model: "claude-sonnet-4-6",
+    usage: { inputTokens: 0, outputTokens: 0 }, success: false, errorMessage: "refused",
+  });
+  ok(neverServed === 0, `a call with zero tokens was costed at ${neverServed}, expected 0`);
+
+  const whisperBilled = await recordTranscriptionCost({
+    userId: null, feature: "gate.probe", model: "whisper-1", durationSeconds: 60, success: false,
+  });
+  ok(whisperBilled > 0, `a FAILED transcription that processed 60s was costed at ${whisperBilled}`);
+  const whisperUnbilled = await recordTranscriptionCost({
+    userId: null, feature: "gate.probe", model: "whisper-1", durationSeconds: 0, success: false,
+  });
+  ok(whisperUnbilled === 0, `a transcription that processed 0s was costed at ${whisperUnbilled}`);
+
+  ok(seen.length === 4 && seen.every((r) => r.success === false),
+     "the success flag is no longer STORED on these rows — failures must stay visible as failures");
+  // The control: if cost ignored the inputs entirely, both directions would read the same.
+  ok(servedThenFailed !== neverServed && whisperBilled !== whisperUnbilled,
+     "control: costed and uncosted failures produce the same number, so this section proves nothing");
+  console.log(`  \u2713 failed+tokens costs ${servedThenFailed}, failed+none costs 0; whisper 60s costs ${whisperBilled}, 0s costs 0`);
+}
 if (failures.length) {
   console.error("\n❌ AI LEDGER GATE FAILED — " + failures.length + " violation(s):");
   for (const f of failures) console.error("   • " + f);
@@ -245,7 +306,8 @@ if (failures.length) {
 }
 console.log(
   `\n✅ ai-ledger gate: ${entryPointsFound} provider entry point(s) in src/, each paired with its ` +
-  `recorder; the till writes both billing shapes and records failures at zero; /admin/costs ` +
-  `reads createdAt, not AlmiPrep's timestamp; and across 4 driven cases every token the provider ` +
+  `recorder; the till writes both billing shapes and costs every row from its own tokens or ` +
+  `seconds rather than from the success flag; /admin/costs reads createdAt, not AlmiPrep's ` +
+  `timestamp; and across 4 driven cases every token the provider ` +
   `billed appears in the ledger, while a refusal still writes nothing.`,
 );

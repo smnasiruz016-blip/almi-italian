@@ -39,6 +39,7 @@ import {
   decideAiEntitlement,
   isCappedTrial,
   TRIAL_EVALUATIONS_PER_SKILL as CAP,
+  CONSECUTIVE_FAILURE_LIMIT as NFAIL,
   type AiSkillKind,
   type EntitlementUser,
   type TrialUsage,
@@ -169,6 +170,57 @@ ok(reason(U({ emailVerifiedAt: null, subscriptionStatus: "trialing", subscriptio
    `an unverified subscriber was answered with the trial cap instead of "verify your email"`);
 console.log(`  ✓ paywall and verify-email still answer before the cap`);
 
+// ── CB. THE FAILURE CIRCUIT BREAKER ────────────────────────────────────────
+// The cap counts RESULTS RECEIVED and deliberately does not charge a learner for our
+// failures. That is the right rule and it leaves a hole: an evaluation that fails every
+// time never consumes an allowance, so the cap never engages and the measured worst case
+// for one trial account stays $72.83 in seven days. The breaker is what closes it, and it
+// is a DIFFERENT question from entitlement — it applies to owner, comp and payer too.
+console.log("\nCB. the failure circuit breaker");
+{
+  const st = (u: EntitlementUser, fails: number) =>
+    decideAiEntitlement(u, "SCRITTA", usage(0, 0), fails)?.status ?? null;
+  const rs = (u: EntitlementUser, fails: number) =>
+    decideAiEntitlement(u, "SCRITTA", usage(0, 0), fails)?.reason ?? null;
+
+  // It bites at exactly N, not before.
+  for (let f = 0; f < NFAIL; f++) {
+    ok(st(TRIALING, f) === null, `a trialing user with ${f} consecutive failure(s) was stopped — the breaker is at ${NFAIL}`);
+  }
+  ok(st(TRIALING, NFAIL) === 503, `at ${NFAIL} failures the status was ${st(TRIALING, NFAIL)}, expected 503`);
+  ok(rs(TRIALING, NFAIL) === "provider-failing", `the refusal at ${NFAIL} failures is not labelled "provider-failing"`);
+  ok(st(TRIALING, NFAIL + 20) === 503, "past the limit must stay stopped");
+  console.log(`  \u2713 opens at 0..${NFAIL - 1} failures, trips at ${NFAIL} with 503 "provider-failing"`);
+
+  // A0 — vacuity control. If the count were ignored, every line above would still pass.
+  const spread = [0, NFAIL - 1, NFAIL, NFAIL + 1].map((n) => String(st(TRIALING, n)));
+  ok(new Set(spread).size >= 2, `control: failure counts ${spread.join(",")} all give the same answer — the count is not read`);
+  console.log(`  \u2713 control: failure counts 0,${NFAIL - 1},${NFAIL},${NFAIL + 1} \u2192 ${spread.join(", ")}`);
+
+  // It is OURS, not theirs: it stops the people the cap never touches.
+  for (const { name, u } of NEVER_CAPPED) {
+    ok(st(u, NFAIL) === 503, `${name} was NOT stopped at ${NFAIL} failures — the breaker is about our provider, not their tier`);
+  }
+  console.log(`  \u2713 stops paying, owner and comped accounts too — it is not an entitlement rule`);
+
+  // The message must say the allowance is untouched, because it is.
+  const msg = decideAiEntitlement(TRIALING, "SCRITTA", usage(1, 0), NFAIL)?.error ?? "";
+  ok(/not yours/i.test(msg), "the refusal does not say the failure is ours");
+  ok(/untouched/i.test(msg), "the refusal does not tell the learner their allowance is untouched");
+  ok(!/you have used \d+ of \d+ .*and (?!these)/i.test(msg), "the refusal reads like a cap message");
+  console.log(`  \u2713 the message says it is ours and that the allowance is untouched`);
+
+  // Never a 500, on any shape.
+  for (const u of [TRIALING, PAYING, OWNER, COMPED]) {
+    for (const f of [0, NFAIL, 999, -1]) {
+      let threw = false;
+      try { st(u, f); } catch { threw = true; }
+      ok(!threw, `decideAiEntitlement THREW at ${f} failures — that is a 500 on a request that must answer 503`);
+    }
+  }
+  console.log(`  \u2713 no failure count throws`);
+}
+
 // ── D. THE LOADER MATCHES THE FIXTURES ──────────────────────────────────────
 // Fixtures prove the rule; they cannot prove the rule is fed the right numbers. These pin the
 // two decisions the loader makes, because both were chosen against measured production data:
@@ -179,10 +231,21 @@ const ENT = "src/lib/ai/entitlement.ts";
 const src = readFileSync(join(root, ENT), "utf8");
 ok(/prisma\.aiEvaluation\.groupBy/.test(src),
    `${ENT}: the tally no longer comes from prisma.aiEvaluation`);
-ok(!/prisma\.aICostLedger/.test(src),
-   `${ENT}: the tally reads AICostLedger — that counts CALLS, not results: one ORALE attempt ` +
-   `writes two rows and a billed failure writes one, so a learner would be charged twice for ` +
-   `one recording and charged for our own parse failures`);
+// REWRITTEN 2026-08-30, not relaxed. The property is "the ALLOWANCE is not counted from
+// calls" — it was implemented as "this file never mentions AICostLedger", which was true only
+// while the file had one query. countConsecutiveFailures() now reads that table on purpose,
+// for the circuit breaker, which counts FAILURES and must read calls. So the check is scoped
+// to the function that owns the allowance instead of to the file.
+{
+  const fn = src.slice(src.indexOf("export async function countTrialUsage"));
+  const body = fn.slice(0, fn.indexOf(String.fromCharCode(10) + "}") + 2);
+  ok(body.length > 50 && body.length < 4000, `${ENT}: could not isolate countTrialUsage — the scoped check would be vacuous`);
+  ok(/prisma\.aiEvaluation\.groupBy/.test(body), `${ENT}: countTrialUsage no longer counts AiEvaluation rows`);
+  ok(!/aICostLedger/.test(body),
+     `${ENT}: countTrialUsage reads AICostLedger — that counts CALLS, not results: one ORALE ` +
+     `attempt writes two rows and a billed failure writes one, so a learner would be charged ` +
+     `twice for one recording and charged for our own parse failures`);
+}
 ok(/isCappedTrial\(user\)\s*\?\s*await countTrialUsage/.test(src),
    `${ENT}: the usage query is no longer conditional on isCappedTrial — a paying subscriber ` +
    `would take a database round-trip that could never refuse them, and could fail on them`);
@@ -203,6 +266,20 @@ for (const [route, skill] of [
   console.log(`  ✓ ${route}: passes "${skill}" and logs the refusal`);
 }
 
+// The loader must COUNT the failures, and count them from calls rather than results.
+console.log("\nCB2. the loader counts consecutive failures from the ledger");
+{
+  ok(/export async function countConsecutiveFailures/.test(src), `${ENT}: no countConsecutiveFailures — nothing feeds the breaker`);
+  const fn = src.slice(src.indexOf("export async function countConsecutiveFailures"));
+  const body = fn.slice(0, fn.indexOf(String.fromCharCode(10) + "}") + 2);
+  ok(/prisma\.aICostLedger\.findMany/.test(body),
+     `${ENT}: the failure count does not read AICostLedger. AiEvaluation only has rows for ` +
+     `results that were DELIVERED, so it cannot see a failure at all.`);
+  ok(/orderBy: \{ createdAt: "desc" \}/.test(body), `${ENT}: the failure count is not reading the most recent calls first`);
+  ok(/if \(r\.success\) break;/.test(body), `${ENT}: the count is not CONSECUTIVE — one success must reset it`);
+  ok(/countConsecutiveFailures\(userId\)/.test(src), `${ENT}: checkAiEntitlement never calls it`);
+  console.log(`  \u2713 reads AICostLedger newest-first and stops at the first success`);
+}
 if (failures.length) {
   console.error("\n❌ TRIAL CAP GATE FAILED — " + failures.length + " violation(s):");
   for (const f of failures.slice(0, 12)) console.error("   • " + f);

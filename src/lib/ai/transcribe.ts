@@ -52,7 +52,11 @@ export function isTranscriptionConfigured(): boolean {
 
 export type TranscriptionResult =
   | { ok: true; text: string; confidence: number; confidenceKnown: boolean; model: string; durationSeconds: number }
-  | { ok: false; error: string };
+  /** `billedSeconds` is what OpenAI processed before the failure — usually 0, but NOT always.
+   *  A 200 with an empty transcript is a request OpenAI ran and charged for, and it is the
+   *  one failure shape here that costs money. The caller records THIS, never the duration
+   *  the browser claimed, because the browser's number is not a measure of our spend. */
+  | { ok: false; error: string; billedSeconds: number };
 
 type WhisperSegment = { avg_logprob?: number; no_speech_prob?: number };
 type WhisperVerbose = { text?: string; duration?: number; segments?: WhisperSegment[] };
@@ -85,7 +89,7 @@ export async function transcribeAudio(input: {
   try {
     key = getOpenAIKey();
   } catch (e) {
-    return { ok: false, error: (e as Error).message };
+    return { ok: false, error: (e as Error).message, billedSeconds: 0 }; // never left the process
   }
 
   const form = new FormData();
@@ -102,11 +106,14 @@ export async function transcribeAudio(input: {
     });
     if (!res.ok) {
       const body = await res.text();
-      return { ok: false, error: `transcription failed (${res.status}): ${body.slice(0, 160)}` };
+      // A non-2xx is a rejected request: OpenAI does not bill for one.
+      return { ok: false, error: `transcription failed (${res.status}): ${body.slice(0, 160)}`, billedSeconds: 0 };
     }
     const data = (await res.json()) as WhisperVerbose;
     const text = (data.text ?? "").trim();
-    if (!text) return { ok: false, error: "The recording produced no speech." };
+    // 🔴 THE ONE THAT COSTS. HTTP 200 with nothing in it: OpenAI ran the audio and billed
+    // for it. `data.duration` is the length it processed.
+    if (!text) return { ok: false, error: "The recording produced no speech.", billedSeconds: Math.max(0, Math.round(data.duration ?? 0)) };
     return {
       ok: true,
       text,
@@ -119,6 +126,7 @@ export async function transcribeAudio(input: {
       durationSeconds: Math.max(0, Math.round(data.duration ?? 0)),
     };
   } catch (e) {
-    return { ok: false, error: `transcription failed: ${(e as Error).message.slice(0, 160)}` };
+    // Network error mid-flight: no response, so nothing measurable was served to us.
+    return { ok: false, error: `transcription failed: ${(e as Error).message.slice(0, 160)}`, billedSeconds: 0 };
   }
 }

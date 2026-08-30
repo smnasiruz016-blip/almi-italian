@@ -434,7 +434,7 @@ export const CILS_DUE_ITEMS: RawItem[] = [
       text: "Se piovesse, (restare) ___ a casa. Se avessi vinto, (comprare) ___ una casa. Se studi, (superare) ___ l'esame. Se fossi in te, (parlare) ___ con lui.",
       blanks: [
         { answer: "resterei", options: ["resterei", "resto", "resterò", "restassi"] },
-        { answer: "avrei comprato", options: ["comprerei", "avrei comprato", "compro", "comprai"] },
+        { answer: "avrei comprato", options: ["comprerei", "avrei comprato", "avrò comprato", "comprai"] },
         { answer: "supererai", options: ["supereresti", "superavi", "supererai", "superassi"] },
         { answer: "parlerei", options: ["parlerei", "parlo", "parlerò", "parlassi"] },
       ],
@@ -534,7 +534,7 @@ export const CILS_DUE_ITEMS: RawItem[] = [
         { answer: "era", options: ["era", "è", "aveva", "sarà"] },
         { answer: "cominciata", options: ["cominciata", "cominciato", "cominciare", "comincia"] },
         { answer: "avevano deciso", options: ["avevano deciso", "hanno deciso", "decidevano", "decideranno"] },
-        { answer: "fosse partito", options: ["fosse partito", "è partito", "partiva", "partirà"] },
+        { answer: "fosse partito", options: ["fosse partito", "è partito", "partiva", "sarà partito"] },
       ],
     },
   },
@@ -547,7 +547,7 @@ export const CILS_DUE_ITEMS: RawItem[] = [
       blanks: [
         { answer: "Andando", options: ["Andando", "Andare", "Andato", "Vado"] },
         { answer: "parlando", options: ["parlando", "parlare", "di parlare", "parlato"] },
-        { answer: "aver finito", options: ["aver finito", "finire", "finendo", "finito"] },
+        { answer: "aver finito", options: ["aver finito", "finire", "finendo", "avendo finito"] },
         { answer: "cercando", options: ["cercando", "cercare", "di cercare", "cercato"] },
       ],
     },

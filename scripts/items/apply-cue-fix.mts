@@ -20,8 +20,19 @@ import { join } from "node:path";
 
 const SEED_DIR = join(process.cwd(), "scripts/seed/batch1");
 const FILES = ["cils-b1c.ts", "cils-uno.ts", "cils-due.ts", "celi-due.ts"];
+// ── ONE-SHOT, AND THAT IS THE POINT ─────────────────────────────────────────
+// Every entry in a table is spent the moment it is applied: the old string is gone, so a
+// re-run finds it 0 times and the script exits 1 having written nothing. That was verified,
+// not assumed — re-running the original table reports "cue-fix: 0 of 92" and refuses.
+//
+// So a later round of cue work gets its OWN table rather than editing the spent one, and this
+// script takes the table as an argument. cue-fix.json stays exactly as it was: it is the record
+// of what was changed in the de-game pass, and rewriting it would erase that.
+//
+//   npx tsx scripts/items/apply-cue-fix.mts scripts/items/cue-fix-analisi.json
+const TABLE = process.argv[2] ?? "scripts/items/cue-fix.json";
 const table: [string, string, string][] = JSON.parse(
-  readFileSync(join(process.cwd(), "scripts/items/cue-fix.json"), "utf8"),
+  readFileSync(join(process.cwd(), TABLE), "utf8"),
 );
 
 const sources = new Map(FILES.map((f) => [f, readFileSync(join(SEED_DIR, f), "utf8")]));
@@ -62,7 +73,7 @@ for (const [title, oldText, newText] of table) {
   if (hits > 1) problems.push(`"${title}": ${hits} items share this title — ambiguous, not applied`);
 }
 
-console.log(`cue-fix: ${applied} of ${table.length} replacement(s) applied`);
+console.log(`${TABLE}: ${applied} of ${table.length} replacement(s) applied`);
 if (problems.length) {
   console.error(`\n${problems.length} problem(s) — NOTHING WRITTEN:`);
   for (const p of problems) console.error(`  ✗ ${p}`);

@@ -68,20 +68,52 @@ differs between them.**
 
 ## CELI — CVCL, Università per Stranieri di Perugia
 
-**Not re-fetched on 2026-08-30.** The CVCL site answers (`cvcl.it` → 200, `unistrapg.it` → 200)
-but the criteria PDFs are held locally from the previous read and were hashed from disk instead
-of re-downloaded. Their `fetched:` date is therefore the original one.
+**Five held from the previous read, two fetched fresh on 2026-08-30.** The five already on disk
+were hashed from disk rather than re-downloaded, so they keep their original `fetched:` date.
+`celi-2-valutazione.pdf` and `celi-2-a-valutazione.pdf` were downloaded on 2026-08-30 to close
+Finding 1 below — they had never been fetched at all.
+
+`celi-3-a-valutazione.pdf` was already on disk. It was re-downloaded and the bytes are
+**identical** to the disk copy (`2baeb377…`), so the disk copy is genuine; it had simply never
+been listed in `SOURCES.md`.
 
 | document | held at | fetched | bytes | sha256 |
 |---|---|---|---|---|
 | `celi-i-a1-criteri-di-valutazione.pdf` | `almi-italian-data/celi-pdfs/` | 2026-07-05 | 615440 | `e46652dc9f3970a7cf56533026d8cbb0a3a1b4c7b166b36a7096afab65c782d3` |
 | `celi-1-valutazione.pdf` | `almi-italian-data/celi-pdfs/` | 2026-07-05 | 204330 | `64d55c1d8111ff1801e2d4ab2f85cb37bc9f4d663c1d7630e40bdfff8cf25917` |
+| `celi-2-valutazione.pdf` | `almi-italian-data/celi-pdfs/` | 2026-08-30 | 214375 | `0179afdd0b0e7bd62eca9bc2dbe443b8ed7500a4d1fe7a7e7d484d6a77143aa1` |
+| `celi-2-a-valutazione.pdf` (sibling) | `almi-italian-data/celi-pdfs/` | 2026-08-30 | 214253 | `0a15bb57540afb22125c53dae3d59fd79f285b371ac53aaf8292e65a0840c31b` |
 | `celi-3-a-valutazione.pdf` | `almi-italian-data/celi-pdfs/` | 2026-07-05 | 217173 | `2baeb377d182662b46b17251421bae8a71f9933d83e202064443116b97836f25` |
 | `celi-4-valutazione.pdf` | `almi-italian-data/celi-pdfs/` | 2026-07-05 | 219648 | `3937fc88ae05290cd7d0b33b3903d4b8580ee13b420560991440ef0886624ce1` |
 | `celi-5-valutazione.pdf` | `almi-italian-data/celi-pdfs/` | 2026-07-05 | 216527 | `b5b913253b295da6602c0203179b4cbbd1fe7d867847187552a8fbb7c007850a` |
 
 Source: `almi-italian-data/SOURCES.md` names
-`www.unistrapg.it/sites/default/files/docs/certificazioni/` as the origin.
+`www.unistrapg.it/sites/default/files/docs/certificazioni/` as the origin. The two new files
+came from exactly that path:
+
+- `https://www.unistrapg.it/sites/default/files/docs/certificazioni/celi-2-valutazione.pdf` → **200**
+- `https://www.unistrapg.it/sites/default/files/docs/certificazioni/celi-2-a-valutazione.pdf` → **200**
+
+Three other spellings were tried and returned **404** (`celi-2-b-valutazione.pdf`,
+`celi-ii-b1-criteri-di-valutazione.pdf`, `celi-2-criteri-di-valutazione.pdf`), and
+`celi-4-valutazione.pdf` was re-requested as a control and returned 200 — so the 404s are real
+404s and the 200s are real documents, not an error page served with the wrong status.
+
+### CELI level → source document
+
+`gate:source-freshness` reads THIS table. Every level that `src/lib/scoring/celi.ts` marks
+`verified: true` must appear here, and the document it names must appear in the hashed table
+above. A level marked verified with no document behind it is a false claim in our own data, and
+the gate **fails** on it — it does not warn.
+
+| level | cefr | document |
+|---|---|---|
+| IMPATTO | A1 | `celi-i-a1-criteri-di-valutazione.pdf` |
+| UNO | A2 | `celi-1-valutazione.pdf` |
+| DUE | B1 | `celi-2-valutazione.pdf` |
+| TRE | B2 | `celi-3-a-valutazione.pdf` |
+| QUATTRO | C1 | `celi-4-valutazione.pdf` |
+| CINQUE | C2 | `celi-5-valutazione.pdf` |
 
 ---
 
@@ -89,64 +121,97 @@ Source: `almi-italian-data/SOURCES.md` names
 
 Two things, both **reported and not changed**.
 
-### 1. 🔴 The one CELI level the product routes has no document behind it
+### 1. ✅ RESOLVED 2026-08-30 — the missing CELI documents were fetched
 
-`src/lib/scoring/celi.ts` marks **all six** CELI levels `verified: true`. The verification record
-`almi-italian-data/celi-numerics-verified.md` covers **four**: A1 Impatto, A2 CELI 1, C1 CELI 4,
-C2 CELI 5. Its own summary table lists exactly those four.
+**What was reported on 2026-08-30, first pass:** `src/lib/scoring/celi.ts` marked all six CELI
+levels `verified: true`, while the verification record covered only four (A1, A2, C1, C2).
+`DUE` — the only level `TRACKS` routes — had no `celi-2` PDF at all, and `TRE`'s numbers were
+byte-identical to `QUATTRO`'s with its PDF on disk but unlisted. Identical is possible; it is
+also what a copy looks like.
 
-**CELI 2 (B1 = `DUE`) is not in that table, and there is no `celi-2` PDF in `celi-pdfs/`.** The
-record accounts for it in one clause — *"Consistent with already-locked DUE (B1=CELI 2) and TRE
-(B2=CELI 3)"* — which asserts a previous verification without naming a document or a date.
+**Both are now closed with documents, not with reasoning.**
 
-`DUE` is the **only** CELI level `TRACKS` routes. So the level a learner can actually sit is the
-one whose numbers (written 120, oral 40, total 160, minima 72 / 22, pass 94, bands 138/115/94/60)
-rest on a sentence rather than on a hashed file.
+#### CELI 2 (`DUE`, B1) — fetched, and every number matches
 
-`TRE` is in the same position with a twist: `celi-3-a-valutazione.pdf` **is** on disk, but it is
-not listed under Task 4 in `SOURCES.md` and `TRE`'s numbers are byte-identical to `QUATTRO`'s
-(140 / 60 / 200, 84 / 33, 117, identical bands). Identical is possible. It is also what a copy
-looks like. Neither is established here.
+`celi-2-valutazione.pdf`, sha256 `0179afdd…`, 214 375 bytes. `pdftotext -layout` recovers the
+totals page in full:
 
-**Nothing was changed.** Fixing this means someone fetching the CELI 2 and CELI 3 criteria PDFs
-and either confirming the six numbers or correcting them — content work, with a real document.
+| `celi.ts` field | value | the PDF says, verbatim | |
+|---|---|---|---|
+| `writtenMax` | 120 | *Punteggio della Prova Scritta — 120 punti* | ✅ |
+| `oralMax` | 40 | *Punteggio della Prova Orale — 40 punti* | ✅ |
+| `totalMax` | 160 | *Punteggio complessivo — 160 punti* | ✅ |
+| `writtenMin` | 72 | *72 punti nella Prova scritta* | ✅ |
+| `oralMin` | 22 | *22 punti nella Prova orale* | ✅ |
+| `bands` A | 138–160 | *Punteggio compreso tra 138 e 160 punti — A = ottimo* | ✅ |
+| `bands` B | 115–137 | *Punteggio compreso tra 115 e 137 punti — B = buono* | ✅ |
+| `bands` C / `passFloor` | 94 | *Punteggio compreso tra 94 e 114 punti — C = sufficiente* | ✅ |
+| `bands` D | 60–93 | *Punteggio compreso tra 60 e 93 punti — D = insufficiente* | ✅ |
 
-### 2. 🟡 The B1-cittadinanza floor may be published after all
+**The numbers were right; the SOURCING was missing.** `verified: true` was a true statement
+with nothing behind it, which is indistinguishable from a false one until somebody looks. It
+now has a hashed document behind it and stays `true` — nothing in the engine changed, and no
+learner's result moves.
 
-`src/lib/scoring/cils-b1c.ts` states, as a written rationale:
+#### CELI 3 (`TRE`, B2) — identical to CELI 4 because CVCL publishes it that way
 
-> *"NOT OFFICIAL — OURS, DERIVED. Unistrasi publishes the 48-point total and the per-criterion
-> weights for this module, but NO pass mark and NO per-section floor: not in the criteria PDF…"*
+`celi-3-a-valutazione.pdf`, sha256 `2baeb377…`. Re-downloaded from the recorded origin and
+**byte-identical to the copy already on disk**, so the disk copy was genuine all along.
 
-That claim holds for the **criteria** PDF — it carries no floor, confirmed above.
+Its totals page reads *140 punti* / *60 punti* / *200 punti*, minima *84* and *33*, bands
+*173–200 A*, *144–172 B*, *117–143 C*, *69–116 D* — every one of them what `TRE` holds. The
+match with `QUATTRO` is not a copied row: **CELI 3 and CELI 4 genuinely publish the same
+scale**, and that is now established from two separate documents rather than assumed from one.
 
-But the **Linee guida** PDF, page 18 §1.4.4.5 *"L'attribuzione dei punteggi"*, contains this
-sentence fragment, extracted verbatim:
+#### What stops this recurring
 
-```
-comprensione della lettura e di produzione scritta occorre ottenere il punteggio minimo di 7 punti.
-```
+`gate:source-freshness` now **FAILS** — not warns — when a level marked `verified: true` has no
+document recorded against it in the level→document table above. Age is still a warning, because
+Siena and CVCL do not publish on our release schedule and a gate that is red for weeks through
+nobody's fault gets scrolled past. A missing source is not that: it is wrong today, it is fixable
+today, and it was invisible for as long as nothing checked it.
 
-immediately beside a fragment describing the four-ability, twelve-points-per-ability structure —
-which is the B1 Cittadinanza shape:
+### 2. ✅ CLOSED 2026-08-30 — the 7/12 floor is ours, and now says why
 
-```
-lettura, produzione scritta, produzione orale), viene attribuito un punteggio massimo di 12 punti per ciascuna
-```
+**The question, as it stood:** `Linee_guida_cils_pdf.pdf` p.18 §1.4.4.5 contains the fragment
+*"…comprensione della lettura e di produzione scritta occorre ottenere il punteggio minimo di 7
+punti"*, and 7 of 12 is exactly `CILS_B1C_FLOOR`. `pdftotext` recovers only the tails of those
+sentences, so which exam the minimum belonged to was not readable by the tool. If it were B1
+Cittadinanza, the product would have been under-claiming — calling a published benchmark ours.
 
-**7 out of 12 is exactly `CILS_B1C_FLOOR`.**
+**Nasir opened the source and settled it.** The ruling, recorded because the tool could not
+reach it:
 
-I could not settle it. `pdftotext` recovers only the tails of these sentences on that page —
-each subject clause is in a layer the extractor drops — so **which level the 7-point minimum
-belongs to is not readable by the tool**. It may be the standard CILS levels, not B1
-Cittadinanza.
+> Unistrasi's own `Criteri di valutazione B1 cittadinanza` gives **4 abilità × 12 = 48** and
+> publishes **no sufficienza threshold at all**. The 11/20 + 55/100 floor that appears in the
+> Linee guida belongs to the **five-skill standard CILS**, a different exam. Our 7/12 is a
+> proportional derivation from it.
 
-If it *is* B1 Cittadinanza, the product is currently **under-claiming**: telling learners a
-benchmark is ours when Siena publishes it. That is the safe direction to be wrong in, which is
-why nothing was changed on a guess.
+| | |
+|---|---|
+| B1 Cittadinanza criteria PDF | `https://cils.unistrasi.it/public/articoli/382/Criteri%20di%20valutazione%20B1%20cittadinanza_nuovi.pdf` — sha256 `a40ca44c…`, fetched 2026-08-30 |
+| Linee guida (standard CILS) | `https://cils.unistrasi.it/public/articoli/52/Linee_guida_cils_pdf.pdf` — sha256 `40a4446a…`, fetched 2026-08-30 |
 
-**What settles it:** a human opening page 18 of `Linee_guida_cils_pdf.pdf`
-(sha256 `40a4446a…`) and reading §1.4.4.5 with their eyes.
+**The derivation, so the number is not arbitrary:** standard CILS requires **11 of 20** per
+ability — 55%. B1 Cittadinanza scores **12** per ability. 55% of 12 is 6.6, and the floor is set
+at the next whole point: **7 of 12**. That is a proportional carry-over from a *different exam's*
+published threshold, which is precisely why it is ours and not Siena's.
+
+The code already carried this derivation — `cils-b1c.ts` records the floor as *"AlmiItalian
+practice benchmark, derived from CILS UNO–B1 Linee guida (11/20 per skill)"*. What was missing
+was not the reasoning but the CONFIRMATION that Siena publishes no threshold of its own for this
+module. That is what Nasir's reading supplies, and it is why nothing in the code changes.
+
+🔴 **The product's wording does not change.** `src/lib/scoring/cils-b1c.ts` continues to say the
+floor is *our practice benchmark, not a Siena-published pass mark*, and that stays exactly as it
+is. The derivation explains where the number came from; it does **not** upgrade it to official.
+Siena publishes no threshold for this module, so there is nothing to be official about.
+
+**Also recorded:** `https://cils.unistrasi.it/1/119/I_punteggi.htm` returned **HTTP 500** when
+checked on 2026-08-30 (both capitalisations; a third path returned 404). The B1c criteria PDF
+was requested as a control in the same run and returned **200**, so the site is up and that one
+page is broken — not a network fault at our end. Nasir reported the same 500 on 31 Aug. If a
+future reader needs Siena's own punteggi page, it is down, not moved.
 
 ---
 

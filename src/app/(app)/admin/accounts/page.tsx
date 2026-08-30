@@ -1,40 +1,10 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
-import { canAccessAdmin, isOwner } from "@/lib/access";
+import { canAccessAdmin } from "@/lib/access";
+import { classifyPlan, tallyPlans, PLAN_LABEL, type Plan } from "@/lib/admin/plan";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
-
-type Plan = "owner" | "comp" | "pro" | "free";
-
-const ACTIVE_STATUSES = ["trialing", "active"];
-
-// One source for "what is this person". /account said "Owner - full access" while this
-// table said "Free" about the same person: it read only compProUntil and
-// subscriptionStatus and never asked isOwner(), which is the predicate every other
-// surface uses. An owner has no subscription row, so the honest columns were producing a
-// dishonest label.
-//
-// The "3-day free" tier that used to sit between Pro and Free is GONE (founder decision
-// 2026-08-31, network-wide): the tile, the badge and the query that fed them are removed
-// rather than left showing a permanent zero. A tile that can only ever read 0 is not
-// information; it is a question every reader has to re-answer. Counted before removing it:
-// production held 0 users with freeAccessStartedAt set, so no row changes label because of
-// this. The COLUMN survives in the database - see src/lib/access.ts for why it is not
-// dropped.
-function classifyPlan(u: {
-  email: string;
-  compProUntil: Date | null;
-  subscriptionStatus: string | null;
-}): Plan {
-  const now = Date.now();
-  if (isOwner(u.email)) return "owner";
-  if (u.compProUntil && u.compProUntil.getTime() > now) return "comp";
-  if (u.subscriptionStatus && ACTIVE_STATUSES.includes(u.subscriptionStatus)) {
-    return "pro";
-  }
-  return "free";
-}
 
 function formatDate(d: Date | null): string {
   if (!d) return "—";
@@ -51,13 +21,6 @@ const BADGE: Record<Plan, string> = {
   pro: "bg-emerald-100 text-emerald-800",
   free: "bg-gray-100 text-gray-600",
 };
-const BADGE_LABEL: Record<Plan, string> = {
-  // The same words the learner sees on /account, from the same predicates.
-  owner: "Owner",
-  comp: "Comp",
-  pro: "Pro",
-  free: "Free",
-};
 
 export default async function AccountsPage() {
   const user = await getCurrentUser();
@@ -65,14 +28,20 @@ export default async function AccountsPage() {
 
   const nowDate = new Date();
 
-  const [total, compCount, proCount, recent] = await Promise.all([
-    prisma.user.count(),
-    prisma.user.count({ where: { compProUntil: { gt: nowDate } } }),
-    prisma.user.count({
-      where: {
-        subscriptionStatus: { in: ACTIVE_STATUSES },
-        OR: [{ compProUntil: null }, { compProUntil: { lte: nowDate } }],
-      },
+  // ── THE TILES ARE COUNTED WITH classifyPlan(), THE SAME FUNCTION THE ROWS USE ─────
+  // They were four separate queries with Free as the subtraction left over. That
+  // arithmetic had no Owner term, so the owner landed in Free — the admin counted the
+  // founder as a free user on the same screen whose row badge said "Owner". Counting the
+  // tiles and the rows through one function makes that disagreement unrepresentable.
+  //
+  // Owner is NOT a database predicate — isOwner() reads OWNER_EMAILS — so it cannot be a
+  // SQL `where`. The classification therefore happens in JS over the three fields it needs.
+  // At this scale that is a small read; if the table ever grows this becomes a grouped query
+  // plus a separate owner lookup, and the thing to preserve is that both still go through
+  // classifyPlan rather than re-deriving the rule.
+  const [everyone, recent] = await Promise.all([
+    prisma.user.findMany({
+      select: { email: true, compProUntil: true, subscriptionStatus: true },
     }),
     prisma.user.findMany({
       orderBy: { createdAt: "desc" },
@@ -93,13 +62,17 @@ export default async function AccountsPage() {
     }),
   ]);
 
-  const freeCount = Math.max(0, total - compCount - proCount);
+  const tally = tallyPlans(everyone);
+  const total = everyone.length;
 
+  // Every user lands in exactly one bucket, so the four add up to the total by construction
+  // rather than by subtraction. No tile is the remainder of the others any more.
   const stats: { label: string; value: number }[] = [
     { label: "Total", value: total },
-    { label: "Free", value: freeCount },
-    { label: "Pro", value: proCount },
-    { label: "Comp", value: compCount },
+    { label: "Owner", value: tally.owner },
+    { label: "Free", value: tally.free },
+    { label: "Pro", value: tally.pro },
+    { label: "Comp", value: tally.comp },
   ];
 
   return (
@@ -112,7 +85,7 @@ export default async function AccountsPage() {
         </p>
       </header>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         {stats.map((s) => (
           <div key={s.label} className="rounded-xl border border-gray-200 bg-white p-4">
             <div className="text-xs uppercase tracking-wide text-gray-400">{s.label}</div>
@@ -150,7 +123,7 @@ export default async function AccountsPage() {
                           BADGE[plan]
                         }
                       >
-                        {BADGE_LABEL[plan]}
+                        {PLAN_LABEL[plan]}
                       </span>
                     </td>
                     <td className="py-2 pr-0">{formatDate(u.authSessions[0]?.createdAt ?? null)}</td>

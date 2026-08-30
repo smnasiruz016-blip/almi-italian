@@ -23,7 +23,12 @@ export function isBillingEnabled(): boolean {
   return Boolean(process.env.STRIPE_SECRET_KEY && process.env.STRIPE_PRICE_ID);
 }
 
-const ACTIVE_STATUSES = new Set(["trialing", "active"]);
+/** The Stripe statuses that mean "this subscription is live". Exported because the admin
+ *  table needs the same list for its SQL filter, and a hand-copy there is how a badge and a
+ *  paywall come to disagree about the same person. Array, because Prisma's `in` takes one;
+ *  the Set below is built from it so there is still one literal. */
+export const ACTIVE_SUBSCRIPTION_STATUSES = ["trialing", "active"] as const;
+const ACTIVE_STATUSES = new Set<string>(ACTIVE_SUBSCRIPTION_STATUSES);
 
 function hasActiveSubscription(
   user: Pick<User, "subscriptionStatus" | "subscriptionCurrentPeriodEnd">,

@@ -30,6 +30,115 @@ green again on the restored file.**
 Restore is a byte copy taken before the edit and verified by sha256 — deliberately **not**
 `git checkout --`, which discards uncommitted work in the same path silently.
 
+## Recount, 2026-08-30 — the chain has grown from 40 steps to 51
+
+| | |
+|---|---|
+| chain steps | **51** |
+| of them checks (`prisma generate` and `next build` are not) | **49** |
+| **PROVEN RED on their own real property** | **43** |
+| never seen red | **6** |
+
+Counted from evidence rather than memory: the 29 rows below, the three driven in #64/#65/#66,
+and the eleven proved since — `gate:numeric` (#68), `gate:admin-counting` (#71),
+`gate:seed-bundle` (#73), `gate:option-category` and `gate:title-key` (#74),
+`gate:lint-wiring` and `lint` (#76), `gate:source-freshness` (#77), and
+`gate:trial-cap`, `gate:ai-ledger`, `gate:celi-pass-rule` (#80).
+
+**None of the 29 files below has been edited since `7419376`**, so none of those proofs
+is stale — checked with `git log 7419376..HEAD -- <file>` on every one, after validating
+that the probe reports non-zero for files that DID change.
+
+## 🔴 FINDING — six checks have never been seen red
+
+**Not hollow.** Both hollowness modes were tested and neither is present:
+
+- **no empty population** — the three most exposed guard against it explicitly. `gate:coverage`
+  takes its denominator from the ENGINE (13 levels), not from its own list, and an OUT_OF_SCOPE
+  entry must have no track, no items and a written reason. `gate:paywall` asserts
+  `routeFiles.length > 20`, `population.length >= 4` and `excluded.length > 0`.
+  `uniqueness-gate.mjs` pins `EXPECTED_ARTICLES` as a literal.
+- **no unfalsifiable assertion** — `ok(true)`, `if (false)`, self-comparison: zero
+  across all six. Assertion counts run 9 to 42.
+
+They are also **not resting on prose**: five of the six run a control or a red proof *inside
+themselves*. That is weaker than an external sabotage and much stronger than a claim.
+
+| check | what it already does for itself |
+|---|---|
+| `gate:degame` | five RED proofs against a known-bad fixture, including *deGame() does NOT silence it* |
+| `gate:serve` | RED proof — *scanner finds 433 key field(s), it can see keys* — plus driven marking |
+| `gate:security` | drives the real rate limiter: limit 3, requests 4 and 5 refused, window expiry, bucket independence |
+| `gate:paywall` | control — *the pin check fires on a sabotaged copy of src/lib/stripe.ts* |
+| `gate:coverage` | prints its population: 4 routed, 9 out of scope, 13 engine levels |
+| 🔴 `scripts/seo/uniqueness-gate.mjs` | **the weakest — no control, no recorded red, pinned counts only** |
+
+**`uniqueness-gate.mjs` is the one to do next.** An empty corpus fails it, because the
+expected counts are literals — but nothing has ever watched it refuse anything and it prints no
+control at all.
+
+**Left as a recorded finding on purpose.** A check that has not been seen red is a fact worth
+writing down before anyone edits it; fixing it in the same pass would destroy the measurement.
+
+## 🔴 What an external proof is worth — `gate:trial-cap`, #80
+
+It was **GREEN** with `CONSECUTIVE_FAILURE_LIMIT` set to **999999** — a circuit breaker
+that never trips, on the path that decides how much a failing provider can bill us.
+
+The gate imported that constant and measured everything *relative* to it, so it tested at 999999
+and was satisfied. A verifier that reads its expectation from the thing it is checking proves the
+key, not the world.
+
+The hole sat behind **41 assertions and 7 controls** for ten days, and only a sabotage of the
+PRODUCT — never of the gate — found it. Both decided numbers (`CAP = 2`,
+`CONSECUTIVE_FAILURE_LIMIT = 3`) are now pinned in the gate with the decision behind them.
+
+## The third question — where does a check's EXPECTED value come from?
+
+Nasir's, banked after `gate:trial-cap`. A check that imports its threshold from the
+code it checks proves that code is **self-consistent**, never that it is **right** — and no
+hollowness audit can see it, because the population is real and every assertion can fail.
+
+Applied read-only to the six never seen red. **Importing the SUBJECT is not the same as importing
+the EXPECTATION**: a gate must load the bank to examine it. The question is whether the number it
+compares against comes from a literal or from the thing under test.
+
+| check | imports | verdict |
+|---|---|---|
+| 🔴 `gate:security` | `LIMITS` from `src/lib/rate-limit` | **the shape that caught trial-cap** |
+| ⚠️ `gate:coverage` | `COVERAGE`, `TRACKS` from `src/lib/practice` | its own list — but every claim is cross-checked |
+| ✅ `gate:serve` | `BANK`, `TRACKS`, `ATOM` | the POPULATION, not an expectation |
+| ✅ `gate:degame` | `BANK`, `RAW_BANK` | the POPULATION, not an expectation |
+| ✅ `gate:paywall` | nothing from src | walks the filesystem; pins its own literals |
+| ✅ `scripts/seo/uniqueness-gate.mjs` | nothing | `EXPECTED_ARTICLES` is a literal |
+
+### 🔴 `gate:security` — named, not fixed
+
+It imports the rate limits and checks only that each is in a RANGE:
+
+```
+if (!(l.limit > 0 && l.limit < 1000 && l.windowMs > 0)) fail(...)
+ok(`${Object.keys(LIMITS).length} configured limit(s), all finite and positive`)
+```
+
+The DECIDED numbers are not pinned. `login: { limit: 8, windowMs: 60_000 }` — eight
+attempts a minute, chosen because *"a human mis-types a password once or twice, not ten times a
+minute"* — could become `limit: 900` and the gate stays GREEN: 900 is above 0 and below
+1000, and the count of configured limits is unchanged. A login limit of 900 a minute is not a
+limit.
+
+This is exactly the `gate:trial-cap` shape and it is left **unfixed on purpose**, as
+briefed. The remedy is the same one applied there: pin the decided values with their reasons, and
+keep the range check as a floor rather than as the whole test.
+
+### ⚠️ `gate:coverage` — imports its own list, and survives the question
+
+It loads `COVERAGE`, the very list it validates. That would be circular except that
+every claim is settled against something else: the denominator is the ENGINE's level set (13),
+not the list; a ROUTED entry must be backed by a real bank; and an OUT_OF_SCOPE entry must have
+**no track, no items and a written reason**. The list cannot exempt a live level by asserting
+that it is not one.
+
 ## The table
 
 | # | gate | sabotage (its own property) | RED? | why it said no | restored |

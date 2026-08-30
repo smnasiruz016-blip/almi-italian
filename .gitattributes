@@ -1,0 +1,12 @@
+# The source documents are EVIDENCE. Their bytes are hashed in docs/source-record.md and
+# re-hashed on every build by gate:source-freshness, so a single byte of line-ending translation
+# turns the gate red and the record into a lie about what we hold.
+#
+# This repository is developed on Windows with core.autocrlf = true. Git has been treating these
+# PDFs as binary on its own — verified in three places (working tree, the committed blob, and a
+# fresh clone, all 10 matching) — but that is git's content HEURISTIC, not a promise. One
+# `*.pdf text` rule added later, or a platform whose heuristic decides differently, and the bytes
+# move without anyone editing them.
+#
+# So it is stated rather than inferred. Evidence that can be silently rewritten is not evidence.
+docs/sources/*.pdf binary

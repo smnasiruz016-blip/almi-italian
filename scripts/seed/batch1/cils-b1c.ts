@@ -420,7 +420,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       task: "Scrivi un'email all'ufficio anagrafe del tuo Comune per chiedere un certificato di residenza. Spiega perché ti serve e chiedi come puoi ritirarlo.",
       context: "Registro amministrativo, tono formale ma semplice.",
-      minWords: 40, maxWords: 80,
+      minWords: 80, maxWords: 120,
       criteria: ["Formula di apertura e chiusura adeguate", "Richiesta chiara del certificato", "Motivo della richiesta", "Correttezza di base (verbi, ortografia)"],
     },
   },
@@ -431,7 +431,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       task: "Nel tuo appartamento in affitto il riscaldamento non funziona. Scrivi un messaggio al padrone di casa: spiega il problema e chiedi di ripararlo presto.",
       context: "Registro quotidiano, tono cortese.",
-      minWords: 40, maxWords: 80,
+      minWords: 80, maxWords: 120,
       criteria: ["Descrizione chiara del problema", "Richiesta di intervento", "Cortesia", "Correttezza di base"],
     },
   },
@@ -442,7 +442,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       task: "Vuoi disdire l'abbonamento alla palestra. Scrivi una lettera alla palestra: comunica la disdetta, indica da quando e chiedi conferma per iscritto.",
       context: "Registro formale.",
-      minWords: 60, maxWords: 100,
+      minWords: 80, maxWords: 120,
       criteria: ["Intenzione chiara di disdetta", "Data di fine indicata", "Richiesta di conferma", "Struttura di una lettera formale"],
     },
   },
@@ -453,7 +453,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       task: "Hai spedito un pacco importante ma non è mai arrivato. Scrivi un reclamo alle poste: spiega cosa è successo, dai i dati della spedizione e chiedi una soluzione.",
       context: "Registro formale, amministrativo.",
-      minWords: 60, maxWords: 100,
+      minWords: 80, maxWords: 120,
       criteria: ["Descrizione dei fatti", "Dati utili (data, destinatario)", "Richiesta di soluzione o rimborso", "Tono formale corretto"],
     },
   },
@@ -464,7 +464,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       task: "Scrivi un'email a un CAF per chiedere un appuntamento e farti aiutare con la dichiarazione dei redditi. Indica la tua disponibilità e chiedi quali documenti portare.",
       context: "Registro formale, servizi al cittadino.",
-      minWords: 50, maxWords: 90,
+      minWords: 80, maxWords: 120,
       criteria: ["Richiesta di appuntamento chiara", "Disponibilità indicata", "Domanda sui documenti", "Correttezza formale"],
     },
   },
@@ -475,7 +475,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       task: "Hai visto un annuncio per un lavoro come commesso/a in un negozio. Scrivi una lettera di presentazione: parla della tua esperienza, spiega perché sei adatto/a e chiedi un colloquio.",
       context: "Registro formale, contesto lavorativo.",
-      minWords: 70, maxWords: 120,
+      minWords: 80, maxWords: 120,
       criteria: ["Riferimento all'annuncio", "Esperienza e qualità personali", "Richiesta di colloquio", "Organizzazione del testo e correttezza"],
     },
   },
@@ -487,7 +487,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       task: "Scrivi un breve messaggio alla maestra di tuo figlio per dire che oggi non viene a scuola. Spiega il motivo e di' quando pensi che tornerà.",
       context: "Registro cortese e semplice, tra genitore e insegnante.",
-      minWords: 40, maxWords: 80,
+      minWords: 80, maxWords: 120,
       criteria: ["Saluto e chiusura adeguati", "Motivo dell'assenza chiaro", "Indicazione del rientro", "Correttezza di base (verbi, ortografia)"],
     },
   },
@@ -498,7 +498,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       task: "Scrivi un biglietto da mettere nell'ingresso del palazzo: la prossima settimana farai dei lavori in casa e ci sarà rumore. Di' quando, per quanti giorni, e scusati.",
       context: "Comunicazione tra vicini di casa, tono gentile.",
-      minWords: 40, maxWords: 80,
+      minWords: 80, maxWords: 120,
       criteria: ["Informazione su giorni e orari", "Motivo del rumore", "Formula di scuse", "Frasi brevi e comprensibili"],
     },
   },
@@ -509,7 +509,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       task: "Scrivi un'email alla segreteria della scuola per chiedere come iscrivere tuo figlio alla mensa. Chiedi che cosa serve e entro quando bisogna iscriversi.",
       context: "Registro amministrativo, tono formale ma semplice.",
-      minWords: 60, maxWords: 100,
+      minWords: 80, maxWords: 120,
       criteria: ["Oggetto e formule di apertura/chiusura", "Domande chiare e distinte", "Riferimento al proprio figlio e alla classe", "Correttezza di base"],
     },
   },
@@ -520,7 +520,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       task: "Hai una visita prenotata ma non puoi andare. Scrivi un'email per disdire l'appuntamento, spiega brevemente perché e chiedi di spostarlo a un'altra data.",
       context: "Registro formale semplice, con dati dell'appuntamento.",
-      minWords: 60, maxWords: 100,
+      minWords: 80, maxWords: 120,
       criteria: ["Indica giorno e ora dell'appuntamento", "Comunica chiaramente la disdetta", "Chiede una nuova data", "Tono cortese e formule adeguate"],
     },
   },
@@ -531,7 +531,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       task: "Scrivi una segnalazione all'ufficio del comune: nella tua via un lampione è rotto da due settimane e la sera è tutto buio. Di' dov'è e perché è un problema.",
       context: "Segnalazione scritta a un ufficio pubblico.",
-      minWords: 60, maxWords: 100,
+      minWords: 80, maxWords: 120,
       criteria: ["Indica il luogo preciso", "Descrive il problema e da quanto dura", "Spiega perché è un problema", "Chiede un intervento in modo cortese"],
     },
   },
@@ -542,7 +542,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       task: "Scrivi un messaggio al tuo responsabile per chiedere di cambiare turno giovedì, perché hai un appuntamento. Proponi una soluzione.",
       context: "Comunicazione di lavoro, tono rispettoso.",
-      minWords: 60, maxWords: 100,
+      minWords: 80, maxWords: 120,
       criteria: ["Richiesta chiara con il giorno indicato", "Motivo breve e sufficiente", "Proposta di alternativa concreta", "Registro adeguato al contesto di lavoro"],
     },
   },
@@ -553,7 +553,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       task: "Hai visto l'annuncio di un appartamento in affitto. Scrivi un messaggio: presentati, di' da quando ti serve la casa e fai due domande sull'appartamento o sulle spese.",
       context: "Primo contatto con chi affitta, tono cortese.",
-      minWords: 60, maxWords: 100,
+      minWords: 80, maxWords: 120,
       criteria: ["Presentazione essenziale", "Indicazione dei tempi", "Almeno due domande pertinenti", "Richiesta di appuntamento per vedere la casa"],
     },
   },
@@ -564,7 +564,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       task: "Scrivi al tuo datore di lavoro per chiedere qualche ora di permesso: devi andare a fare l'esame di italiano. Spiega quando, per quanto tempo, e come pensi di recuperare le ore.",
       context: "Richiesta formale scritta, in ambiente di lavoro.",
-      minWords: 70, maxWords: 120,
+      minWords: 80, maxWords: 120,
       criteria: ["Richiesta esplicita con data e orario", "Motivo chiaro senza dettagli inutili", "Proposta di recupero delle ore", "Registro formale e organizzazione del testo"],
     },
   },
@@ -575,7 +575,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
     payload: {
       task: "Racconta il tuo primo mese in Italia: che cosa è stato più facile, che cosa più difficile e che cosa faresti diversamente. Parla della tua esperienza.",
       context: "Testo personale per un giornalino di classe.",
-      minWords: 70, maxWords: 120,
+      minWords: 80, maxWords: 120,
       criteria: ["Racconta fatti concreti, non impressioni generiche", "Contrappone una cosa facile e una difficile", "Usa i tempi del passato in modo comprensibile", "Resta sulla propria esperienza, senza generalizzare sugli italiani"],
     },
   },

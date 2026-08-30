@@ -65,7 +65,7 @@ export const CILS_UNO_ITEMS: RawItem[] = [
     title: "Conversazione al bar: le ordinazioni", topicTag: "vita sociale",
     prompt: "Ascolta e abbina ogni persona a ciò che ordina.",
     payload: {
-      audioScript: "Allora, io prendo un cappuccino e un cornetto. Per me invece solo un caffè, grazie. Io ho fame, prendo un tramezzino e una spremuta d'arancia. E tu, Giulia? Io un tè caldo e una fetta di torta.",
+      audioScript: "— Allora, io prendo un cappuccino e un cornetto. — Per me invece solo un caffè, grazie. — Io ho fame, prendo un tramezzino e una spremuta d'arancia. E tu, Giulia? — Io un tè caldo e una fetta di torta.",
       instruction: "Abbina ogni persona all'ordinazione giusta.",
       prompts: ["Prima persona", "Seconda persona", "Terza persona", "Giulia"],
       options: ["Solo un caffè", "Cappuccino e cornetto", "Tè e torta", "Tramezzino e spremuta"],

@@ -1,4 +1,14 @@
-# Seed / bundle drift — what differs, and which side ships
+# Seed / bundle drift — RESOLVED 2026-08-30
+
+> **RESOLVED.** The sixteen items below no longer differ. The seed was synced to the bundle in
+> PR-E after each one was reviewed individually, and `scripts/gates/seed-bundle-gate.mts` now
+> asserts the stronger property: regenerating the bundle from the seed reproduces it
+> **byte-for-byte**. The generator runs again, and its guard is dormant rather than deleted —
+> it computes the drift live, so it speaks again the moment the two sides come apart.
+
+> The record below is kept as the history: what differed, which side shipped, and why.
+
+---
 
 Measured 2026-08-30 against `origin/master` @ `7419376`.
 Recomputed on every build by `scripts/gates/seed-bundle-gate.mts`.
@@ -6,7 +16,8 @@ Recomputed on every build by `scripts/gates/seed-bundle-gate.mts`.
 ## The situation, in one line
 
 `scripts/seed/batch1/` is the authored source. `src/data/items-batch1.json` is the bundle the
-product serves. **They disagree on 16 items, and the bundle is the correct one.**
+product serves. **They disagreed on 16 items, and the bundle was the correct side.** PR-E synced the seed to
+the bundle; they now agree on every field.
 
 ## Why that is the wrong way round, and how it happened
 
@@ -37,7 +48,8 @@ the drift survived: every content gate was pointed at one side or the other, and
 
 ### 15 × CILS_B1C / B1C / SCRITTA — word window
 
-The bundle ships 80–120 for all fifteen. The seed still carries the pre-#38 windows.
+The bundle ships 80–120 for all fifteen. The seed carried the pre-#38 windows until PR-E.
+The column headed *seed (authored)* is what the seed said BEFORE the sync.
 
 | id | item | field | seed (authored) | bundle (**SHIPPED**) |
 |---|---|---|---|---|
@@ -57,7 +69,7 @@ The bundle ships 80–120 for all fifteen. The seed still carries the pre-#38 wi
 | `d0b673c049ad8948` | Richiesta di permesso per un esame | minWords | 70 | **80** |
 | `f14a2e78156acec7` | Racconto: il mio primo mese in Italia | minWords | 70 | **80** |
 
-Three of the fifteen differ on `minWords` alone; their `maxWords` was already 120 in the seed.
+Three of the fifteen differed on `minWords` alone; their `maxWords` was already 120 in the seed.
 
 ### 1 × CILS_STANDARD / UNO / ASCOLTO — audio script
 
@@ -76,24 +88,38 @@ bundle  — Allora, io prendo un cappuccino e un cornetto. — Per me invece sol
 Same words; the bundle adds the Italian dialogue dash before each speaker's turn. The renderer
 splits on those dashes to assign voices, so without them the item is four people read by one.
 
-## What this document does NOT decide
+## What this document left open, and how it was closed
 
-**Which side is right for the future is a content decision, not a tooling one, and it is not
-made here.** What is established is only which side *ships today* and what happens if the
-generator runs: the shipped values are the gated ones, and regenerating loses them.
+The original version of this file stopped short on purpose: *"which side is right for the
+future is a content decision, not a tooling one, and it is not made here."* It established
+only which side shipped and what regenerating would cost. That decision has since been made.
 
-Two of the fifteen word windows are worth a second look by whoever does the sync — 70→80 is a
-smaller move than 40→80, and whether every one of the fifteen genuinely belongs at the same
-80–120 window is an authoring question this file deliberately leaves open.
+It also flagged a narrower authoring question — **three** of the fifteen moved only on
+`minWords`, 70→80, a smaller move than 40→80, and whether all fifteen genuinely belong at the
+same 80–120 window was left open. (The earlier text said *two*; the table above lists three.
+The table was right.)
 
-## The way out
+**That question is now answered from the source, not from taste.** The CILS B1 Cittadinanza
+criteria PDF — fetched 2026-08-30, hashed and recorded in `docs/source-record.md` — states the
+productive task as *"Prova a tema (80 - 120 parole)"*. Unistrasi publishes one window for the
+task, not a per-item window. A seed floor of 70 was below the published minimum, so the three
+70→80 moves are corrections toward the source rather than a house style imposed on them.
 
-1. Bring `scripts/seed/batch1/` up to the bundle for these 16 items — or consciously reject a
-   bundle value and change both sides together.
-2. Delete the corresponding row from `KNOWN_DRIFT` in `scripts/gates/seed-bundle-gate.mts` and
-   from the table above, in the same commit. The gate asserts the two lists agree, so neither
-   can go stale on its own.
-3. When the list reaches zero, the guard in `scripts/seed/_gen_bank_json.mjs` retires itself —
-   it computes the drift live, so no drift means the generator runs with no flag.
+## The way out — taken, 2026-08-30
 
-Until then the generator refuses. That refusal is the point; it is not a bug to route around.
+1. ✅ `scripts/seed/batch1/` was brought up to the bundle for all 16 items, each one read
+   individually first. No bundle value was rejected.
+2. ✅ `KNOWN_DRIFT` is **gone**, not emptied. A frozen list of expected disagreements was the
+   right shape while the two sides disagreed and nobody had decided which was correct; with
+   drift at zero it would have been a list asserting nothing, and an empty list is the exact
+   shape a vacuous gate takes. `scripts/gates/seed-bundle-gate.mts` asserts something stronger
+   in its place: it RUNS the generator and requires the bundle back **byte-for-byte**. That is
+   the round trip executed, not a list somebody has to maintain.
+3. ✅ The guard in `scripts/seed/_gen_bank_json.mjs` retired itself as designed — it computes
+   the drift live, so zero drift means the generator runs with no flag. It was **not deleted**.
+   Sabotage proved it still refuses the moment either side moves, and that the gate goes red if
+   the refusal is neutered, unhooked from the drift, or stripped of its non-zero exit.
+
+The generator runs again. If it ever refuses, the two sides have come apart again — and the
+refusal is the point, not a bug to route around. Read it before choosing a side: last time the
+bundle was right, and that is a fact about last time, not a rule.

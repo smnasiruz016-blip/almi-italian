@@ -106,4 +106,19 @@ if (failures.length) {
   for (const f of failures) console.error("   • " + f);
   process.exit(1);
 }
+// ── WHAT THIS GREEN DOES NOT COVER — PRINTED, NOT BURIED ───────────────────
+// A reader who sees only the tick above will assume this gate watches the pass rule itself. It
+// does not, and cannot, while the numbers stay equal. Silence here is not coverage, and the gate
+// says so in its own output rather than leaving it to a PR body nobody re-reads.
+console.log("\n⚠️  WHAT THIS GATE CANNOT SEE");
+console.log("    Reverting scoreCeli to the two-condition rule (writtenPass && oralPass, ignoring");
+console.log("    the total) does NOT turn this gate red, and that was verified rather than assumed —");
+console.log("    it is a deliberately GREEN case in the sabotage run.");
+console.log("    The two rules are IDENTICAL in outcome while writtenMin + oralMin === passFloor,");
+console.log("    which holds at all five levels today. Section A is what guards that equality: the");
+console.log("    moment CVCL moves one of the three numbers, the revert becomes visible AND wrong,");
+console.log("    and A goes red first.");
+console.log("    So this gate protects the CONDITION UNDER WHICH the shorter rule is safe — not the");
+console.log("    longer rule's presence. If you are about to simplify that line, this is the note.");
+
 console.log(`\n✅ celi-pass-rule gate: ${bothParts.length} both-parts level(s) enforce all three published conditions, each driven across its own boundary; the floor equals the sum of the minima at every level, and IMPATTO still runs the total-only rule.`);

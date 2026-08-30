@@ -93,6 +93,52 @@ The hole sat behind **41 assertions and 7 controls** for ten days, and only a sa
 PRODUCT — never of the gate — found it. Both decided numbers (`CAP = 2`,
 `CONSECUTIVE_FAILURE_LIMIT = 3`) are now pinned in the gate with the decision behind them.
 
+## The third question — where does a check's EXPECTED value come from?
+
+Nasir's, banked after `gate:trial-cap`. A check that imports its threshold from the
+code it checks proves that code is **self-consistent**, never that it is **right** — and no
+hollowness audit can see it, because the population is real and every assertion can fail.
+
+Applied read-only to the six never seen red. **Importing the SUBJECT is not the same as importing
+the EXPECTATION**: a gate must load the bank to examine it. The question is whether the number it
+compares against comes from a literal or from the thing under test.
+
+| check | imports | verdict |
+|---|---|---|
+| 🔴 `gate:security` | `LIMITS` from `src/lib/rate-limit` | **the shape that caught trial-cap** |
+| ⚠️ `gate:coverage` | `COVERAGE`, `TRACKS` from `src/lib/practice` | its own list — but every claim is cross-checked |
+| ✅ `gate:serve` | `BANK`, `TRACKS`, `ATOM` | the POPULATION, not an expectation |
+| ✅ `gate:degame` | `BANK`, `RAW_BANK` | the POPULATION, not an expectation |
+| ✅ `gate:paywall` | nothing from src | walks the filesystem; pins its own literals |
+| ✅ `scripts/seo/uniqueness-gate.mjs` | nothing | `EXPECTED_ARTICLES` is a literal |
+
+### 🔴 `gate:security` — named, not fixed
+
+It imports the rate limits and checks only that each is in a RANGE:
+
+```
+if (!(l.limit > 0 && l.limit < 1000 && l.windowMs > 0)) fail(...)
+ok(`${Object.keys(LIMITS).length} configured limit(s), all finite and positive`)
+```
+
+The DECIDED numbers are not pinned. `login: { limit: 8, windowMs: 60_000 }` — eight
+attempts a minute, chosen because *"a human mis-types a password once or twice, not ten times a
+minute"* — could become `limit: 900` and the gate stays GREEN: 900 is above 0 and below
+1000, and the count of configured limits is unchanged. A login limit of 900 a minute is not a
+limit.
+
+This is exactly the `gate:trial-cap` shape and it is left **unfixed on purpose**, as
+briefed. The remedy is the same one applied there: pin the decided values with their reasons, and
+keep the range check as a floor rather than as the whole test.
+
+### ⚠️ `gate:coverage` — imports its own list, and survives the question
+
+It loads `COVERAGE`, the very list it validates. That would be circular except that
+every claim is settled against something else: the denominator is the ENGINE's level set (13),
+not the list; a ROUTED entry must be backed by a real bank; and an OUT_OF_SCOPE entry must have
+**no track, no items and a written reason**. The list cannot exempt a live level by asserting
+that it is not one.
+
 ## The table
 
 | # | gate | sabotage (its own property) | RED? | why it said no | restored |

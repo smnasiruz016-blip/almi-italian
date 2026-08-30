@@ -16,7 +16,7 @@ export const CILS_B1C_ITEMS: RawItem[] = [
       audioScript: "Buongiorno. Per ritirare un pacco deve presentare l'avviso di giacenza e un documento d'identità valido. Lo sportello pacchi è il numero 4 ed è aperto dalle 8:30 alle 13:30, dal lunedì al venerdì. Il sabato è chiuso.",
       questions: [
         { q: "Che cosa deve presentare la persona per ritirare il pacco?", options: ["Solo il documento d'identità", "L'avviso di giacenza e un documento", "Il codice fiscale", "Una fototessera"], answerIndex: 1 },
-        { q: "A che ora chiude lo sportello?", options: ["Alle 8:30", "Alle 13:30", "Alle 18:00", "Al sabato"], answerIndex: 1 },
+        { q: "A che ora chiude lo sportello?", options: ["Alle 8:30", "Alle 13:30", "Alle 18:00", "Alle 16:00"], answerIndex: 1 },
         { q: "Quando è chiuso lo sportello?", options: ["Il lunedì", "Il venerdì", "Il sabato", "Il mercoledì"], answerIndex: 2 },
       ],
     },

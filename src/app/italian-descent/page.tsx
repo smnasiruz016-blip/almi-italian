@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { DESCENT } from "@/lib/seo/data";
 import { canonical, SHAMOOL_LINE, DECREE_CITATION, TEST_NOT_CITIZENSHIP } from "@/lib/seo/content";
 
@@ -23,7 +22,7 @@ export default function Page() {
       <h2 className="mt-8 text-xl font-semibold text-almi-ink">The 7 decree countries</h2>
       <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
         {DESCENT.tier1.map((t) => (
-          <li key={t.slug}><Link href={`/italian-descent/${t.slug}`} className="text-sm font-medium text-almi-ink hover:text-almi-coral-text">{t.country}</Link></li>
+          <li key={t.slug} className="text-sm font-medium text-almi-ink">{t.country}</li>
         ))}
       </ul>
 
@@ -31,7 +30,7 @@ export default function Page() {
       <p className="mt-2 text-sm text-almi-text">The CGIE proposed these four; they are <strong className="text-almi-ink">not</strong> in the decree. They carry no descent work-entry right today — an extension is possible only by a future decree.</p>
       <ul className="mt-3 flex flex-wrap gap-3">
         {DESCENT.proposed.map((t) => (
-          <li key={t.slug}><Link href={`/italian-descent/proposed/${t.slug}`} className="text-sm text-almi-text hover:text-almi-coral-text">{t.country}</Link></li>
+          <li key={t.slug} className="text-sm text-almi-text">{t.country}</li>
         ))}
       </ul>
 

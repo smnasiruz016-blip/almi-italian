@@ -1,5 +1,4 @@
 import type { MetadataRoute } from "next";
-import { ORIGINS, DESCENT } from "@/lib/seo/data";
 import { SITE } from "@/lib/seo/content";
 import { learnUrls } from "@/lib/learn/articles";
 
@@ -57,18 +56,10 @@ export default async function sitemap({ id }: { id: Promise<string> }): Promise<
   // render, and cannot omit one that does. Prerendered, so none of these can produce an ISR
   // write — which is what the holding freeze below exists to prevent.
   for (const url of learnUrls()) out.push(learnEntry(url, url === "/learn" ? 0.7 : 0.6));
-  // Families 4–7: per-origin routes — prerendered keep-set.
-  for (const o of ORIGINS) {
-    out.push(entry(`/citizenship/${o.slug}`, 0.6));
-    out.push(entry(`/residence-permit/${o.slug}`, 0.6));
-    out.push(entry(`/study-in-italy/${o.slug}`, 0.6));
-    out.push(entry(`/exams-in/${o.slug}`, 0.6));
-  }
-  // Family 8: descent corridor (7 tier-1 + 4 proposed + overview above) — NEVER ×196.
-  for (const t of DESCENT.tier1) out.push(entry(`/italian-descent/${t.slug}`, 0.6));
-  for (const t of DESCENT.proposed) out.push(entry(`/italian-descent/proposed/${t.slug}`, 0.4));
 
-  // HOLDING 2026-08-09 — withdrawn until the page factory rebuilds them: Family 1 ateneo x origin,
-  // Family 2 ateneo x course x origin, Family 3 exam-level x origin. Those routes now 404.
+  // COST FIX 26 Oct 2026 — every programmatic family was removed (owner ruling 17 Oct: deleted,
+  // no redirects) and now answers 410 Gone from src/proxy.ts: /citizenship/*, /residence-permit/*,
+  // /study-in-italy/*, /exams-in/*, /italian-descent/<country>, /italian-descent/proposed/*,
+  // /exam/<level>/from/*, /university/<ateneo>[/<course>]/from/*. None of them is listed here.
   return out;
 }

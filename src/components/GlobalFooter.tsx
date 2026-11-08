@@ -1,35 +1,18 @@
-import { FAMILY_NAV } from "./GlobalHeader";
+// RR-398 · the AlmiWorld family footer (the same columns and links as almiworld.com, Shamool Foundation included), from the one
+// generated kit (src/lib/almiworld-family.ts + src/components/almiworld/, made by almiworld-site/tools/make-family-kit.mjs). The
+// old footer's family strip (from @smnasiruz016-blip/almi-data) is gone; no eBooks, no old WordPress links. AlmiItalian's own
+// links sit in one row under the columns.
+import { AlmiWorldFooter } from "@/components/almiworld/AlmiWorldFooter";
 
-// Dark family footer — AlmiWorld Global Nav Spec v1 §3 (matches the AlmiPrep
-// reference: ink #14110D ground, gold #D4A24C headings, light body text).
 export function GlobalFooter() {
   return (
-    <footer className="mt-16 bg-[#14110D] text-white/75">
-      <div className="mx-auto max-w-7xl px-6 py-12 text-sm">
-        <p className="max-w-3xl text-white/75">
-          <strong className="text-white">AlmiItalian</strong>{" "}
-          — honest CILS &amp; CELI practice.
-          Total-based level estimates, no section floors, Writing labelled an estimate — never a fabricated
-          official score. 25% of AlmiWorld&apos;s income supports the{" "}
-          <a href="https://shamoolfoundation.com/" className="text-[#D4A24C] hover:underline">
-            Shamool Foundation
-          </a>
-          , a completely free school for children in Lahore, Pakistan.
-        </p>
-
-        <p className="mt-8 text-xs font-bold uppercase tracking-wider text-[#D4A24C]">AlmiWorld family</p>
-        <nav aria-label="AlmiWorld family" className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs">
-          {FAMILY_NAV.map((item) => (
-            <a key={item.href} href={item.href} className="text-white/75 transition-colors hover:text-[#D4A24C]">
-              {item.label}
-            </a>
-          ))}
-        </nav>
-
-        <div className="mt-10 border-t border-white/15 pt-6 text-center text-xs text-white/60">
-          © {new Date().getFullYear()} AlmiWorld. All rights reserved.
-        </div>
-      </div>
-    </footer>
+    <AlmiWorldFooter
+      own={[
+        { label: "AlmiItalian", href: "/" },
+        { label: "Practice", href: "/practice" },
+        { label: "Pricing", href: "/pricing" },
+        { label: "Privacy", href: "/privacy" },
+      ]}
+    />
   );
 }

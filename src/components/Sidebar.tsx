@@ -166,7 +166,8 @@ export function Sidebar({
       {/* Desktop fixed rail. The family header is sticky with a variable height
           (it wraps to 2–3 lines at lg+), so the rail top padding clears the
           worst-case header — modest at md, opening up at lg+. */}
-      <aside className="fixed bottom-0 left-0 top-16 z-30 hidden w-60 flex-col border-r border-almi-bg-peach bg-almi-paper px-3 pb-4 pt-8 md:flex lg:pt-16">
+      {/* RR-398: the header is now the AlmiWorld bar (~52px) + one row (~64px) at every width, so md padding clears ~116px. */}
+      <aside className="fixed bottom-0 left-0 top-16 z-30 hidden w-60 flex-col border-r border-almi-bg-peach bg-almi-paper px-3 pb-4 pt-14 md:flex lg:pt-16">
         <p className="px-3 pb-4 text-base font-semibold leading-tight text-almi-ink">AlmiItalian</p>
         <NavBody items={items} active={active} email={email} logout={logout} />
       </aside>

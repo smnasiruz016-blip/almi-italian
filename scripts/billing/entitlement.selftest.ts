@@ -93,7 +93,7 @@ function check(label: string, actual: unknown, expected: unknown): void {
   }
 }
 
-console.log("Entitlement matrix — ONE door: $12/mo, 48-hour trial, card at checkout\n");
+console.log("Entitlement matrix — paid door first, then the free 48 hours (no card); checkout $12 at once\n");
 const pad = (s: string, n: number) => s.padEnd(n);
 console.log(pad("PERSONA", 36) + pad("SECTION", 14) + pad("SUBMIT", 20) + "LEVEL");
 console.log("-".repeat(84));
@@ -177,6 +177,34 @@ for (const r of produced) {
   check('refusal "' + r + '" is a declared reason', REASONS.includes(r), true);
 }
 check("every declared reason is reachable by some persona", REASONS.every((r) => produced.has(r)), true);
+
+// ── 6. RR-397: THE FREE 48 HOURS (no card), BY THEIR DATA ───────────────────
+// Owner decision 8 Nov 2026. The personas above carry no createdAt, so they keep answering exactly as before (no free time).
+// These carry the real sign-up date. Asserted both ways: open inside 48 hours, PAYWALL after; never for an account that ever
+// subscribed or was comped; never via the inert freeAccessStartedAt column; and paid personas are unchanged.
+const HOUR = 60 * 60 * 1000;
+const signedUp = (hoursAgo: number, over: Partial<User> = {}) => user({ createdAt: new Date(Date.now() - hoursAgo * HOUR), stripeSubscriptionId: null, ...over });
+const FREE48: { name: string; u: StartU; open: boolean }[] = [
+  { name: "new sign-up, 1 h ago, verified", u: signedUp(1), open: true },
+  { name: "new sign-up, 1 h ago, UNVERIFIED", u: signedUp(1, { emailVerifiedAt: null }), open: true },
+  { name: "sign-up 47 h ago", u: signedUp(47), open: true },
+  { name: "sign-up 49 h ago (free time over)", u: signedUp(49), open: false },
+  { name: "sign-up 400 days ago", u: signedUp(400 * 24), open: false },
+  { name: "1 h old, but CANCELED subscription", u: signedUp(1, { subscriptionStatus: "canceled", stripeSubscriptionId: "sub_old" }), open: false },
+  { name: "1 h old, but an EXPIRED comp", u: signedUp(1, { compProUntil: ago(1) }), open: false },
+  { name: "49 h old + legacy freeAccessStartedAt now", u: signedUp(49, { freeAccessStartedAt: new Date() }), open: false },
+];
+for (const { name, u, open } of FREE48) {
+  check("RR-397 " + name + ": section " + (open ? "OPEN" : "PAYWALL"), refuseSection(u), open ? null : "PAYWALL");
+  check("RR-397 " + name + ": NOT paid (the free time is not a subscription)", hasPaidAccess(u), false);
+  check("RR-397 " + name + ": objective access = free time", hasObjectiveAccess(u), open);
+  check("RR-397 " + name + ": access level stays NONE", getAccessLevel(u), "NONE");
+}
+// paid personas with a recent sign-up are unchanged (the free door is never what lets them in)
+for (const { name, u, paid } of PERSONAS) {
+  if (!u || !paid) continue;
+  check("RR-397 " + name + " (+ fresh sign-up date): still OPEN", refuseSection({ ...u, createdAt: new Date() } as StartU), null);
+}
 
 if (failures) {
   console.error("\nx Entitlement selftest: " + failures + " assertion(s) failed.\n");

@@ -59,9 +59,9 @@ ok(files.length > 200,
    `only ${files.length} served artefact(s) found under .next — run \`next build\` first. ` +
    `A gate that scanned nothing would print the same zero as a gate that scanned everything.`);
 
-/** Promises about free PRACTICE. Not the word "free": /learn is genuinely free, and the 48-hour
- *  trial is genuinely a free trial. These are the specific claims the 31 Aug decision made
- *  false — plus, since RR-394, the old 7-day trial, which new checkouts no longer get. */
+/** Promises that are false. Not the word "free": /learn is genuinely free, and since RR-397 the first 48 hours from sign-up
+ *  are genuinely free with no card. These are the claims the 31 Aug decision made false (the 3-day window), plus every line
+ *  that still sells a CARD trial, which RR-397 ended for new checkouts. */
 const BANNED: { needle: string; why: string }[] = [
   { needle: "free for 3 days", why: "the 3-day grant is withdrawn" },
   { needle: "free for 3", why: "the 3-day grant is withdrawn" },
@@ -69,22 +69,25 @@ const BANNED: { needle: string; why: string }[] = [
   { needle: "3 day free", why: "the 3-day grant is withdrawn" },
   { needle: "3 free days", why: "the 3-day grant is withdrawn" },
   { needle: "3 days free", why: "the 3-day grant is withdrawn" },
-  { needle: "no card needed", why: "a card is now collected at checkout" },
-  { needle: "no card required", why: "a card is now collected at checkout" },
-  { needle: "no card.", why: "a card is now collected at checkout" },
-  { needle: "no card,", why: "a card is now collected at checkout" },
-  { needle: "without a card", why: "a card is now collected at checkout" },
-  { needle: "senza carta", why: "a card is now collected at checkout" },
+  // RR-397 (8 Nov 2026): "no card" is TRUE again — the free 48 hours need no card — so the six "no card / senza carta" bans
+  // that guarded the card-first trial were removed. In their place, every phrase that sells a CARD trial is banned, because
+  // new checkouts no longer get one (they charge $12 at once).
   { needle: "WINDOW_EXPIRED", why: "the refusal reason no longer exists" },
-  { needle: "objective sections free", why: "no section is free any more" },
-  { needle: "7-day free trial", why: "RR-394: new checkouts get a 48-hour trial" },
-  { needle: "7-day trial", why: "RR-394: new checkouts get a 48-hour trial" },
+  { needle: "objective sections free", why: "only the free 48 hours open sections without paying, and all of them" },
+  { needle: "7-day free trial", why: "RR-394/397: new checkouts get no card trial" },
+  { needle: "7-day trial", why: "RR-394/397: new checkouts get no card trial" },
+  { needle: "48-hour free trial", why: "RR-397: the free 48 hours are not a card trial" },
+  { needle: "48-hour trial", why: "RR-397: the free 48 hours are not a card trial" },
+  { needle: "card saved", why: "RR-397: no card is taken for the free 48 hours" },
+  { needle: "card is saved", why: "RR-397: no card is taken for the free 48 hours" },
+  { needle: "not charged during", why: "RR-397: a checkout charges $12 at once" },
+  { needle: "Try free for 48 hours, then", why: "RR-397: the owner's words are \"Try free for 48 hours, no card. Then $12/month.\"" },
 ];
 
 /** Strings that MUST be in the output. Without these a zero above means "the scanner read
  *  nothing", not "the pages are clean" — the whole difference between a gate and a decoration. */
 const CONTROLS: string[] = [
-  "48-hour free trial",
+  "Try free for 48 hours, no card",
   "12/month",
   "Practice is part of AlmiItalian Pro",
   "Siena",

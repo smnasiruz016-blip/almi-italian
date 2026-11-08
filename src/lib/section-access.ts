@@ -8,8 +8,9 @@
 //
 // ── WHAT CHANGED, 2026-08-31 ────────────────────────────────────────────────
 // This file was `free-window.ts` and implemented the 3-day, no-card grant on the objective
-// sections. The founder withdrew that grant network-wide, so there is now ONE door:
-// $12/month, a Stripe trial (48 hours for new checkouts since RR-394), card collected at checkout, cancel anytime.
+// sections. The founder withdrew that grant network-wide, so there was ONE door: $12/month with a card-first
+// Stripe trial. RR-397 (8 Nov 2026) added the free 48 hours from sign-up, no card, asked only after hasPaidAccess()
+// (see refuseSection below); new checkouts charge $12 at once, with no Stripe trial.
 //
 // Renamed rather than left as `free-window.ts`, because a module named for a free window that
 // grants nothing is a lie a reader has to discover. Two importers moved with it.
@@ -33,6 +34,7 @@
 // are still three separate predicates even though two of them now have an empty population.
 
 import { hasPaidAccess, needsEmailVerification, type PaidUser } from "@/lib/access";
+import { isTasteActive, type TasteUser } from "@/lib/taste";
 
 /** Why a section is refused. Null = allowed. The UI and the route MUST agree on these, so
  *  both read them from here rather than each deciding for itself. */
@@ -48,11 +50,16 @@ export type RefusalReason = "SIGN_IN" | "PAYWALL" | "VERIFY_EMAIL";
  *   3. subscribed but unverified → verify (NEVER a paywall: they already pressed subscribe)
  *   4. everyone else      → paywall
  */
-export function refuseSection(user: PaidUser | null): RefusalReason | null {
+export function refuseSection(user: (PaidUser & TasteUser) | null): RefusalReason | null {
   if (!user) return "SIGN_IN";
   if (hasPaidAccess(user)) return null; //          owner ‖ comp ‖ active subscription
   // Subscribed and merely unverified: the only thing between them and access is the email, so
   // never answer that with a subscribe button they have already pressed.
   if (needsEmailVerification(user)) return "VERIFY_EMAIL";
+  // RR-397: inside the free 48 hours from sign-up (no card), every practice section is open. Asked only after hasPaidAccess()
+  // said no, so a paying learner or a running card trial never reaches it. AI assessment is limited separately (1 + 1, daily
+  // free-AI budget) in src/lib/ai/entitlement.ts. After the 48 hours this is a PAYWALL again, and the page says
+  // "Your free 48 hours are over" (lockedCopy in src/lib/free-access.ts).
+  if (isTasteActive(user)) return null;
   return "PAYWALL";
 }

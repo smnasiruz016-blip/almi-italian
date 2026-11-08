@@ -1,90 +1,135 @@
-// RR-394 · behaviour proof for the 48-hour offer. Run: npx tsx scripts/verify-offer-48h.ts
-//   1. a NEW checkout gets a 48-hour trial (trial_period_days: 2), and the checkout really uses it;
-//   2. a 7-day trial that is ALREADY running keeps its access to its own end (it is not cut at 48 hours);
-//   3. a paying subscriber keeps access exactly as before.
+// RR-397 · behaviour proof for "Try free for 48 hours, no card". Pure functions + source reads only: no database, no Stripe, no AI.
+// Run: npx tsx scripts/verify-offer-48h.ts
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 
 const ROOT = process.cwd();
+const DIR = existsSync(join(ROOT, "src/lib/billing/stripe.ts")) ? "src/lib/billing" : "src/lib";
 const pick = (c: string[]) => c.find((p) => existsSync(join(ROOT, p)));
-const OFFER = pick(["src/lib/billing/offer.ts", "src/lib/offer.ts"])!;
-const STRIPE = pick(["src/lib/billing/stripe.ts", "src/lib/stripe.ts"])!;
-const ACCESS = pick(["src/lib/billing/plans.ts", "src/lib/plans.ts", "src/lib/billing/access.ts", "src/lib/access.ts", "src/lib/entitlement.ts", "src/lib/billing/entitlement.ts"]);
+const ACCESS = pick(["src/lib/billing/plans.ts", "src/lib/plans.ts", "src/lib/access.ts", "src/lib/billing/access.ts", "src/lib/entitlement.ts"]);
+const imp = (p: string) => import(pathToFileURL(join(ROOT, p)).href);
 
 let failed = 0;
 const t = async (name: string, fn: () => unknown | Promise<unknown>) => {
   try { await fn(); console.log(`  PASS ${name}`); } catch (e) { failed++; console.log(`  FAIL ${name}\n       ${(e as Error).message.split("\n")[0]}`); }
 };
-const DAY = 86_400_000;
+const HOUR = 3_600_000, DAY = 24 * HOUR;
 
 (async () => {
-  const offer = await import(pathToFileURL(join(ROOT, OFFER)).href);
-  await t("a new checkout has a 48-hour trial (trial_period_days: 2)", () => {
-    assert.equal(offer.TRIAL_PERIOD_DAYS, 2);
-    assert.equal(offer.TRIAL_HOURS, 48);
-    assert.deepEqual(offer.trialForNewCheckout(), { trial_period_days: 2 });
-  });
-  await t("the checkout session is built from the offer file, not a number of its own", () => {
-    const s = readFileSync(join(ROOT, STRIPE), "utf8");
-    assert.match(s, /from "\.\/offer"/);
-    assert.match(s, /trial_period_days:\s*TRIAL_PERIOD_DAYS|\.\.\.trialForNewCheckout\(\)/);
-    assert.doesNotMatch(s, /const TRIAL_(PERIOD_)?DAYS\s*=/);
-  });
+  const offer = await imp(`${DIR}/offer.ts`);
+  const taste = await imp(`${DIR}/taste.ts`);
+  /* free-ai-budget imports prisma; only its pure parts are used, so a DATABASE_URL is never needed and never read */
+  const budget = await imp(`${DIR}/free-ai-budget.ts`).catch(() => null);
+  const now = Date.now();
+  const fresh = { createdAt: new Date(now - HOUR), subscriptionStatus: null, stripeSubscriptionId: null, compProUntil: null };
 
-  if (!ACCESS) { failed++; console.log("  FAIL no access module found: point ACCESS at this repo's isProActive / hasPaidAccess"); }
+  await t("a new sign-up gets 48 hours free with no card (no subscription needed)", () => {
+    assert.equal(offer.TASTE_HOURS, 48);
+    assert.equal(taste.isTasteActive(fresh, now), true);
+    assert.equal(taste.tasteHoursLeft(fresh, now), 47);
+    assert.equal(taste.tasteEndsAt(fresh)!.getTime(), fresh.createdAt.getTime() + 48 * HOUR);
+  });
+  await t("AI is used once and then blocked in the free time (1 Writing, 1 Speaking)", () => {
+    for (const kind of ["WRITING", "SPEAKING"] as const) {
+      assert.deepEqual(taste.tasteMayUseAi({ user: fresh, kind, usedOfKind: 0, budgetOk: true, now }), { ok: true });
+      assert.deepEqual(taste.tasteMayUseAi({ user: fresh, kind, usedOfKind: 1, budgetOk: true, now }), { ok: false, reason: "USED" });
+    }
+  });
+  await t("the daily free-AI cap stops free AI (this product's share: $0.035/day)", () => {
+    assert.ok(budget, "free-ai-budget.ts could not be loaded");
+    assert.equal(budget.FREE_AI_DAILY_BUDGET_UNITS, 350);
+    assert.equal(budget.freeAiBudgetLeft(349), true);
+    assert.equal(budget.freeAiBudgetLeft(350), false);
+    assert.deepEqual(taste.tasteMayUseAi({ user: fresh, kind: "WRITING", usedOfKind: 0, budgetOk: false, now }), { ok: false, reason: "BUDGET" });
+    const paid = { id: "p", createdAt: new Date(now - 90 * DAY), subscriptionStatus: "active", stripeSubscriptionId: "sub_1", compProUntil: null };
+    const free = { id: "f", ...fresh };
+    assert.equal(budget.sumFreeSpend([{ userId: "p", costCents: 900 }, { userId: "f", costCents: 120 }], [paid, free]), 120, "only free accounts' spend counts");
+  });
+  await t("after 48 hours the unlock screen appears (the account's free time is over)", () => {
+    const old = { ...fresh, createdAt: new Date(now - 49 * HOUR) };
+    assert.equal(taste.isTasteActive(old, now), false);
+    assert.equal(taste.isTasteOver(old, now), true);
+    assert.deepEqual(taste.tasteMayUseAi({ user: old, kind: "WRITING", usedOfKind: 0, budgetOk: true, now }), { ok: false, reason: "OVER" });
+    assert.equal(offer.TASTE_OVER_TITLE, "Your free 48 hours are over");
+    assert.equal(offer.UNLOCK_LABEL, "Unlock for $12/month");
+  });
+  await t("checkout has no trial", () => {
+    assert.deepEqual(offer.trialForNewCheckout(), {});
+    const s = readFileSync(join(ROOT, `${DIR}/stripe.ts`), "utf8").replace(/\/\/.*|\/\*[\s\S]*?\*\//g, "");
+    assert.doesNotMatch(s, /trial_period_days|trial_end|trial_from_plan/);
+  });
+  if (!ACCESS) { failed++; console.log("  FAIL no access module found: point ACCESS at this repo's own predicate"); }
   else {
-    // This repo's predicate is hasPaidAccess (src/lib/access.ts). It is fail-closed until billing is configured
-    // (isBillingEnabled reads two env names), so the test sets obvious placeholders IN MEMORY only (no real key is read or
-    // used; nothing here talks to Stripe), and clears OWNER_EMAILS so the owner bypass cannot make a case pass.
+    // ALMIITALIAN: the repo's own paid predicate is hasPaidAccess (src/lib/access.ts; isProActive does not exist and its
+    // hasActiveSubscription is not exported). It is fail-closed until billing is configured (isBillingEnabled reads two env
+    // names), so the test sets obvious placeholders IN MEMORY only (no real key is read or used; nothing talks to Stripe), and
+    // clears OWNER_EMAILS so the owner bypass cannot make a case pass. hasPaidAccess also needs a verified email
+    // (emailVerifiedAt), so every learner below is verified unless a case says otherwise.
     process.env.STRIPE_SECRET_KEY ??= "sk_test_placeholder_for_offer_test_only";
     process.env.STRIPE_PRICE_ID ??= "price_placeholder_for_offer_test_only";
     delete process.env.OWNER_EMAILS;
-    const access = await import(pathToFileURL(join(ROOT, ACCESS)).href);
-    const fn = access.isProActive ?? access.hasPaidAccess ?? access.hasActiveSubscription ?? access.isSubscriptionActive;
+    const access = await imp(ACCESS);
+    const fn = access.isProActive ?? access.hasActiveSubscription ?? access.hasPaidAccess;
     if (typeof fn !== "function") { failed++; console.log(`  FAIL ${ACCESS} exports no isProActive: adapt this test to the repo's own access predicate`); }
     else {
-      const now = Date.now();
-      // hasPaidAccess here also requires a verified email (emailVerifiedAt), so the learner in every case is verified.
       const base = { compProUntil: null, emailVerified: new Date(now - 30 * DAY), emailVerifiedAt: new Date(now - 30 * DAY), email: "learner@example.com" };
-      await t("an existing 7-day trial is unchanged: started 3 days ago (past 48 h), Stripe's end 4 days ahead → still has access", () => {
-        assert.equal(fn({ ...base, subscriptionStatus: "trialing", subscriptionCurrentPeriodEnd: new Date(now + 4 * DAY), trialEndsAt: new Date(now + 4 * DAY), createdAt: new Date(now - 3 * DAY) }), true);
+      await t("an existing card trial is unchanged (7 days, started 3 days ago, Stripe's end 4 days ahead) and is not a free-48h account", () => {
+        const u = { ...base, subscriptionStatus: "trialing", stripeSubscriptionId: "sub_t", subscriptionCurrentPeriodEnd: new Date(now + 4 * DAY), createdAt: new Date(now - 3 * DAY) };
+        assert.equal(fn(u), true);
+        assert.equal(taste.tasteEndsAt(u), null);
       });
-      await t("an existing paying subscriber is unchanged → access", () => {
-        assert.equal(fn({ ...base, subscriptionStatus: "active", subscriptionCurrentPeriodEnd: new Date(now + 20 * DAY), trialEndsAt: null, createdAt: new Date(now - 90 * DAY) }), true);
+      await t("a subscriber is unchanged (access, never a free-48h account, never budget-limited)", () => {
+        const u = { ...base, subscriptionStatus: "active", stripeSubscriptionId: "sub_a", subscriptionCurrentPeriodEnd: new Date(now + 20 * DAY), createdAt: new Date(now - 90 * DAY) };
+        assert.equal(fn(u), true);
+        assert.equal(taste.tasteEndsAt(u), null);
       });
-      await t("control: a subscription whose period has ended → no access (the predicate really looks at the dates)", () => {
-        assert.equal(fn({ ...base, subscriptionStatus: "active", subscriptionCurrentPeriodEnd: new Date(now - DAY), trialEndsAt: null, createdAt: new Date(now - 90 * DAY) }), false);
+      await t("control: a subscription whose period has ended has no paid access", () => {
+        assert.equal(fn({ ...base, subscriptionStatus: "active", stripeSubscriptionId: "sub_x", subscriptionCurrentPeriodEnd: new Date(now - DAY), createdAt: new Date(now - 90 * DAY) }), false);
       });
 
-      // AlmiItalian only: the AI trial cap (src/lib/ai/entitlement.ts) — the real decideAiEntitlement, pure, no database.
-      // It keys on `trialing`, never on a trial length, so an old 7-day trial and a new 48-hour trial are capped the same,
-      // and the running 7-day trial keeps its AI access (within the cap) to its own Stripe end.
-      const ent = await import(pathToFileURL(join(ROOT, "src/lib/ai/entitlement.ts")).href);
-      const CAP = ent.TRIAL_EVALUATIONS_PER_SKILL;
-      const old7 = { ...base, subscriptionStatus: "trialing", subscriptionCurrentPeriodEnd: new Date(now + 4 * DAY) }; // started 3 days ago
-      const new48 = { ...base, subscriptionStatus: "trialing", subscriptionCurrentPeriodEnd: new Date(now + 2 * DAY - 60_000) };
-      const paying = { ...base, subscriptionStatus: "active", subscriptionCurrentPeriodEnd: new Date(now + 20 * DAY) };
-      await t("AI cap: a running 7-day trial past 48 h, under its allowance → still allowed (not cut at 48 h)", () => {
-        assert.equal(CAP, 2);
-        assert.equal(ent.decideAiEntitlement(old7, "SCRITTA", { SCRITTA: CAP - 1, ORALE: 0 }), null);
+      // ── ALMIITALIAN ONLY: the free 48 hours inside the product's own doors (pure functions, no database) ──
+      const ent = await imp("src/lib/ai/entitlement.ts");
+      const sec = await imp("src/lib/section-access.ts");
+      const free = { ...base, ...fresh };
+      const over = { ...free, createdAt: new Date(now - 49 * HOUR) };
+      const trial7 = { ...base, subscriptionStatus: "trialing", stripeSubscriptionId: "sub_t", subscriptionCurrentPeriodEnd: new Date(now + 4 * DAY), createdAt: new Date(now - 3 * DAY) };
+      const paying = { ...base, subscriptionStatus: "active", stripeSubscriptionId: "sub_a", subscriptionCurrentPeriodEnd: new Date(now + 20 * DAY), createdAt: new Date(now - 90 * DAY) };
+      const D = (u: object, skill: "SCRITTA" | "ORALE", s: number, o: number, budgetOk = true) => ent.decideAiEntitlement(u, skill, { SCRITTA: s, ORALE: o }, 0, budgetOk);
+      await t("AlmiItalian AI door: 1 Produzione scritta + 1 orale in the free 48 hours, then 402 free-used (skills counted apart)", () => {
+        assert.equal(D(free, "SCRITTA", 0, 0), null);
+        assert.equal(D(free, "ORALE", 0, 0), null);
+        assert.equal(D(free, "SCRITTA", 1, 0)?.reason, "free-used");
+        assert.equal(D(free, "SCRITTA", 1, 0)?.status, 402);
+        assert.equal(D(free, "ORALE", 0, 1)?.reason, "free-used");
+        assert.equal(D(free, "ORALE", 1, 0), null, "a used Scritta must not consume the Orale");
+        assert.equal(ent.decideAiEntitlement(free, "SCRITTA", null, 0, true)?.status, 402, "an uncounted free tally is never read as zero used");
       });
-      await t("AI cap: a running 7-day trial at its allowance → 402 trial-cap (still capped)", () => {
-        const r = ent.decideAiEntitlement(old7, "ORALE", { SCRITTA: 0, ORALE: CAP });
-        assert.equal(r?.status, 402); assert.equal(r?.reason, "trial-cap");
+      await t("AlmiItalian AI door: the daily budget stops free AI (402 free-ai-busy), and is fail-closed by default", () => {
+        assert.equal(D(free, "SCRITTA", 0, 0, false)?.reason, "free-ai-busy");
+        assert.equal(ent.decideAiEntitlement(free, "SCRITTA", { SCRITTA: 0, ORALE: 0 })?.reason, "free-ai-busy");
+        assert.equal(D(paying, "SCRITTA", 50, 50, false), null, "a paying subscriber never reads the free budget");
       });
-      await t("AI cap: a new 48-hour trial under / at its allowance → allowed / 402 trial-cap", () => {
-        assert.equal(ent.decideAiEntitlement(new48, "SCRITTA", { SCRITTA: 0, ORALE: 0 }), null);
-        const r = ent.decideAiEntitlement(new48, "SCRITTA", { SCRITTA: CAP, ORALE: 0 });
-        assert.equal(r?.status, 402); assert.equal(r?.reason, "trial-cap");
+      await t("AlmiItalian AI door: unverified free account still gets 'verify your email' (403) first; after 48 hours 402 with the honest title", () => {
+        assert.equal(D({ ...free, emailVerifiedAt: null }, "SCRITTA", 0, 0)?.status, 403);
+        const r = D(over, "SCRITTA", 0, 0);
+        assert.equal(r?.reason, "not-paid");
+        assert.match(r?.error ?? "", /^Your free 48 hours are over\./);
       });
-      await t("AI cap: a paying subscriber is never trial-capped", () => {
-        assert.equal(ent.decideAiEntitlement(paying, "SCRITTA", { SCRITTA: 50, ORALE: 50 }), null);
+      await t("AlmiItalian AI door: a running card trial keeps its 2 + 2 cap (not the free 1 + 1), a payer is never capped", () => {
+        assert.equal(ent.TRIAL_EVALUATIONS_PER_SKILL, 2);
+        assert.equal(D(trial7, "SCRITTA", 1, 0), null);
+        assert.equal(D(trial7, "SCRITTA", 2, 0)?.reason, "trial-cap");
+        assert.equal(D(paying, "ORALE", 0, 5000), null);
       });
-      await t("AI cap: a 7-day trial whose Stripe end has passed → refused, not open (control)", () => {
-        const r = ent.decideAiEntitlement({ ...old7, subscriptionCurrentPeriodEnd: new Date(now - DAY) }, "SCRITTA", null);
-        assert.equal(r?.status, 402); assert.equal(r?.reason, "not-paid");
+      await t("AlmiItalian practice door: open in the free 48 hours, PAYWALL after; card trial and payer open; ex-subscriber no free time", () => {
+        assert.equal(sec.refuseSection(free), null);
+        assert.equal(sec.refuseSection({ ...free, emailVerifiedAt: null }), null, "practice in the free 48 hours needs no verified email (as before for non-payers: no verify step)");
+        assert.equal(sec.refuseSection(over), "PAYWALL");
+        assert.equal(sec.refuseSection(trial7), null);
+        assert.equal(sec.refuseSection(paying), null);
+        assert.equal(sec.refuseSection({ ...free, subscriptionStatus: "canceled", stripeSubscriptionId: "sub_old" }), "PAYWALL");
       });
     }
   }

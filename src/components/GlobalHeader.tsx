@@ -1,18 +1,16 @@
 import Link from "next/link";
 import { AuthNav } from "./AuthNav";
-import { familyStrip } from "@smnasiruz016-blip/almi-data";
+import { AlmiWorldBar } from "@/components/almiworld/AlmiWorldBar";
 
-// AlmiWorld family navigation. The product list is NOT maintained here — it lives in
-// @smnasiruz016-blip/almi-data, so adding a product is one edit there plus a version
-// bump, not an edit in every repo. This array used to be inline, and inline is how it
-// silently fell behind: it stopped at AlmiDanish because that is who existed when this
-// repo was forked, and it had already drifted (almisalary had lost its trailing slash).
-// ⚠️ "italian" is an IDENTITY, not a label — it omits THIS product from its own strip.
-export const FAMILY_NAV = familyStrip("italian");
+// RR-398: on top, the AlmiWorld family bar (logo + Home to almiworld.com, and the same menus as almiworld.com) from the one
+// generated kit; under it AlmiItalian's own wordmark and AuthNav (Practice, Log in / Account, its own button). The old family
+// strip (familyStrip from @smnasiruz016-blip/almi-data, 26 links) is gone from the header and the footer. The bar is a server
+// component with no client JS (its menus are <details>), so the header stays static.
 
 export function GlobalHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-almi-line bg-almi-bg/95 backdrop-blur">
+      <AlmiWorldBar />
       {/* TWO-ROW, RIGHT-ALIGNED — ported from almi-prep-v2's GlobalHeader.
           This used to be ONE wrapping flex row: wordmark, then the family strip with
           `ml-auto`, then <AuthNav/>. With 26 family links the strip filled the row, so the
@@ -35,13 +33,7 @@ export function GlobalHeader() {
             drawer, so copying the hide would delete the whole nav on mobile. The column stays
             visible at every width and the strip keeps wrapping exactly as it does today. */}
         <div className="flex min-w-0 flex-1 flex-col items-end gap-2">
-          <nav aria-label="Family navigation" className="flex flex-wrap justify-end gap-x-4 gap-y-1">
-            {FAMILY_NAV.map((item) => (
-              <a key={item.href} href={item.href} className="rounded-sm text-base font-semibold text-almi-ink hover:text-almi-coral-text">
-                {item.label}
-              </a>
-            ))}
-          </nav>
+          {/* RR-398: the family links now live in the AlmiWorld bar above. */}
           <AuthNav />
         </div>
       </div>

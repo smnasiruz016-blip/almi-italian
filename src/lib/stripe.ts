@@ -1,8 +1,8 @@
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
 
-// RR-394: the trial length lives in ./offer (48 hours for NEW checkouts; running trials keep Stripe's own end date)
-import { TRIAL_PERIOD_DAYS } from "./offer";
+// RR-397: new checkouts get NO card trial (the free 48 hours start at sign-up, with no card: ./taste.ts); running trials keep Stripe's own end date
+import { trialForNewCheckout } from "./offer";
 
 let cached: Stripe | null = null;
 export function getStripe(): Stripe {
@@ -35,16 +35,15 @@ export async function createCheckoutSession(user: { id: string; email: string; n
   const session = await getStripe().checkout.sessions.create({
     mode: "subscription",
     customer: customerId,
-    // ⚠️ PINNED, NOT INHERITED. With the 3-day no-card window withdrawn (2026-08-31) this one
-    // parameter is the whole of "card first" — it is what stops a free trial being claimable
-    // with no payment method at all. Stripe's default for a trialing subscription is already
-    // "always", so this changes no behaviour today; it changes who owns the behaviour. An
-    // upstream default is a promise somebody else can revise, and scripts/gates/paywall-gate
-    // asserts this literal so a silent flip to "if_required" fails the build instead of
-    // quietly opening the trial to anyone with an email address.
+    // ⚠️ PINNED, NOT INHERITED. RR-397: the free 48 hours need no card and live in the app (./taste.ts), not in Stripe. A
+    // CHECKOUT now charges $12 at once, so a payment method is always taken here. Stripe's default for a subscription that
+    // charges at once is already "always", so this changes no behaviour; it changes who owns the behaviour. An upstream default
+    // is a promise somebody else can revise, and scripts/gates/paywall-gate asserts this literal so a silent flip to
+    // "if_required" fails the build.
     payment_method_collection: "always",
     line_items: [{ price: priceId, quantity: 1 }],
-    subscription_data: { trial_period_days: TRIAL_PERIOD_DAYS, metadata: { userId: user.id } },
+    // RR-397: ...trialForNewCheckout() hands Stripe nothing about a trial, so $12 is charged at checkout, then monthly.
+    subscription_data: { ...trialForNewCheckout(), metadata: { userId: user.id } },
     metadata: { product: "almi-italian" }, // routing key for almi-billing-router (checkout.session.completed)
     success_url: `${baseUrl()}/account?checkout=success`,
     cancel_url: `${baseUrl()}/pricing?checkout=cancelled`,

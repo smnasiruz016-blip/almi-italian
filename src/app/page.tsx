@@ -59,7 +59,7 @@ export default function HomePage() {
               </Link>
             </div>
             <p className="mt-4 text-sm text-almi-text-muted">
-              Try free for 48 hours, then $12/month. Cancel anytime · CILS &amp; CELI, each on its own real scale · 100% original material, never copied
+              Try free for 48 hours, no card. Then $12/month. Cancel anytime · CILS &amp; CELI, each on its own real scale · 100% original material, never copied
             </p>
           </div>
 
@@ -220,7 +220,7 @@ export default function HomePage() {
             {[
               {
                 q: "How much does it cost?",
-                a: "Try free for 48 hours, then $12/month. Cancel anytime during the trial and you are not charged.",
+                a: "Try free for 48 hours, no card. Then $12/month. Cancel anytime. The free 48 hours include every practice section, 1 AI-assessed Produzione scritta and 1 Produzione orale.",
               },
               {
                 q: "Which Italian exams do you cover?",
@@ -232,11 +232,11 @@ export default function HomePage() {
               },
               {
                 q: "Do I need an account to start?",
-                a: "Yes — create an account, start your 48-hour free trial, and your practice is ready straight away.",
+                a: "Yes — create an account and your free 48 hours start straight away, no card.",
               },
               {
                 q: "Can I cancel?",
-                a: "Yes, anytime, from your account. Cancel before the trial ends and you pay nothing.",
+                a: "Yes, anytime, from your account. The free 48 hours need no card, so there is nothing to cancel until you unlock.",
               },
             ].map((item) => (
               <div key={item.q} className="rounded-2xl border border-almi-line bg-almi-paper p-6">

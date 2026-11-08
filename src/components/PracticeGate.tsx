@@ -16,7 +16,10 @@ import { useState } from "react";
 //
 // If Stripe isn't wired yet (billingLive=false) the subscribe button shows its honest
 // unavailable state — the fail-closed path — rather than starting a checkout that can't complete.
-export function PracticeGate({ billingLive }: { billingLive: boolean }) {
+// RR-397: this is shown only OUTSIDE the free 48 hours (no card) — after they end, or to an account that already had a
+// subscription. `title` is "Your free 48 hours are over" when they have just ended. The button starts a checkout that charges
+// $12 at once (no Stripe trial).
+export function PracticeGate({ billingLive, title }: { billingLive: boolean; title?: string }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -37,18 +40,19 @@ export function PracticeGate({ billingLive }: { billingLive: boolean }) {
 
   return (
     <div className="mt-8 rounded-2xl border border-almi-line bg-almi-paper p-6">
+      {title && <p className="text-sm font-semibold text-almi-coral-text">{title}.</p>}
       <h2 className="text-lg font-semibold text-almi-ink">Practice is part of AlmiItalian Pro</h2>
       <p className="mt-2 text-sm text-almi-text">
         Every section — Ascolto, Lettura, Analisi, and criteria-based feedback on Produzione scritta and orale — for{" "}
-        <strong className="text-almi-ink">$12/month</strong>. Start with a 48-hour free trial: your card is saved but not
-        charged, and you can cancel anytime before the trial ends and pay nothing.
+        <strong className="text-almi-ink">$12/month</strong>. When you unlock, $12 is charged at checkout and then monthly;
+        cancel anytime from your account.
       </p>
       <button
         onClick={subscribe}
         disabled={busy || !billingLive}
         className="mt-4 inline-flex rounded-full bg-almi-coral px-7 py-3 font-semibold text-almi-ink hover:bg-almi-coral-deep disabled:opacity-60"
       >
-        {busy ? "Starting…" : !billingLive ? "Checkout unavailable" : "Try free for 48 hours"}
+        {busy ? "Starting…" : !billingLive ? "Checkout unavailable" : "Unlock for $12/month"}
       </button>
       {!billingLive && (
         <p className="mt-2 text-xs text-almi-text-muted">Subscriptions are being switched on. Please check back shortly.</p>

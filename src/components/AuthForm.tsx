@@ -28,9 +28,9 @@ export function AuthForm({ mode }: { mode: "signup" | "login" }) {
       body: JSON.stringify(payload),
     });
     if (res.ok) {
-      // Land in the app-shell/account world (sidebar + prominent trial CTA),
-      // matching the AlmiPrep journey: signup → account → Start 48-hour free
-      // trial → Stripe checkout.
+      // Land in the app-shell/account world (sidebar + the free-48-hours banner).
+      // RR-397: signup → account → practise free for 48 hours, no card → "Unlock for
+      // $12/month" → Stripe checkout (charged at once).
       router.push(mode === "signup" ? "/account?welcome=true" : "/account");
       router.refresh();
     } else {

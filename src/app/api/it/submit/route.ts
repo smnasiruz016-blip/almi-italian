@@ -41,6 +41,8 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { gradeAttempt, resolveAttemptSection, type AttemptBody } from "@/lib/it/grade";
 import { refuseSection, type RefusalReason } from "@/lib/section-access";
+import { isTasteOver } from "@/lib/taste";
+import { lockedCopy } from "@/lib/free-access";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -59,8 +61,8 @@ function logRefusal(status: number, reason: string, userId?: string) {
  *  feedback on Writing/Speaking — that feature does not exist yet (see Brief C). */
 const REFUSAL_COPY: Record<RefusalReason, string> = {
   SIGN_IN: "Sign in to practise.",
-  PAYWALL:
-    "Practice is part of AlmiItalian Pro — try free for 48 hours (card saved, not charged), then $12/month. Cancel anytime.",
+  // RR-397: PAYWALL now means "not paid and outside the free 48 hours"; the route sends lockedCopy() for it (below).
+  PAYWALL: "Practice is part of AlmiItalian Pro. Unlock for $12/month. Cancel anytime.",
   VERIFY_EMAIL: "Verify your email address to have your section marked.",
 };
 
@@ -77,7 +79,9 @@ export async function POST(req: Request): Promise<NextResponse> {
   const refusal = refuseSection(user);
   if (refusal) {
     logRefusal(402, refusal.toLowerCase(), user.id);
-    return NextResponse.json({ ok: false, error: REFUSAL_COPY[refusal] }, { status: 402 });
+    // RR-397: a shut paywall says honestly whether the free 48 hours are over ("Your free 48 hours are over").
+    const error = refusal === "PAYWALL" && isTasteOver(user) ? `${lockedCopy(user).title}. ${lockedCopy(user).line}` : REFUSAL_COPY[refusal];
+    return NextResponse.json({ ok: false, error }, { status: 402 });
   }
 
   let body: AttemptBody;

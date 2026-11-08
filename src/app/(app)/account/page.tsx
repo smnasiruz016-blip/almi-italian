@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { requireUser } from "@/lib/auth";
 import { hasPaidAccess, isBillingEnabled, isOwner } from "@/lib/access";
 import { BillingButtons } from "@/components/BillingButtons";
+import { FreeTimeBanner } from "@/components/FreeTimeBanner";
 import { ReviewCard } from "@/components/reviews/ReviewCard";
 import { ProgressSection } from "@/components/ProgressSection";
 import { recentAttempts } from "@/lib/progress";
@@ -35,7 +36,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ w
       {sp.welcome && !paid && (
         <div className="mt-6 rounded-2xl border border-almi-coral/30 bg-almi-coral/10 p-4">
           <p className="text-sm text-almi-ink">
-            Welcome — your account is ready. Start your 48-hour free trial below to open every practice section; your card is saved, not charged.
+            Welcome — your account is ready. Your free 48 hours have started, no card: every practice section is open.
           </p>
         </div>
       )}
@@ -43,9 +44,14 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ w
       <div className="mt-8 rounded-2xl border border-almi-line bg-almi-paper p-6">
         <p className="text-almi-text">Plan: <strong className="text-almi-ink">{planLabel}</strong></p>
         {!paid && (
-          <p className="mt-2 text-sm text-almi-text-muted">
-            Practice is part of Pro. Try free for 48 hours — card saved, not charged — with every section open, then $12/month. Cancel anytime. The study guides in /learn are free without an account.
-          </p>
+          <>
+            <p className="mt-2 text-sm text-almi-text-muted">
+              Practice is part of Pro. Try free for 48 hours, no card, with every section open and 1 AI-assessed Produzione
+              scritta and orale. Then $12/month. Cancel anytime. The study guides in /learn are free without an account.
+            </p>
+            {/* RR-397: hours left in the free 48 hours, or "Your free 48 hours are over" + "Unlock for $12/month" */}
+            <div className="mt-3"><FreeTimeBanner user={user} /></div>
+          </>
         )}
         {isOwner(user.email) ? (
           <p className="mt-2 text-sm text-almi-text-muted">Owner access — practice is open.</p>

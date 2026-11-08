@@ -3,7 +3,7 @@
 // Session-aware product nav for the family header. The header shell stays a static server
 // component (keeps SEO pages static); this small client piece asks /api/me who's logged in
 // and swaps the links:
-//   logged out -> Practice · Log in · [Try free for 48 hours]
+//   logged out -> Practice · Log in · [Try free for 48 hours, no card]
 //   logged in  -> Practice · [Account]
 // ── WHAT IS RENDERED BEFORE /api/me ANSWERS ─────────────────────────────────
 // The link every visitor gets either way (Practice), and NOTHING auth-shaped.
@@ -81,7 +81,7 @@ export function AuthNav() {
             Log in
           </Link>
           <Link href="/signup" className={PILL}>
-            Try free for 48 hours
+            Try free for 48 hours, no card
           </Link>
         </>
       )}

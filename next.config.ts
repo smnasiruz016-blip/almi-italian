@@ -34,7 +34,9 @@ const CSP = [
   "object-src 'none'",
   "frame-ancestors 'none'",
   "form-action 'self'",
-  "img-src 'self' data: blob: https://almiworld.com",
+  // RR-400: almiworld.com answers the family-bar logo with a redirect to www.almiworld.com, and CSP
+  // checks the redirect target too, so without www the logo was blocked (console error, best practices 93).
+  "img-src 'self' data: blob: https://almiworld.com https://www.almiworld.com",
   "font-src 'self' data:",
   // Next injects inline <style> for critical CSS; same nonce story as scripts.
   "style-src 'self' 'unsafe-inline'",

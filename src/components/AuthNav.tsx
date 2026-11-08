@@ -68,9 +68,19 @@ export function AuthNav() {
         Practice
       </Link>
       {!resolved ? (
-        // Pending: reserve the row's height so the header does not jump, and say nothing about
+        // Pending: reserve the row's SPACE so the header does not jump, and say nothing about
         // who the visitor is. aria-hidden because there is no information here to announce.
-        <span aria-hidden className="inline-flex min-h-[40px] items-center" />
+        //
+        // RR-400: this used to be one empty 40px slot. On a phone the signed-out set that
+        // replaces it (Log in + the long trial pill) wraps onto a second row, so the header grew
+        // and pushed the whole page down: CLS 0.17 on /pricing, perf 85. The placeholder is now
+        // that same set as invisible, inert spans (visibility:hidden, so not focusable and not in
+        // the accessibility tree; spans, so no links). It wraps exactly as the real set does, and
+        // nothing about the visitor is shown.
+        <span aria-hidden className="invisible contents">
+          <span className={LINK}>Log in</span>
+          <span className={PILL}>Try free for 48 hours, no card</span>
+        </span>
       ) : loggedIn ? (
         <Link href="/account" className={PILL}>
           Account

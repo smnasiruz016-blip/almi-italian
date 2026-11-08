@@ -49,6 +49,16 @@ ok(Boolean(door) && /tasteMayUseAi\(/.test(decide) && /freeAiAllowedToday\(\)/.t
 ok(unguarded.length === 0, `every AI route goes through the free AI door (checkAiEntitlement) or is marked paid only (${aiRoutes.length} AI routes, ${unguarded.length} unguarded)`);
 for (const [p] of unguarded) console.log(`      unguarded: ${p}`);
 
+/* RR-399 A3: the "1 free" is atomic. ALMIITALIAN: the free door is checkAiEntitlement() in src/lib/ai/entitlement.ts; when its
+   decision grants a free evaluation it reserves it (reserveFreeEvaluation → claimFreeAi, FreeAiUse unique userId + kind), and
+   both evaluate routes give it back when no estimate reaches the learner. */
+const SCHEMA = existsSync(join(ROOT, "prisma/schema.prisma")) ? read("prisma/schema.prisma") : "";
+const checkFn = doorCode.slice(doorCode.indexOf("export async function checkAiEntitlement"), doorCode.indexOf("export async function refuseUnlessEntitled"));
+ok(/\bclaimFreeAi\(/.test(doorCode) && /reserveFreeEvaluation\(userId, skill\)/.test(checkFn), "the free door reserves the free AI use atomically (claimFreeAi, from checkAiEntitlement)");
+ok(/model FreeAiUse \{[^}]*@@unique\(\[userId, kind\]\)/.test(SCHEMA), "schema.prisma has model FreeAiUse with @@unique([userId, kind])");
+const evalRoutes = code.filter(([p, t]) => /^src\/app\/api\//.test(p) && /\bcheckAiEntitlement\(/.test(strip(t)));
+ok(evalRoutes.length > 0 && evalRoutes.every(([, t]) => /\breleaseFreeEvaluation\(/.test(strip(t))), `every evaluate route gives a reserved free use back on failure (${evalRoutes.length} routes)`);
+
 /* the customer-facing lines: app code and copy under src/ and public/, exam material excluded */
 const COPY_SKIP = /node_modules|\.next|[\\/](seed|seeds|fixtures|generated|__tests__|universities)[\\/]|[\\/]content[\\/](reading|listening|writing|speaking|exam|bank|items|questions|passages|scripts)[\\/]|\.test\./i;
 const BANNED = /\b7[- ]day\b|\bseven[- ]day\b|7 days? free|monthly only|monthly-only|\bno (free )?trial\b|7 day free trial|48[- ]hour (free )?trial|card (is )?not charged during|Try free for 48 hours, then|start your (free )?trial/i;

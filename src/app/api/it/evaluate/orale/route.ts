@@ -17,7 +17,7 @@
 
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { checkAiEntitlement } from "@/lib/ai/entitlement";
+import { checkAiEntitlement, releaseFreeEvaluation } from "@/lib/ai/entitlement";
 import { logRefusal } from "@/lib/observability";
 import { limitByClient, tooManyRequests } from "@/lib/rate-limit";
 import { getItemByStableId } from "@/lib/item-id";
@@ -54,34 +54,45 @@ export async function POST(req: Request): Promise<NextResponse> {
     );
   }
 
+  // RR-399 A3: a free-48-hours account now HOLDS its reserved free evaluation. Every answer below that is not an estimate gives
+  // it back, so a refused or failed request never uses up the learner's one free Produzione orale.
+  const release = () => releaseFreeEvaluation(user.id, "ORALE");
+  const refuse = async (body: unknown, init: { status: number }): Promise<NextResponse> => {
+    await release();
+    return NextResponse.json(body, init);
+  };
+
   const limited = limitByClient("aiOrale", req);
-  if (!limited.ok) return tooManyRequests(limited.retryAfterSeconds);
+  if (!limited.ok) {
+    await release();
+    return tooManyRequests(limited.retryAfterSeconds);
+  }
 
   let form: FormData;
   try {
     form = await req.formData();
   } catch {
-    return NextResponse.json({ ok: false, error: "Expected multipart form data." }, { status: 400 });
+    return refuse({ ok: false, error: "Expected multipart form data." }, { status: 400 });
   }
 
   const audio = form.get("audio");
   if (!(audio instanceof Blob) || audio.size === 0) {
-    return NextResponse.json({ ok: false, error: "No recording received." }, { status: 400 });
+    return refuse({ ok: false, error: "No recording received." }, { status: 400 });
   }
   if (audio.size > MAX_AUDIO_BYTES) {
-    return NextResponse.json({ ok: false, error: "That recording is too long." }, { status: 413 });
+    return refuse({ ok: false, error: "That recording is too long." }, { status: 413 });
   }
   const durationSeconds = Math.min(MAX_DURATION_SECONDS, Number(form.get("durationSeconds") ?? 0) || 0);
 
   const itemId = String(form.get("itemId") ?? "");
   const item = itemId ? getItemByStableId(itemId) : undefined;
-  if (!item) return NextResponse.json({ ok: false, error: "Unknown item" }, { status: 404 });
+  if (!item) return refuse({ ok: false, error: "Unknown item" }, { status: 404 });
   if (item.section !== "ORALE") {
-    return NextResponse.json({ ok: false, error: "That item is not a Produzione orale task." }, { status: 400 });
+    return refuse({ ok: false, error: "That item is not a Produzione orale task." }, { status: 400 });
   }
 
   if (!isBlobConfigured()) {
-    return NextResponse.json(
+    return refuse(
       { ok: false, error: "Speaking feedback is temporarily unavailable. Nothing was charged." },
       { status: 503 },
     );
@@ -95,13 +106,16 @@ export async function POST(req: Request): Promise<NextResponse> {
     audioUrl = stored.url;
   } catch (e) {
     console.error("[orale] blob upload failed:", (e as Error).message);
-    return NextResponse.json(
+    return refuse(
       { ok: false, error: "We could not save your recording. Nothing was charged." },
       { status: 503 },
     );
   }
 
-  const transcription = await transcribeAudio({ audio, contentType, filename: `clip.${ext}` });
+  const transcription = await transcribeAudio({ audio, contentType, filename: `clip.${ext}` }).catch(async (e: unknown) => {
+    await release(); // RR-399 A3: the transcription threw, the learner received nothing
+    throw e;
+  });
   if (!transcription.ok) {
     // What OpenAI actually processed, NOT the browser's `durationSeconds`. Usually 0; a 200
     // with an empty transcript is the exception that costs real money.
@@ -113,7 +127,7 @@ export async function POST(req: Request): Promise<NextResponse> {
       success: false,
       errorMessage: transcription.error,
     });
-    return NextResponse.json(
+    return refuse(
       { ok: false, error: "We could not read your recording. Nothing was scored." },
       { status: 502 },
     );
@@ -136,10 +150,13 @@ export async function POST(req: Request): Promise<NextResponse> {
     task: String(p.task ?? ""),
     response: transcription.text,
     speakSeconds: p.speakSeconds,
+  }).catch(async (e: unknown) => {
+    await release(); // RR-399 A3: the AI call threw, the learner received nothing
+    throw e;
   });
 
   if (!result.ok) {
-    return NextResponse.json({ ok: false, error: result.error }, { status: result.status ?? 502 });
+    return refuse({ ok: false, error: result.error }, { status: result.status ?? 502 });
   }
 
   // A shaky transcript is FLAGGED, not silently scored: confident feedback about words the

@@ -52,14 +52,14 @@ export default function HomePage() {
             </p>
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <Link href="/signup" className="rounded-full bg-almi-coral px-7 py-3 font-semibold text-almi-ink hover:bg-almi-coral-deep">
-                Start 7-day free trial
+                Try free for 48 hours
               </Link>
               <Link href="/practice" className="rounded-full border border-almi-line px-7 py-3 font-semibold text-almi-text hover:border-almi-coral">
                 Practice
               </Link>
             </div>
             <p className="mt-4 text-sm text-almi-text-muted">
-              $12/month, 7-day free trial, cancel anytime · CILS &amp; CELI, each on its own real scale · 100% original material, never copied
+              Try free for 48 hours, then $12/month. Cancel anytime · CILS &amp; CELI, each on its own real scale · 100% original material, never copied
             </p>
           </div>
 
@@ -220,7 +220,7 @@ export default function HomePage() {
             {[
               {
                 q: "How much does it cost?",
-                a: "$12/month with a 7-day free trial. Cancel anytime during the trial and you are not charged.",
+                a: "Try free for 48 hours, then $12/month. Cancel anytime during the trial and you are not charged.",
               },
               {
                 q: "Which Italian exams do you cover?",
@@ -232,7 +232,7 @@ export default function HomePage() {
               },
               {
                 q: "Do I need an account to start?",
-                a: "Yes — create an account, start your 7-day free trial, and your practice is ready straight away.",
+                a: "Yes — create an account, start your 48-hour free trial, and your practice is ready straight away.",
               },
               {
                 q: "Can I cancel?",

@@ -59,9 +59,9 @@ ok(files.length > 200,
    `only ${files.length} served artefact(s) found under .next — run \`next build\` first. ` +
    `A gate that scanned nothing would print the same zero as a gate that scanned everything.`);
 
-/** Promises about free PRACTICE. Not the word "free": /learn is genuinely free, and the 7-day
+/** Promises about free PRACTICE. Not the word "free": /learn is genuinely free, and the 48-hour
  *  trial is genuinely a free trial. These are the specific claims the 31 Aug decision made
- *  false. */
+ *  false — plus, since RR-394, the old 7-day trial, which new checkouts no longer get. */
 const BANNED: { needle: string; why: string }[] = [
   { needle: "free for 3 days", why: "the 3-day grant is withdrawn" },
   { needle: "free for 3", why: "the 3-day grant is withdrawn" },
@@ -77,12 +77,14 @@ const BANNED: { needle: string; why: string }[] = [
   { needle: "senza carta", why: "a card is now collected at checkout" },
   { needle: "WINDOW_EXPIRED", why: "the refusal reason no longer exists" },
   { needle: "objective sections free", why: "no section is free any more" },
+  { needle: "7-day free trial", why: "RR-394: new checkouts get a 48-hour trial" },
+  { needle: "7-day trial", why: "RR-394: new checkouts get a 48-hour trial" },
 ];
 
 /** Strings that MUST be in the output. Without these a zero above means "the scanner read
  *  nothing", not "the pages are clean" — the whole difference between a gate and a decoration. */
 const CONTROLS: string[] = [
-  "7-day free trial",
+  "48-hour free trial",
   "12/month",
   "Practice is part of AlmiItalian Pro",
   "Siena",

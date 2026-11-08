@@ -46,9 +46,11 @@ function hasActiveSubscription(
 // ── ONE DOOR ────────────────────────────────────────────────────────────────
 // Founder decision, network-wide, 2026-08-31: "3 din wali free khirrki band ker dain, sirf
 // 7 day free trial after entring card will stay, throughout the network."
+// RR-394 (owner decision 7 Nov 2026): the card-first trial is now 48 hours for NEW checkouts
+// ("Try free for 48 hours, then $12/month. Cancel anytime."); the length lives in src/lib/offer.ts.
 //
 // So there is exactly one way into practice now:
-//   $12/month · 7-day free trial · CARD COLLECTED AT CHECKOUT · cancel anytime.
+//   $12/month · 48-hour free trial · CARD COLLECTED AT CHECKOUT · cancel anytime.
 // The trial is STRIPE's own `trialing` status, not an app-side timer, and the card is taken
 // up front — see src/lib/stripe.ts, where payment_method_collection is now pinned explicitly
 // rather than left to a Stripe default that could move under us.

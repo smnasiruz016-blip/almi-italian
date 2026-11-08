@@ -9,7 +9,7 @@
 // ── WHAT CHANGED, 2026-08-31 ────────────────────────────────────────────────
 // This file was `free-window.ts` and implemented the 3-day, no-card grant on the objective
 // sections. The founder withdrew that grant network-wide, so there is now ONE door:
-// $12/month, a 7-day Stripe trial, card collected at checkout, cancel anytime.
+// $12/month, a Stripe trial (48 hours for new checkouts since RR-394), card collected at checkout, cancel anytime.
 //
 // Renamed rather than left as `free-window.ts`, because a module named for a free window that
 // grants nothing is a lie a reader has to discover. Two importers moved with it.

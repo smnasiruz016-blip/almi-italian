@@ -60,7 +60,7 @@ function logRefusal(status: number, reason: string, userId?: string) {
 const REFUSAL_COPY: Record<RefusalReason, string> = {
   SIGN_IN: "Sign in to practise.",
   PAYWALL:
-    "Practice is part of AlmiItalian Pro — start a 7-day free trial, card saved, not charged, then $12/month. Cancel anytime.",
+    "Practice is part of AlmiItalian Pro — try free for 48 hours (card saved, not charged), then $12/month. Cancel anytime.",
   VERIFY_EMAIL: "Verify your email address to have your section marked.",
 };
 

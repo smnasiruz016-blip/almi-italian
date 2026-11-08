@@ -71,7 +71,7 @@ export default async function Page({ params }: { params: Promise<{ track: string
       <div className="mt-8 rounded-2xl border border-almi-line bg-almi-paper p-6">
         <h2 className="text-lg font-semibold text-almi-ink">Sign in to practise</h2>
         <p className="mt-2 text-sm text-almi-text">
-          Practice is part of AlmiItalian Pro: a 7-day free trial — your card is saved, not charged — then $12/month,
+          Practice is part of AlmiItalian Pro: a 48-hour free trial — your card is saved, not charged — then $12/month,
           cancel anytime. Reading the free <Link href="/learn" className="underline">study guides</Link> needs no
           account at all.
         </p>

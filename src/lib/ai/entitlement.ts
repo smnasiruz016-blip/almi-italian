@@ -28,7 +28,9 @@
 // account had NO total limit on AI evaluations — only per-hour rate limits (12 scritta,
 // 8 orale). Over seven days that is a ceiling of 2016 + 1344 metered calls, which priced from
 // this product's own AICostLedger rows is roughly $73 of Anthropic + OpenAI spend per account,
-// on a card that has not been charged yet.
+// on a card that has not been charged yet. (RR-394: NEW trials are 48 hours, so their rate-limit
+// ceiling is shorter; trials started before RR-394 still run to their own Stripe end. The cap below
+// keys on `trialing`, not on a length, so it governs both kinds the same way.)
 //
 // The shape is the network's, not a new one. Founder decision on AlmiOET:
 //   2 Produzione scritta + 2 Produzione orale evaluations inside the trial.
@@ -199,7 +201,7 @@ export function decideAiEntitlement(
     status: 402,
     reason: "not-paid",
     error:
-      "Produzione scritta and orale feedback is part of AlmiItalian Pro — start a 7-day free trial, card saved, not charged.",
+      "Produzione scritta and orale feedback is part of AlmiItalian Pro — try free for 48 hours (card saved, not charged), then $12/month.",
     upgradeUrl: "/pricing",
   };
 }
@@ -228,8 +230,14 @@ export function decideAiEntitlement(
  * while OWNER or COMPED and later starts a trial would arrive with its allowance already
  * spent. That is rare, it fails in the direction of refusing a trial user rather than a paying
  * one, and the alternative — deriving the trial start from subscriptionCurrentPeriodEnd minus
- * TRIAL_DAYS — is a clock that, if it drifts wide, silently disables the cap. Silently
+ * the trial length — is a clock that, if it drifts wide, silently disables the cap. Silently
  * disabling the cap is the failure this whole change exists to prevent.
+ *
+ * RR-394 proved the point: the trial length changed (from a week to 48 hours for NEW checkouts,
+ * in src/lib/offer.ts) while week-long trials were still running. Because nothing here derives a
+ * window from that number, both populations are capped identically (2 + 2 per trial, keyed on
+ * `trialing`) and a running week-long trial keeps its access to its own Stripe end. Do not import
+ * TRIAL_PERIOD_DAYS here.
  */
 export async function countTrialUsage(userId: string): Promise<TrialUsage> {
   const rows = await prisma.aiEvaluation.groupBy({

@@ -40,7 +40,7 @@ export function PracticeGate({ billingLive }: { billingLive: boolean }) {
       <h2 className="text-lg font-semibold text-almi-ink">Practice is part of AlmiItalian Pro</h2>
       <p className="mt-2 text-sm text-almi-text">
         Every section — Ascolto, Lettura, Analisi, and criteria-based feedback on Produzione scritta and orale — for{" "}
-        <strong className="text-almi-ink">$12/month</strong>. Start with a 7-day free trial: your card is saved but not
+        <strong className="text-almi-ink">$12/month</strong>. Start with a 48-hour free trial: your card is saved but not
         charged, and you can cancel anytime before the trial ends and pay nothing.
       </p>
       <button
@@ -48,7 +48,7 @@ export function PracticeGate({ billingLive }: { billingLive: boolean }) {
         disabled={busy || !billingLive}
         className="mt-4 inline-flex rounded-full bg-almi-coral px-7 py-3 font-semibold text-almi-ink hover:bg-almi-coral-deep disabled:opacity-60"
       >
-        {busy ? "Starting…" : !billingLive ? "Checkout unavailable" : "Start 7-day free trial"}
+        {busy ? "Starting…" : !billingLive ? "Checkout unavailable" : "Try free for 48 hours"}
       </button>
       {!billingLive && (
         <p className="mt-2 text-xs text-almi-text-muted">Subscriptions are being switched on. Please check back shortly.</p>

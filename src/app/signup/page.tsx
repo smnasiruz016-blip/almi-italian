@@ -6,7 +6,7 @@ import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Get started with AlmiItalian",
-  description: "Create your AlmiItalian account and start a 7-day free trial of honest CILS & CELI practice.",
+  description: "Create your AlmiItalian account and start a 48-hour free trial of honest CILS & CELI practice.",
   alternates: { canonical: canonical("/signup") },
 };
 
@@ -14,7 +14,7 @@ export default function Page() {
   return (
     <AuthCard
       heading="Create your account"
-      sub="A 7-day free trial — card saved at checkout, not charged — then $12/month. Cancel anytime."
+      sub="Try free for 48 hours — card saved at checkout, not charged — then $12/month. Cancel anytime."
       footer={
         <>
           Already have an account?{" "}

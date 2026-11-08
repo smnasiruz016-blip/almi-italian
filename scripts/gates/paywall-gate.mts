@@ -3,7 +3,7 @@
 // Run: npm run gate:paywall   (wired into `build`, so it blocks)
 //
 // The 3-day no-card window was withdrawn network-wide on 2026-08-31. That leaves exactly one
-// way into practice: $12/month, a 7-day Stripe trial, card collected at checkout. Two
+// way into practice: $12/month, a Stripe trial (48 hours since RR-394), card collected at checkout. Two
 // properties have to hold for that sentence to be true, and neither of them is visible by
 // reading any single file:
 //
@@ -71,7 +71,7 @@ function walk(dir: string, out: string[] = []): string[] {
 
 const rel = (abs: string) => relative(root, abs).split(String.fromCharCode(92)).join("/");
 
-console.log("PAYWALL GATE — one door: $12/mo, 7-day trial, card at checkout\n");
+console.log("PAYWALL GATE — one door: $12/mo, 48-hour trial, card at checkout\n");
 
 // ── A. NOTHING SERVES OR MARKS PRACTICE CONTENT WITHOUT hasPaidAccess ───────
 
@@ -144,15 +144,22 @@ const STRIPE = "src/lib/stripe.ts";
 const stripeSrc = stripComments(readFileSync(join(root, STRIPE), "utf8"));
 ok(/payment_method_collection\s*:\s*["']always["']/.test(stripeSrc),
    `${STRIPE}: payment_method_collection is not pinned to "always". With the no-card window ` +
-   `gone this is the only thing that makes a card mandatory for the 7-day trial; leaving it to ` +
+   `gone this is the only thing that makes a card mandatory for the free trial; leaving it to ` +
    `a Stripe default means the paywall depends on somebody else's release notes.`);
 ok(!/payment_method_collection\s*:\s*["']if_required["']/.test(stripeSrc),
    `${STRIPE}: payment_method_collection is "if_required" — the trial can be started with no ` +
    `payment method at all`);
-ok(/trial_period_days\s*:/.test(stripeSrc), `${STRIPE}: no trial_period_days — the 7-day trial is gone`);
-ok(/TRIAL_DAYS\s*=\s*7\b/.test(stripeSrc), `${STRIPE}: the trial is no longer 7 days`);
+// RR-394: the trial is now 48 hours for NEW checkouts and its length lives in src/lib/offer.ts.
+// This used to assert `TRIAL_DAYS = 7` in stripe.ts; it now asserts the same thing just as
+// strictly against the new offer — the checkout takes trial_period_days from ./offer, and the
+// offer is exactly 2 days. (scripts/gates/offer-48h.mjs holds the rest of the offer.)
+const OFFER = "src/lib/offer.ts";
+const offerSrc = stripComments(readFileSync(join(root, OFFER), "utf8"));
+ok(/trial_period_days\s*:\s*TRIAL_PERIOD_DAYS\b/.test(stripeSrc), `${STRIPE}: trial_period_days is not TRIAL_PERIOD_DAYS — the trial no longer comes from the offer`);
+ok(/import\s*\{\s*TRIAL_PERIOD_DAYS\s*\}\s*from\s*["']\.\/offer["']/.test(stripeSrc), `${STRIPE}: TRIAL_PERIOD_DAYS is not imported from ./offer`);
+ok(/export const TRIAL_PERIOD_DAYS\s*=\s*2\s*;/.test(offerSrc), `${OFFER}: the trial is no longer 2 days (48 hours)`);
 ok(/mode\s*:\s*["']subscription["']/.test(stripeSrc), `${STRIPE}: checkout is not in subscription mode`);
-console.log(`  ✓ ${STRIPE}: payment_method_collection "always", 7-day trial, subscription mode`);
+console.log(`  ✓ ${STRIPE}: payment_method_collection "always", 48-hour trial from ${OFFER}, subscription mode`);
 
 // C0 — the detector must be able to FAIL. A regex that matches nothing passes every file.
 const SABOTAGED = stripeSrc.replace(/payment_method_collection\s*:\s*["']always["']/, 'payment_method_collection: "if_required"');

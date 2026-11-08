@@ -26,7 +26,7 @@ export default async function Page() {
     ? null
     : level === "PAID"
       ? "AlmiItalian Pro active — every section open."
-      : "Practice is part of Pro: a 7-day free trial, card saved, not charged, then $12/month, cancel anytime. The study guides in /learn stay free.";
+      : "Practice is part of Pro: try free for 48 hours (card saved, not charged), then $12/month. Cancel anytime. The study guides in /learn stay free.";
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">

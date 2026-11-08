@@ -93,7 +93,7 @@ function check(label: string, actual: unknown, expected: unknown): void {
   }
 }
 
-console.log("Entitlement matrix — ONE door: $12/mo, 7-day trial, card at checkout\n");
+console.log("Entitlement matrix — ONE door: $12/mo, 48-hour trial, card at checkout\n");
 const pad = (s: string, n: number) => s.padEnd(n);
 console.log(pad("PERSONA", 36) + pad("SECTION", 14) + pad("SUBMIT", 20) + "LEVEL");
 console.log("-".repeat(84));

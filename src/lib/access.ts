@@ -1,4 +1,5 @@
 import type { User } from "@prisma/client";
+import { isTasteActive, type TasteUser } from "./taste";
 
 // Access tiers (canonical AlmiWorld pattern).
 // OWNER_EMAILS → unlimited usage / premium bypass on this product (testing, demos, daily use).
@@ -46,14 +47,16 @@ function hasActiveSubscription(
 // ── ONE DOOR ────────────────────────────────────────────────────────────────
 // Founder decision, network-wide, 2026-08-31: "3 din wali free khirrki band ker dain, sirf
 // 7 day free trial after entring card will stay, throughout the network."
-// RR-394 (owner decision 7 Nov 2026): the card-first trial is now 48 hours for NEW checkouts
-// ("Try free for 48 hours, then $12/month. Cancel anytime."); the length lives in src/lib/offer.ts.
-//
-// So there is exactly one way into practice now:
-//   $12/month · 48-hour free trial · CARD COLLECTED AT CHECKOUT · cancel anytime.
-// The trial is STRIPE's own `trialing` status, not an app-side timer, and the card is taken
-// up front — see src/lib/stripe.ts, where payment_method_collection is now pinned explicitly
-// rather than left to a Stripe default that could move under us.
+// RR-394 (owner decision 7 Nov 2026) shortened the card-first Stripe trial to 48 hours for new checkouts.
+// RR-397 (owner decision 8 Nov 2026, like AlmiOET) replaced it: "Try free for 48 hours, no card. Then $12/month.
+// Cancel anytime." So there are now two ways into practice:
+//   1. PAID — hasPaidAccess() below, UNCHANGED: owner ‖ comp ‖ (active or trialing subscription AND verified email).
+//      Card trials started before RR-397 are STRIPE's own `trialing` status and keep their access to their own end.
+//      A new checkout charges $12 at once (no Stripe trial); the card is taken up front — see src/lib/stripe.ts, where
+//      payment_method_collection is pinned explicitly rather than left to a Stripe default that could move under us.
+//   2. THE FREE 48 HOURS — src/lib/taste.ts: 48 hours from User.createdAt, no card, only for an account that never
+//      subscribed and was never comped. Asked only AFTER hasPaidAccess() says no (refuseSection, hasObjectiveAccess,
+//      and the AI decision in src/lib/ai/entitlement.ts, which allows 1 + 1 AI assessments and a daily free-AI budget).
 //
 // /learn is untouched and stays completely open. It is the free layer of this product; the
 // paywall below is about PRACTICE, and nothing here reads or gates a /learn route.
@@ -142,11 +145,13 @@ export function needsEmailVerification(user: PaidUser | null): boolean {
 /** May an objective section be MARKED right now? A superset of hasPaidAccess by construction
  *  — see the note above. The superset is empty while there is no free grant, so today this is
  *  hasPaidAccess. Do not inline it; the separation is the point. */
-export function hasObjectiveAccess(user: PaidUser | null): boolean {
+export function hasObjectiveAccess(user: (PaidUser & TasteUser) | null): boolean {
   if (!user) return false;
   if (hasPaidAccess(user)) return true;
-  // No free grant exists to widen this. When one returns, it widens HERE and nowhere else.
-  return false;
+  // RR-397 (owner decision 8 Nov 2026): the free grant came back as "48 hours free from sign-up, no card" (src/lib/taste.ts).
+  // It widens HERE, as this note always said it would. It is NOT a re-opening of the withdrawn 3-day window: it is keyed on
+  // User.createdAt, never on freeAccessStartedAt, and it covers every section, not only the objective ones.
+  return isTasteActive(user);
 }
 
 /** Is this a non-payer whose free grant has run out? Nobody, because no grant is issued.

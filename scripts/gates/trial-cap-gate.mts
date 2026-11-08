@@ -303,6 +303,52 @@ console.log("\nCB2. the loader counts consecutive failures from the ledger");
   ok(/countConsecutiveFailures\(userId\)/.test(src), `${ENT}: checkAiEntitlement never calls it`);
   console.log(`  \u2713 reads AICostLedger newest-first and stops at the first success`);
 }
+// ── F. RR-397: THE FREE 48 HOURS (no card) — 1 + 1, the daily budget, and nobody else touched ──
+// Owner decision 8 Nov 2026. The card-trial cap above is UNCHANGED (running card trials keep 2 + 2 to their own Stripe end).
+// A verified account that never subscribed gets, inside 48 hours of createdAt, ONE AI assessment of each skill while today's
+// free-AI budget lasts. Pinned and driven here with the same strictness as the card-trial cap: exact numbers, the bite at
+// exactly the right attempt, a vacuity control, both directions (never capping a payer with it), never a 500.
+console.log("\nF. RR-397: the free 48 hours");
+{
+  const { TASTE_AI_LIMITS } = await import("../../src/lib/taste");
+  const { TASTE_HOURS } = await import("../../src/lib/offer");
+  const HOUR = 60 * 60 * 1000;
+  ok(TASTE_AI_LIMITS.WRITING === 1 && TASTE_AI_LIMITS.SPEAKING === 1,
+     `the free 48 hours allow ${TASTE_AI_LIMITS.WRITING} + ${TASTE_AI_LIMITS.SPEAKING} AI assessments, not 1 + 1 (owner decision, as AlmiOET)`);
+  ok(TASTE_HOURS === 48, `the free time is ${TASTE_HOURS} hours, not 48`);
+  const FREE = U({ createdAt: new Date(Date.now() - HOUR), stripeSubscriptionId: null } as Partial<User>);
+  const OVER = U({ createdAt: new Date(Date.now() - 49 * HOUR), stripeSubscriptionId: null } as Partial<User>);
+  const EXSUB = U({ createdAt: new Date(Date.now() - HOUR), subscriptionStatus: "canceled", stripeSubscriptionId: "sub_old" } as Partial<User>);
+  const fd = (u: EntitlementUser, skill: AiSkillKind, t: TrialUsage | null, budget = true, fails = 0) => decideAiEntitlement(u, skill, t, fails, budget);
+  for (const skill of ["SCRITTA", "ORALE"] as AiSkillKind[]) {
+    const zero = usage(0, 0), one = skill === "SCRITTA" ? usage(1, 0) : usage(0, 1), otherOne = skill === "SCRITTA" ? usage(0, 1) : usage(1, 0);
+    ok(fd(FREE, skill, zero) === null, `a free-48-hours account was refused its first ${skill}`);
+    ok(fd(FREE, skill, one)?.status === 402 && fd(FREE, skill, one)?.reason === "free-used", `a free account's second ${skill} was not refused 402 "free-used"`);
+    ok(fd(FREE, skill, otherOne) === null, `${skill} was refused because the other skill was used — the 1 + 1 are separate`);
+    ok(fd(FREE, skill, zero, false)?.reason === "free-ai-busy", `${skill}: an exhausted free-AI budget did not stop free AI`);
+    ok(fd(FREE, skill, null)?.status === 402, `${skill}: an UNCOUNTED free tally was allowed — it must never read as "zero used"`);
+    ok(fd(FREE, skill, zero, true, NFAIL)?.status === 503, `${skill}: the failure breaker does not stop a free account`);
+    ok(fd(OVER, skill, zero)?.reason === "not-paid", `${skill}: free AI still allowed 49 hours after sign-up`);
+    ok(fd(EXSUB, skill, zero)?.reason === "not-paid", `${skill}: an ex-subscriber got the free 48 hours`);
+    ok(fd(U({ createdAt: new Date(Date.now() - HOUR), emailVerifiedAt: null } as Partial<User>), skill, zero)?.status === 403,
+       `${skill}: an unverified free account was not asked to verify first`);
+  }
+  // vacuity control: 0 and 1 must be distinguishable, and the budget must be read
+  const spread = [0, 1, 2].map((n) => String(fd(FREE, "SCRITTA", usage(n, 0))?.status ?? null));
+  ok(spread.join(",") === "null,402,402", `control: free usage 0,1,2 gave ${spread.join(",")} — expected allow,402,402`);
+  // the other direction: the free rule and its budget never touch a payer, owner, comp or running card trial
+  for (const { name, u } of [...NEVER_CAPPED, { name: "trialing (card trial)", u: TRIALING }]) {
+    const s = fd(u, "SCRITTA", usage(1, 1), false);
+    ok(s === null, `${name} was refused (${s?.reason}) by the free-48-hours rule or its budget — they are outside it`);
+  }
+  ok(isCappedTrial(FREE) === false, "a free-48-hours account is classified as a capped CARD trial");
+  // the loader reads the free tally and budget ONLY for a free account
+  ok(/freeTime \? await countTrialUsage\(userId\)/.test(src) && /freeTime \? await freeAiAllowedToday\(\) : false/.test(src),
+     `${ENT}: the loader does not count the free tally and today's budget for (only) a free-48-hours account`);
+  console.log(`  ✓ 1 + 1 per free account, bites at the 2nd, skills separate, daily budget and breaker apply, 49 h / ex-subscriber / ` +
+              `unverified refused correctly; payer, owner, comp and card trial never touched; control ${spread.join(",")}`);
+}
+
 if (failures.length) {
   console.error("\n❌ TRIAL CAP GATE FAILED — " + failures.length + " violation(s):");
   for (const f of failures.slice(0, 12)) console.error("   • " + f);

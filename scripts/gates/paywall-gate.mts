@@ -2,13 +2,13 @@
 //
 // Run: npm run gate:paywall   (wired into `build`, so it blocks)
 //
-// The 3-day no-card window was withdrawn network-wide on 2026-08-31. That leaves exactly one
-// way into practice: $12/month, a Stripe trial (48 hours since RR-394), card collected at checkout. Two
-// properties have to hold for that sentence to be true, and neither of them is visible by
-// reading any single file:
+// The 3-day no-card window was withdrawn network-wide on 2026-08-31. RR-397 (8 Nov 2026) brought a different free grant:
+// 48 hours from sign-up (User.createdAt), no card, asked only after hasPaidAccess(); a checkout charges $12 at once.
+// These properties have to hold, and none of them is visible by reading any single file:
 //
-//   A. Nothing that serves or marks practice content is reachable without hasPaidAccess().
-//   C. payment_method_collection is pinned to "always".
+//   A. Nothing that serves or marks practice content is reachable without hasPaidAccess() (asked first, by the gatekeepers).
+//   C. payment_method_collection is pinned to "always", and the checkout hands Stripe no trial.
+//   D. The free 48 hours are asked strictly after hasPaidAccess(), keyed on createdAt.
 //
 // (B — "no served page promises free practice" — is a different question and lives in
 // scripts/gates/served-copy-gate.mts, because it can only be answered from BUILD OUTPUT.)
@@ -71,7 +71,7 @@ function walk(dir: string, out: string[] = []): string[] {
 
 const rel = (abs: string) => relative(root, abs).split(String.fromCharCode(92)).join("/");
 
-console.log("PAYWALL GATE — one door: $12/mo, 48-hour trial, card at checkout\n");
+console.log("PAYWALL GATE — paid door (hasPaidAccess) first, then the free 48 hours (no card); checkout charges $12 at once\n");
 
 // ── A. NOTHING SERVES OR MARKS PRACTICE CONTENT WITHOUT hasPaidAccess ───────
 
@@ -149,17 +149,39 @@ ok(/payment_method_collection\s*:\s*["']always["']/.test(stripeSrc),
 ok(!/payment_method_collection\s*:\s*["']if_required["']/.test(stripeSrc),
    `${STRIPE}: payment_method_collection is "if_required" — the trial can be started with no ` +
    `payment method at all`);
-// RR-394: the trial is now 48 hours for NEW checkouts and its length lives in src/lib/offer.ts.
-// This used to assert `TRIAL_DAYS = 7` in stripe.ts; it now asserts the same thing just as
-// strictly against the new offer — the checkout takes trial_period_days from ./offer, and the
-// offer is exactly 2 days. (scripts/gates/offer-48h.mjs holds the rest of the offer.)
+// RR-397 (owner decision 8 Nov 2026): "Try free for 48 hours, no card. Then $12/month. Cancel anytime."
+// RR-394 asserted here that the checkout took a 2-day Stripe trial from ./offer. That is now the WRONG offer, so the same
+// checks are kept just as strict against the new one: the checkout spreads ...trialForNewCheckout() imported from ./offer,
+// that function returns {} (Stripe is handed nothing about a trial, so $12 is charged at checkout), the checkout code names
+// no trial at all, and the free time is exactly 48 hours (TASTE_HOURS) and lives in the app (src/lib/taste.ts), keyed on
+// createdAt. (scripts/gates/offer-48h.mjs holds the rest of the offer.)
 const OFFER = "src/lib/offer.ts";
 const offerSrc = stripComments(readFileSync(join(root, OFFER), "utf8"));
-ok(/trial_period_days\s*:\s*TRIAL_PERIOD_DAYS\b/.test(stripeSrc), `${STRIPE}: trial_period_days is not TRIAL_PERIOD_DAYS — the trial no longer comes from the offer`);
-ok(/import\s*\{\s*TRIAL_PERIOD_DAYS\s*\}\s*from\s*["']\.\/offer["']/.test(stripeSrc), `${STRIPE}: TRIAL_PERIOD_DAYS is not imported from ./offer`);
-ok(/export const TRIAL_PERIOD_DAYS\s*=\s*2\s*;/.test(offerSrc), `${OFFER}: the trial is no longer 2 days (48 hours)`);
+ok(/\.\.\.trialForNewCheckout\(\)/.test(stripeSrc), `${STRIPE}: the checkout does not spread ...trialForNewCheckout() — the trial decision no longer comes from the offer`);
+ok(/import\s*\{\s*trialForNewCheckout\s*\}\s*from\s*["']\.\/offer["']/.test(stripeSrc), `${STRIPE}: trialForNewCheckout is not imported from ./offer`);
+ok(!/trial_period_days|trialPeriodDays|trial_end|trial_from_plan/.test(stripeSrc), `${STRIPE}: the checkout names a trial again — new checkouts must charge $12 at once, with no card trial`);
+ok(/trialForNewCheckout\(\)\s*:\s*Record<string,\s*never>\s*\{\s*return\s*\{\s*\}\s*;/.test(offerSrc), `${OFFER}: trialForNewCheckout() no longer returns {} — Stripe would be handed a trial`);
+ok(/export const TASTE_HOURS\s*=\s*48\s*;/.test(offerSrc), `${OFFER}: the free time is no longer 48 hours`);
 ok(/mode\s*:\s*["']subscription["']/.test(stripeSrc), `${STRIPE}: checkout is not in subscription mode`);
-console.log(`  ✓ ${STRIPE}: payment_method_collection "always", 48-hour trial from ${OFFER}, subscription mode`);
+console.log(`  ✓ ${STRIPE}: payment_method_collection "always", no Stripe trial (trialForNewCheckout() = {} from ${OFFER}), subscription mode; free time 48 hours`);
+
+// ── D. RR-397: THE FREE 48 HOURS ARE A SECOND DOOR, ASKED ONLY AFTER hasPaidAccess() ─────────
+// Both gatekeepers now also open for an account inside its free 48 hours (no card). That must never change what a paying
+// learner or a running card trial gets, so in each gatekeeper hasPaidAccess(user) must come BEFORE isTasteActive(user), and the
+// free door must be keyed on User.createdAt (src/lib/taste.ts), never on the withdrawn freeAccessStartedAt clock.
+for (const g of GATEKEEPERS) {
+  const src = stripComments(readFileSync(join(root, g.file), "utf8"));
+  const iPaid = src.indexOf("hasPaidAccess(user)"), iTaste = src.indexOf("isTasteActive(user)");
+  ok(iTaste > 0 && iPaid > 0 && iPaid < iTaste,
+     `${g.file}: the free 48 hours (isTasteActive) are not asked strictly AFTER hasPaidAccess(user) — a paying learner or a ` +
+     `running card trial could be answered by the free door`);
+  ok(!/freeAccessStartedAt/.test(src), `${g.file}: reads freeAccessStartedAt — the withdrawn 3-day clock must stay inert`);
+}
+{
+  const taste = stripComments(readFileSync(join(root, "src/lib/taste.ts"), "utf8"));
+  ok(/user\.createdAt/.test(taste) && !/freeAccessStartedAt/.test(taste), `src/lib/taste.ts: the free 48 hours are not keyed on User.createdAt`);
+}
+console.log(`  ✓ both gatekeepers ask hasPaidAccess() before the free 48 hours; the free door is keyed on createdAt`);
 
 // C0 — the detector must be able to FAIL. A regex that matches nothing passes every file.
 const SABOTAGED = stripeSrc.replace(/payment_method_collection\s*:\s*["']always["']/, 'payment_method_collection: "if_required"');

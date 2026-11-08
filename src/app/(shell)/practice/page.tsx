@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
 import { getAccessLevel } from "@/lib/access";
+import { FreeTimeBanner } from "@/components/FreeTimeBanner";
 import { TRACKS, sectionCount } from "@/lib/practice";
 import { canonical } from "@/lib/site";
 
@@ -22,11 +23,13 @@ export default async function Page() {
   // and a paywall notice on a page that only lists is noise.
   const level = getAccessLevel(user);
 
+  // RR-397: a signed-in learner who has not paid sees the free-48-hours banner (hours left, or "Your free 48 hours are over"
+  // with "Unlock for $12/month") under this line.
   const banner = !user
     ? null
     : level === "PAID"
       ? "AlmiItalian Pro active — every section open."
-      : "Practice is part of Pro: try free for 48 hours (card saved, not charged), then $12/month. Cancel anytime. The study guides in /learn stay free.";
+      : "Practice is part of Pro: try free for 48 hours, no card. Then $12/month. Cancel anytime. The study guides in /learn stay free.";
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
@@ -38,6 +41,7 @@ export default async function Page() {
         and that exam&apos;s official-style criteria to work against — they are not auto-marked.
       </p>
       {banner && <p className="mt-4 rounded-xl border border-almi-line bg-almi-bg-peach/40 px-4 py-2 text-sm text-almi-text">{banner}</p>}
+      {user && level !== "PAID" && <div className="mt-3"><FreeTimeBanner user={user} /></div>}
 
       <div className="mt-8 space-y-4">
         {TRACKS.map((t) => (

@@ -38,9 +38,25 @@
 //   NEVER a 500.
 // Same numbers, same behaviour. Nothing here invents a different measure.
 
+//
+// ── RR-397: THE FREE 48 HOURS (no card), PUT INTO THIS DECISION ─────────────
+// Owner decision, 8 Nov 2026: every product works like AlmiOET — 48 hours free from sign-up, no card, no Stripe trial, with
+// 1 AI-assessed Produzione scritta + 1 Produzione orale per account and a daily money cap on free AI. This file is AlmiItalian's
+// one AI door, so the free 48 hours live HERE and not in a second door beside it:
+//   · hasPaidAccess() is still asked FIRST and is unchanged. Everything in that branch — the circuit breaker, and the 2 + 2 cap
+//     for a running card trial (`trialing`) — is exactly as before. Card trials already running keep it to their own end.
+//   · Only when hasPaidAccess() says no AND the email is verified (the existing 403 stays first) does the free 48 hours apply:
+//     tasteMayUseAi() (src/lib/taste.ts) allows ONE of each skill, counted from AiEvaluation (results RECEIVED, the same honest
+//     denominator as the card-trial cap), and only while today's free-AI budget is left (src/lib/free-ai-budget.ts).
+//   · The breaker applies to a free account too: a provider failing three times stops the calls.
+//   · Refusals stay 402 / 403 / 503, never a 500.
+
 import type { User } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { hasPaidAccess, isOwner, isCompActive } from "@/lib/access";
+import { isTasteActive, isTasteOver, tasteMayUseAi, TASTE_AI_LIMITS, type TasteUser } from "@/lib/taste";
+import { freeAiAllowedToday, FREE_AI_BUSY_MESSAGE } from "@/lib/free-ai-budget";
+import { TASTE_OVER_TITLE, UNLOCK_LABEL } from "@/lib/offer";
 
 /** How many AI evaluations of EACH skill a trial includes. AlmiOET's number, kept identical
  *  so the network has one answer to this question. */
@@ -80,16 +96,25 @@ export type AiRefusal = {
    *  already have · 503 = OUR provider is failing and we stopped calling it. */
   status: 401 | 402 | 403 | 503;
   /** Short machine-readable cause, for logRefusal(). Prose belongs in `error`. */
-  reason: "no-user" | "unverified" | "not-paid" | "trial-cap" | "provider-failing";
+  reason: "no-user" | "unverified" | "not-paid" | "trial-cap" | "provider-failing" | "free-used" | "free-ai-busy";
   error: string;
   upgradeUrl?: string;
 };
 
-/** Exactly the fields the decision reads. Nothing else is loaded. */
+/** Exactly the fields the decision reads. Nothing else is loaded. RR-397: plus the free-48-hours fields (createdAt,
+ *  stripeSubscriptionId), optional in the type so a shape without them simply has no free 48 hours. */
 export type EntitlementUser = Pick<
   User,
   "email" | "emailVerifiedAt" | "subscriptionStatus" | "subscriptionCurrentPeriodEnd" | "compProUntil"
->;
+> & TasteUser;
+
+/** RR-397: is this a verified, not-paid account inside its free 48 hours (the population the free AI rule governs)? */
+export function isFreeTimeAi(user: EntitlementUser | null, now: number = Date.now()): boolean {
+  if (!user) return false;
+  if (hasPaidAccess(user)) return false; //   paid, comp, owner, card trial: the branch above, unchanged
+  if (user.emailVerifiedAt === null) return false; // the existing "verify your email" answer comes first
+  return isTasteActive(user, now);
+}
 
 /**
  * Is this user's access coming ONLY from a running trial?
@@ -138,6 +163,9 @@ export function decideAiEntitlement(
   skill: AiSkillKind,
   usage: TrialUsage | null,
   consecutiveFailures = 0,
+  /** RR-397: is today's free-AI budget left? Read only for a free-48-hours account. Defaults to FALSE (fail closed): a caller
+   *  that did not ask the budget gives a free account no AI, and a paid account never reads it. */
+  freeAiBudgetOk = false,
 ): AiRefusal | null {
   if (!user) return { ok: false, status: 401, reason: "no-user", error: "Not authenticated" };
 
@@ -196,12 +224,50 @@ export function decideAiEntitlement(
   if (user.emailVerifiedAt === null) {
     return { ok: false, status: 403, reason: "unverified", error: "Verify your email address first." };
   }
+
+  // RR-397 · THE FREE 48 HOURS (no card). Not paid, verified, and inside the 48 hours from sign-up: ONE AI assessment of each
+  // skill, while today's free-AI budget lasts. Everything above this line is unchanged.
+  if (isTasteActive(user)) {
+    if (consecutiveFailures >= CONSECUTIVE_FAILURE_LIMIT) {
+      return {
+        ok: false,
+        status: 503,
+        reason: "provider-failing",
+        error:
+          `We could not produce a result — your last ${consecutiveFailures} attempts failed on our side, so we have stopped ` +
+          `trying. This is our problem, not yours. Your free allowance is untouched; please try again later.`,
+      };
+    }
+    // A free account's tally must be COUNTED; a missing one is never read as "zero used" (that would be unlimited free AI).
+    const verdict = tasteMayUseAi({
+      user,
+      kind: skill === "SCRITTA" ? "WRITING" : "SPEAKING",
+      usedOfKind: usage ? usage[skill] ?? 0 : Number.POSITIVE_INFINITY,
+      budgetOk: freeAiBudgetOk,
+    });
+    if (verdict.ok) return null;
+    if (verdict.reason === "BUDGET") {
+      return { ok: false, status: 402, reason: "free-ai-busy", error: FREE_AI_BUSY_MESSAGE, upgradeUrl: "/pricing" };
+    }
+    const limit = TASTE_AI_LIMITS[skill === "SCRITTA" ? "WRITING" : "SPEAKING"];
+    return {
+      ok: false,
+      status: 402,
+      reason: "free-used",
+      error:
+        `Your free 48 hours include ${limit} AI-assessed ${skillLabel(skill)}, and you have used it. ` +
+        `${UNLOCK_LABEL} for unlimited feedback. Every practice section stays open until your free 48 hours end.`,
+      upgradeUrl: "/pricing",
+    };
+  }
+
   return {
     ok: false,
     status: 402,
     reason: "not-paid",
-    error:
-      "Produzione scritta and orale feedback is part of AlmiItalian Pro — try free for 48 hours (card saved, not charged), then $12/month.",
+    error: isTasteOver(user)
+      ? `${TASTE_OVER_TITLE}. Produzione scritta and orale feedback is part of AlmiItalian Pro: ${UNLOCK_LABEL}, cancel anytime.`
+      : `Produzione scritta and orale feedback is part of AlmiItalian Pro: ${UNLOCK_LABEL}, cancel anytime.`,
     upgradeUrl: "/pricing",
   };
 }
@@ -233,11 +299,12 @@ export function decideAiEntitlement(
  * the trial length — is a clock that, if it drifts wide, silently disables the cap. Silently
  * disabling the cap is the failure this whole change exists to prevent.
  *
- * RR-394 proved the point: the trial length changed (from a week to 48 hours for NEW checkouts,
- * in src/lib/offer.ts) while week-long trials were still running. Because nothing here derives a
- * window from that number, both populations are capped identically (2 + 2 per trial, keyed on
- * `trialing`) and a running week-long trial keeps its access to its own Stripe end. Do not import
- * TRIAL_PERIOD_DAYS here.
+ * RR-394 proved the point: the trial length changed (from a week to 48 hours for NEW checkouts)
+ * while week-long trials were still running. Because nothing here derives a window from a trial
+ * length, both populations are capped identically (2 + 2 per trial, keyed on `trialing`) and a
+ * running card trial keeps its access to its own Stripe end. RR-397 then ended card trials for new
+ * checkouts altogether; the free 48 hours are counted from this SAME tally (1 + 1, see
+ * decideAiEntitlement), because a free account has no other AI results to have collected.
  */
 export async function countTrialUsage(userId: string): Promise<TrialUsage> {
   const rows = await prisma.aiEvaluation.groupBy({
@@ -300,14 +367,21 @@ export async function checkAiEntitlement(
       subscriptionStatus: true,
       subscriptionCurrentPeriodEnd: true,
       compProUntil: true,
+      // RR-397: the free 48 hours start at sign-up and belong only to an account that never subscribed.
+      createdAt: true,
+      stripeSubscriptionId: true,
     },
   });
-  const usage = isCappedTrial(user) ? await countTrialUsage(userId) : null;
+  // RR-397: a verified, not-paid account inside its free 48 hours. Its tally, failure count and today's free-AI budget are read
+  // ONLY for it; a paying subscriber never waits on (or is refused by) a free-AI query.
+  const freeTime = isFreeTimeAi(user);
+  const usage = isCappedTrial(user) ? await countTrialUsage(userId) : freeTime ? await countTrialUsage(userId) : null;
   // Counted for everyone who could otherwise call: the breaker is about our provider, not
   // about their tier. A user with no entitlement never gets here in a state where it matters,
   // because the paywall answers first.
-  const consecutiveFailures = hasPaidAccess(user) ? await countConsecutiveFailures(userId) : 0;
-  return decideAiEntitlement(user, skill, usage, consecutiveFailures);
+  const consecutiveFailures = hasPaidAccess(user) || freeTime ? await countConsecutiveFailures(userId) : 0;
+  const freeAiBudgetOk = freeTime ? await freeAiAllowedToday() : false;
+  return decideAiEntitlement(user, skill, usage, consecutiveFailures, freeAiBudgetOk);
 }
 
 /**

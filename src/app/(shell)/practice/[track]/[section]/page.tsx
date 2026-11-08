@@ -12,6 +12,9 @@ import { CELI_CONFIG, type CeliLevel } from "@/lib/scoring";
 import { PracticeRunner } from "@/components/PracticeRunner";
 import { PracticeComposer } from "@/components/PracticeComposer";
 import { PracticeGate } from "@/components/PracticeGate";
+import { FreeTimeBanner } from "@/components/FreeTimeBanner";
+import { isTasteOver } from "@/lib/taste";
+import { TASTE_OVER_TITLE } from "@/lib/offer";
 import { EmailVerifyBanner } from "@/components/EmailVerifyBanner";
 import { canonical } from "@/lib/site";
 
@@ -71,9 +74,8 @@ export default async function Page({ params }: { params: Promise<{ track: string
       <div className="mt-8 rounded-2xl border border-almi-line bg-almi-paper p-6">
         <h2 className="text-lg font-semibold text-almi-ink">Sign in to practise</h2>
         <p className="mt-2 text-sm text-almi-text">
-          Practice is part of AlmiItalian Pro: a 48-hour free trial — your card is saved, not charged — then $12/month,
-          cancel anytime. Reading the free <Link href="/learn" className="underline">study guides</Link> needs no
-          account at all.
+          Practice is part of AlmiItalian Pro. Try free for 48 hours, no card. Then $12/month, cancel anytime. Reading
+          the free <Link href="/learn" className="underline">study guides</Link> needs no account at all.
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
           <Link href="/signup" className="inline-flex rounded-full bg-almi-coral px-6 py-2.5 font-semibold text-almi-ink hover:bg-almi-coral-deep">Create an account</Link>
@@ -87,7 +89,8 @@ export default async function Page({ params }: { params: Promise<{ track: string
     // PAYWALL — the only refusal left that a subscription fixes. A subscriber who simply has
     // not verified yet is caught by VERIFY_EMAIL above, so this is never "subscribe" shown to
     // someone who already has.
-    body = <PracticeGate billingLive={isBillingEnabled()} />;
+    // RR-397: after the free 48 hours this says so ("Your free 48 hours are over") with "Unlock for $12/month".
+    body = <PracticeGate billingLive={isBillingEnabled()} title={user && isTasteOver(user) ? TASTE_OVER_TITLE : undefined} />;
   } else if (items.length === 0) {
     body = (
       <div className="mt-8 rounded-2xl border border-dashed border-almi-line bg-almi-paper p-6 text-almi-text">
@@ -95,14 +98,21 @@ export default async function Page({ params }: { params: Promise<{ track: string
       </div>
     );
   } else if (s.kind === "estimate") {
-    body = <div className="mt-8"><PracticeComposer items={served} sectionLabel={s.label} trackLabel={t.label} honesty={t.honesty} /></div>;
+    body = (
+      <div className="mt-8 space-y-4">
+        {/* RR-397: hours left in the free 48 hours and the 1 AI assessment included; nothing for paying users */}
+        {user && <FreeTimeBanner user={user} ai={s.code === "ORALE" ? "SPEAKING" : "WRITING"} />}
+        <PracticeComposer items={served} sectionLabel={s.label} trackLabel={t.label} honesty={t.honesty} />
+      </div>
+    );
   } else {
     const celiCfg = t.exam === "CELI" ? CELI_CONFIG[t.level as CeliLevel] : null;
     const celiContext = celiCfg
       ? `That raw score is one component of the CELI Written part — the whole Written part needs ≥${celiCfg.writtenMin}/${celiCfg.writtenMax}, and the certificate also needs the Oral part ≥${celiCfg.oralMin}/${celiCfg.oralMax} on the same sitting. The A–E grade is an estimate.`
       : null;
     body = (
-      <div className="mt-8">
+      <div className="mt-8 space-y-4">
+        {user && <FreeTimeBanner user={user} />}
         {/* No `scale` prop: the scaled read-out and its CLEAR/BORDERLINE/BELOW verdict are
             computed by /api/it/submit from the engine, server-side, and arrive with the marks. */}
         <PracticeRunner items={served} honesty={t.honesty} modelNote={t.modelNote} celiContext={celiContext} sectionLabel={s.label} trackLabel={t.label} />

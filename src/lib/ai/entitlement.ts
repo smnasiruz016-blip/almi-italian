@@ -57,6 +57,7 @@ import { hasPaidAccess, isOwner, isCompActive } from "@/lib/access";
 import { isTasteActive, isTasteOver, tasteMayUseAi, TASTE_AI_LIMITS, type TasteUser } from "@/lib/taste";
 import { freeAiAllowedToday, FREE_AI_BUSY_MESSAGE } from "@/lib/free-ai-budget";
 import { TASTE_OVER_TITLE, UNLOCK_LABEL } from "@/lib/offer";
+import { claimFreeAi, releaseFreeAi, type ClaimStore, type FreeAiKind } from "@/lib/free-ai-claim";
 
 /** How many AI evaluations of EACH skill a trial includes. AlmiOET's number, kept identical
  *  so the network has one answer to this question. */
@@ -138,6 +139,44 @@ export function isCappedTrial(user: EntitlementUser | null): boolean {
 
 function skillLabel(skill: AiSkillKind): string {
   return skill === "SCRITTA" ? "Produzione scritta" : "Produzione orale";
+}
+
+/** The free 48 hours' kind for a skill (FreeAiUse.kind and TASTE_AI_LIMITS use WRITING / SPEAKING). */
+const FREE_KIND: Record<AiSkillKind, FreeAiKind> = { SCRITTA: "WRITING", ORALE: "SPEAKING" };
+
+/** The one "you have used your free one" answer, from the count (decideAiEntitlement) and from the claim (reserveFreeEvaluation). */
+function freeUsedRefusal(skill: AiSkillKind): AiRefusal {
+  const limit = TASTE_AI_LIMITS[FREE_KIND[skill]];
+  return {
+    ok: false,
+    status: 402,
+    reason: "free-used",
+    error:
+      `Your free 48 hours include ${limit} AI-assessed ${skillLabel(skill)}, and you have used it. ` +
+      `${UNLOCK_LABEL} for unlimited feedback. Every practice section stays open until your free 48 hours end.`,
+    upgradeUrl: "/pricing",
+  };
+}
+
+/**
+ * RR-399 A3 · THE "1 FREE" IS ATOMIC. decideAiEntitlement() counts AiEvaluation rows, and two requests at the same moment both
+ * count "0 used". So when the decision GRANTS a free-48-hours evaluation, the free use is reserved here in one INSERT that only
+ * one request can win (FreeAiUse, unique userId + kind; src/lib/free-ai-claim.ts):
+ *   RESERVED     → null (allowed); the route gives it back with releaseFreeEvaluation() if no result reaches the learner
+ *   USED         → the same 402 "free-used" refusal as the count gives
+ *   UNAVAILABLE  → null: the table is not migrated yet, so the count decision stands (nothing breaks before the owner's migration)
+ * `store` is for the offline test only.
+ */
+export async function reserveFreeEvaluation(userId: string, skill: AiSkillKind, store?: ClaimStore): Promise<AiRefusal | null> {
+  const claim = await claimFreeAi(userId, FREE_KIND[skill], store);
+  return claim === "USED" ? freeUsedRefusal(skill) : null;
+}
+
+/** RR-399 A3 · give a reserved free evaluation back (the scoring failed or was refused after the door said yes). A no-op when
+ *  there is nothing reserved; for a paying account it can only remove a row from its own past free use, which grants nothing,
+ *  because an account that ever subscribed or was comped never has free 48 hours again (tasteEndsAt). */
+export async function releaseFreeEvaluation(userId: string, skill: AiSkillKind, store?: ClaimStore): Promise<void> {
+  await releaseFreeAi(userId, FREE_KIND[skill], store);
 }
 
 /**
@@ -249,16 +288,7 @@ export function decideAiEntitlement(
     if (verdict.reason === "BUDGET") {
       return { ok: false, status: 402, reason: "free-ai-busy", error: FREE_AI_BUSY_MESSAGE, upgradeUrl: "/pricing" };
     }
-    const limit = TASTE_AI_LIMITS[skill === "SCRITTA" ? "WRITING" : "SPEAKING"];
-    return {
-      ok: false,
-      status: 402,
-      reason: "free-used",
-      error:
-        `Your free 48 hours include ${limit} AI-assessed ${skillLabel(skill)}, and you have used it. ` +
-        `${UNLOCK_LABEL} for unlimited feedback. Every practice section stays open until your free 48 hours end.`,
-      upgradeUrl: "/pricing",
-    };
+    return freeUsedRefusal(skill);
   }
 
   return {
@@ -355,6 +385,8 @@ export async function countConsecutiveFailures(userId: string): Promise<number> 
 export async function checkAiEntitlement(
   userId: string | null | undefined,
   skill: AiSkillKind,
+  /** RR-399 A3: claim = reserve the free use when a free evaluation is granted (the route's door). */
+  opts: { claim?: boolean } = {},
 ): Promise<AiRefusal | null> {
   if (!userId) return { ok: false, status: 401, reason: "no-user", error: "Not authenticated" };
   const user = await prisma.user.findUnique({
@@ -381,7 +413,12 @@ export async function checkAiEntitlement(
   // because the paywall answers first.
   const consecutiveFailures = hasPaidAccess(user) || freeTime ? await countConsecutiveFailures(userId) : 0;
   const freeAiBudgetOk = freeTime ? await freeAiAllowedToday() : false;
-  return decideAiEntitlement(user, skill, usage, consecutiveFailures, freeAiBudgetOk);
+  const decision = decideAiEntitlement(user, skill, usage, consecutiveFailures, freeAiBudgetOk);
+  // RR-399 A3: a free-48-hours evaluation was just GRANTED: reserve it atomically before anything is spent. Only the route's own
+  // door claims (opts.claim, default true); the evaluator's second lock re-checks with claim: false, because the route has
+  // already reserved this evaluation and a second claim would refuse the learner their own free one.
+  if (decision === null && freeTime && opts.claim !== false) return reserveFreeEvaluation(userId, skill);
+  return decision;
 }
 
 /**
@@ -393,7 +430,8 @@ export async function refuseUnlessEntitled(
   userId: string | null | undefined,
   skill: AiSkillKind,
 ): Promise<{ ok: false; error: string; status: number } | null> {
-  const refusal = await checkAiEntitlement(userId, skill);
+  // RR-399 A3: the second lock. The route's door already reserved a free evaluation; re-checking must not claim it again.
+  const refusal = await checkAiEntitlement(userId, skill, { claim: false });
   if (!refusal) return null;
   console.warn(JSON.stringify({ evt: "ai-refusal", reason: refusal.reason, skill, userId: userId ?? null }));
   return { ok: false, error: refusal.error, status: refusal.status };

@@ -15,7 +15,7 @@
 
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { checkAiEntitlement } from "@/lib/ai/entitlement";
+import { checkAiEntitlement, releaseFreeEvaluation } from "@/lib/ai/entitlement";
 import { logRefusal } from "@/lib/observability";
 import { limitByClient, tooManyRequests } from "@/lib/rate-limit";
 import { getItemByStableId } from "@/lib/item-id";
@@ -51,26 +51,37 @@ export async function POST(req: Request): Promise<NextResponse> {
     );
   }
 
+  // RR-399 A3: a free-48-hours account now HOLDS its reserved free evaluation. Every answer below that is not an estimate gives
+  // it back, so a refused or failed request never uses up the learner's one free Produzione scritta.
+  const release = () => releaseFreeEvaluation(user.id, "SCRITTA");
+  const refuse = async (body: unknown, init: { status: number }): Promise<NextResponse> => {
+    await release();
+    return NextResponse.json(body, init);
+  };
+
   const limited = limitByClient("aiScritta", req);
-  if (!limited.ok) return tooManyRequests(limited.retryAfterSeconds);
+  if (!limited.ok) {
+    await release();
+    return tooManyRequests(limited.retryAfterSeconds);
+  }
 
   let body: Body;
   try {
     body = (await req.json()) as Body;
   } catch {
-    return NextResponse.json({ ok: false, error: "Invalid body" }, { status: 400 });
+    return refuse({ ok: false, error: "Invalid body" }, { status: 400 });
   }
 
   const text = typeof body.response === "string" ? body.response.trim() : "";
-  if (!text) return NextResponse.json({ ok: false, error: "Nothing to evaluate." }, { status: 400 });
+  if (!text) return refuse({ ok: false, error: "Nothing to evaluate." }, { status: 400 });
   if (text.length > MAX_RESPONSE_CHARS) {
-    return NextResponse.json({ ok: false, error: "That response is too long to evaluate." }, { status: 413 });
+    return refuse({ ok: false, error: "That response is too long to evaluate." }, { status: 413 });
   }
 
   const item = typeof body.itemId === "string" ? getItemByStableId(body.itemId) : undefined;
-  if (!item) return NextResponse.json({ ok: false, error: "Unknown item" }, { status: 404 });
+  if (!item) return refuse({ ok: false, error: "Unknown item" }, { status: 404 });
   if (item.section !== "SCRITTA") {
-    return NextResponse.json({ ok: false, error: "That item is not a Produzione scritta task." }, { status: 400 });
+    return refuse({ ok: false, error: "That item is not a Produzione scritta task." }, { status: 400 });
   }
 
   const p = item.payload as { task?: string; criteria?: string[]; minWords?: number; maxWords?: number };
@@ -84,10 +95,13 @@ export async function POST(req: Request): Promise<NextResponse> {
     response: text,
     minWords: p.minWords,
     maxWords: p.maxWords,
+  }).catch(async (e: unknown) => {
+    await release(); // RR-399 A3: the AI call threw, the learner received nothing
+    throw e;
   });
 
   if (!result.ok) {
-    return NextResponse.json({ ok: false, error: result.error }, { status: result.status ?? 502 });
+    return refuse({ ok: false, error: result.error }, { status: result.status ?? 502 });
   }
 
   // Validated on the way IN as well as the way out: a row that does not carry its estimate
